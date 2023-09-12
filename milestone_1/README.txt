@@ -1,3 +1,3 @@
 Team Members: Gargi Mahadeshwar, Lindsay Liu, Divya Nataraj, Soumya Bodavula, Pradnesh Kolluru
 Project Selection: Standard Amazon Project
-Team Name: TBD
+Team Name: Data Dawgs
