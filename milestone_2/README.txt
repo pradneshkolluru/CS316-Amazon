@@ -17,10 +17,10 @@ https://github.com/pradneshkolluru/CS316-Amazon/tree/main/mini-amazon-skeleton-m
 
 # Summarize Tasks Done Since Last Milestone
 
-Gargi: Worked on E/R diagram, database schema
-Pradnesh: Worked on E/R diagram, website content/flow
-Divya: Worked on E/R diagram, database schema
-Soumya: Worked on E/R diagram, database schema
-Lindsay: Worked on E/R diagram, website content/flow
+Gargi: Worked on E/R diagram, database schema, Setup Dev Env
+Pradnesh: Worked on E/R diagram, website content/flow, Setup Dev Env
+Divya: Worked on E/R diagram, database schema, Setup Dev Env
+Soumya: Worked on E/R diagram, database schema, Setup Dev Env
+Lindsay: Worked on E/R diagram, website content/flow, Setup Dev Env
 
 
