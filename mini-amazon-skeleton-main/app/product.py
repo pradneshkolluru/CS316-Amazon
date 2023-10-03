@@ -14,8 +14,8 @@ def products():
 
     topK = request.form.get('fname')
 
-    if topK == None:
-        topK = 5
+    if topK == None or topK == '':
+        topK = -1
     else:
         topK = int(topK)
     # get all available products for sale:
