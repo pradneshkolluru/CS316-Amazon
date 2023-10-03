@@ -19,11 +19,22 @@ WHERE id = :id
         return Product(*(rows[0])) if rows is not None else None
 
     @staticmethod
-    def get_all(available=True):
-        rows = app.db.execute('''
-SELECT id, name, price, available
-FROM Products
-WHERE available = :available
-''',
-                              available=available)
+    def get_all(available=True, k = -1):
+
+        if k > -1:
+
+            rows = app.db.execute('''
+    SELECT id, name, price, available
+    FROM Products
+    WHERE available = :available ORDER BY price DESC LIMIT :topK
+    ''',
+                                available=available, topK = k)
+        else:
+            rows = app.db.execute('''
+    SELECT id, name, price, available
+    FROM Products
+    WHERE available = :available ORDER BY price DESC
+    ''',
+                                available=available)
+
         return [Product(*row) for row in rows]
