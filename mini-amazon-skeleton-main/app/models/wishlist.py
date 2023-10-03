@@ -6,7 +6,7 @@ class WishlistItem:
         self.id = id
         self.uid = uid
         self.pid = pid
-        self.time_purchased = time_added
+        self.time_added = time_added
 
     @staticmethod
     def get(id):

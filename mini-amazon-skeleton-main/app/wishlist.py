@@ -2,6 +2,7 @@ from flask import render_template
 from flask import jsonify
 from flask import redirect, url_for
 from flask_login import current_user
+from humanize import naturaltime
 import datetime
 
 from .models.product import Product
@@ -18,7 +19,10 @@ def wishlist():
     if current_user.is_authenticated:
         wishlist_items = WishlistItem.get_all_by_uid_since(current_user.id, 
                                                        datetime.datetime(1980, 9, 14, 0, 0, 0))
-        return jsonify([item.__dict__ for item in wishlist_items])
+        # return jsonify([item.__dict__ for item in wishlist_items])
+        return render_template('wishlist.html',
+                      items=wishlist_items,
+                      humanize_time=humanize_time)
     else:
         wishlist_items = None
         return jsonify({}), 404
@@ -28,3 +32,6 @@ def wishlist_add(product_id):
     if current_user.is_authenticated:
         WishlistItem.add_item(current_user.id, product_id)
         return redirect(url_for('wishlist.wishlist'))
+
+def humanize_time(dt):
+    return naturaltime(datetime.datetime.now() - dt)
