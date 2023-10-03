@@ -31,20 +31,18 @@ ORDER BY time_added DESC
                               since=since)
         return [Wishes(*row) for row in rows]
     @staticmethod
-    def add_item(uid, pid, time_added):
+    def add_item(uid, pid):
         try:
             rows = app.db.execute("""
-INSERT INTO Wishes(uid, pid, time_added)
-VALUES(:email, :pid, :time_added)
+INSERT INTO Wishes(uid, pid)
+VALUES(:uid, :pid)
 RETURNING id
 """,
                                   uid=uid,
-                                  pid=pid,
-                                  time_added=time_added)
+                                  pid=pid)
             id = rows[0][0]
             return Wishes.get(id)
         except Exception as e:
-            # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
             print(str(e))
             return None
