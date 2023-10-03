@@ -1,6 +1,7 @@
 from flask import render_template
-from flask_login import current_user
 from flask import jsonify
+from flask import redirect, url_for
+from flask_login import current_user
 import datetime
 
 from .models.product import Product
@@ -13,9 +14,6 @@ bp = Blueprint('wishlist', __name__)
 
 @bp.route('/wishlist')
 def wishlist():
-    # get all available products for sale:
-    # products = Product.get_all(True)
-    
     # find the items on the current user's wishlist:
     if current_user.is_authenticated:
         wishlist_items = WishlistItem.get_all_by_uid_since(current_user.id, 
@@ -24,6 +22,9 @@ def wishlist():
     else:
         wishlist_items = None
         return jsonify({}), 404
-    
-    
 
+@bp.route('/wishlist/add/<int:product_id>', methods=['POST'])
+def wishlist_add(product_id):
+    if current_user.is_authenticated:
+        WishlistItem.add_item(current_user.id, product_id)
+        return redirect(url_for('wishlist.wishlist'))
