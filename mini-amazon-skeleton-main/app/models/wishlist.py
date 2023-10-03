@@ -36,11 +36,12 @@ ORDER BY time_added DESC
         try:
             rows = app.db.execute("""
 INSERT INTO Wishes(uid, pid)
-VALUES(:id, :uid, :pid, :time_added)
+VALUES(:uid, :pid)
 RETURNING id
 """,
                                   uid=uid,
                                   pid=pid)
+            id = rows[0][0]
             return WishlistItem.get(id)
         except Exception as e:
             # likely email already in use; better error checking and reporting needed;
