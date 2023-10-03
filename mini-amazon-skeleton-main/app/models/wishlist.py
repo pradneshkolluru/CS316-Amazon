@@ -32,16 +32,15 @@ ORDER BY time_added DESC
         return [WishlistItem(*row) for row in rows]
 
     @staticmethod
-    def addItem(uid, pid, time_added):
+    def addItem(uid, pid):
         try:
             rows = app.db.execute("""
-INSERT INTO Wishes(uid, pid, time_added)
-VALUES(:uid, :pid, :time_added)
+INSERT INTO Wishes(uid, pid)
+VALUES(:uid, :pid)
 RETURNING id
 """,
                                   uid=uid,
-                                  pid=pid,
-                                  time_added=time_added)
+                                  pid=pid)
             id = rows[0][0]
             return WishlistItem.get(id)
         except Exception as e:
