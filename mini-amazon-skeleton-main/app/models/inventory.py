@@ -28,3 +28,23 @@ AND Inventory.pid = Products.id
 ''',
                               sid=sid)
         return [InventoryItem(*row) for row in rows]
+
+    @staticmethod
+    def add_item(sid, pid, quantity):
+        # adding new product to inventory
+        try:
+            rows = app.db.execute("""
+INSERT INTO Inventory(sid, pid, quantity)
+VALUES(:sid, :pid, :quantity)
+RETURNING id
+""",
+                                  sid=sid,
+                                  pid=pid,
+                                  quantity = quantity)
+            id = rows[0][0]
+            return InventoryItem.get(id)
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
