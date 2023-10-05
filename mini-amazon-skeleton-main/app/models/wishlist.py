@@ -32,7 +32,11 @@ ORDER BY time_added DESC
         return [WishlistItem(*row) for row in rows]
 
     @staticmethod
+<<<<<<< HEAD
     def add_item(uid, pid):
+=======
+    def addItem(uid, pid):
+>>>>>>> main
         try:
             rows = app.db.execute("""
 INSERT INTO Wishes(uid, pid)
@@ -47,4 +51,8 @@ RETURNING id
             # likely email already in use; better error checking and reporting needed;
             # the following simply prints the error to the console:
             print(str(e))
+<<<<<<< HEAD
             return None
+=======
+            return None
+>>>>>>> main

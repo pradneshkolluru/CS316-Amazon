@@ -37,12 +37,15 @@ CREATE TABLE Inventory (
     quantity INT NOT NULL --available quantity
     PRIMARY KEY(sid, pid)
 );
-    --oid INT NOT NULL,
-    --availability VARCHAR(15) NOT NULL,
-    --fulfillment VARCHAR(15), -- can be null if still available (not purchased)
-    --time_fulfilled INT timestamp without time zone NOT NULL DEFAULT (current_timestamp AT TIME ZONE 'UTC'),  -- can be null if still available
-    --CHECK(fulfillment in ('Fulfilled', 'Unfulfilled')),
-    --PRIMARY KEY(oid, pid)
-    -- think about primary key and time_fulfilled
-    -- how does order/purchase id play into this?
-    -- is price per item/unit needed here?
+
+CREATE TABLE Cart (
+    uid INT NOT NULL PRIMARY KEY REFERENCES Users(id),
+    curr_total_price DECIMAL(12,2) NOT NULL
+);
+
+CREATE TABLE InCart (
+    uid INT NOT NULL REFERENCES Users(id),
+    pid INT NOT NULL REFERENCES Products(id),
+    qty INT NOT NULL,
+    PRIMARY KEY(uid, pid)
+);
