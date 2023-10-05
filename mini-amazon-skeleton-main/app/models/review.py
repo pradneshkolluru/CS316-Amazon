@@ -44,6 +44,5 @@ FROM Reviews
 JOIN Products ON Products.id = Reviews.pid
 WHERE uid = :uid
 ORDER BY time_posted DESC
-''',
-                              uid=uid)
+''', uid = uid)
         return [Review(*row) for row in rows]
