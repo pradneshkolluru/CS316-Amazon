@@ -64,5 +64,4 @@ CREATE TABLE Cart (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
     qty INT NOT NULL,
-    PRIMARY KEY(uid, pid)
-);
+    PRIMARY KEY(uid, pid));
