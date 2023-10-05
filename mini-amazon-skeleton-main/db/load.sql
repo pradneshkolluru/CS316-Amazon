@@ -25,6 +25,13 @@ SELECT pg_catalog.setval('public.wishes_id_seq',
                          (SELECT MAX(id)+1 FROM Wishes),
                          false);
 
+<<<<<<< HEAD
 \COPY Cart FROM 'Cart.csv' WITH DELIMITER ',' NULL '' CSV
 
 \COPY InCart FROM 'InCart.csv' WITH DELIMITER ',' NULL '' CSV
+=======
+\COPY Reviews FROM 'Reviews.csv' WITH DELIMITER ',' NULL '' CSV
+SELECT pg_catalog.setval('public.reviews_id_seq',
+                         (SELECT MAX(id)+1 FROM Reviews),
+                         false);
+>>>>>>> lindsay-feedback
