@@ -48,3 +48,46 @@ RETURNING id
             # the following simply prints the error to the console:
             print(str(e))
             return None
+
+    @staticmethod
+    def get_quantity(sid, pid):
+        # get quantity of existing product in seller's inventory
+        try:
+            rows = app.db.execute("""
+SELECT quantity
+FROM Inventory
+WHERE sid = :sid
+AND pid = :pid
+""",
+                                  sid=sid,
+                                  pid=pid)
+            #id = rows[0][0]
+            quantity = rows[3]
+            #return InventoryItem.get(id).quantity
+            return quantity
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None
+    
+    @staticmethod
+    def update_item(sid, pid, quantity):
+        # updating quantity of existing product in inventory
+        try:
+            rows = app.db.execute("""
+UPDATE Inventory
+SET quantity = :quantity
+WHERE sid = :sid
+AND pid = :pid
+""",
+                                  sid=sid,
+                                  pid=pid,
+                                  quantity = quantity)
+            id = rows[0][0]
+            return InventoryItem.get(id)
+        except Exception as e:
+            # likely email already in use; better error checking and reporting needed;
+            # the following simply prints the error to the console:
+            print(str(e))
+            return None

@@ -8,11 +8,11 @@ from .models.inventory import InventoryItem
 from flask import Blueprint
 bp = Blueprint('inventory', __name__)
 
-@bp.route('/inventory')
-def inventory():
+@bp.route('/inventory/<int:sid>')
+def inventory(sid):
     # get products in inventory of one seller
     if current_user.is_authenticated:
-        items = InventoryItem.get_all_by_sid(current_user.id)
+        items = InventoryItem.get_all_by_sid(sid)
     else:
         items = None
         return jsonify({}), 404
@@ -23,6 +23,15 @@ def inventory():
 def inventory_add(product_id, quantity):
     if current_user.is_authenticated:
         item = InventoryItem.add_item(current_user.id, product_id, quantity)
+    else:
+        item = None
+        return jsonify({}), 404
+    return redirect(url_for('inventory.inventory'))
+
+@bp.route('/inventory/update/<int:product_id>/<int:quantity>', methods=['POST'])
+def inventory_update(product_id, quantity):
+    if current_user.is_authenticated:
+        item = InventoryItem.update_item(current_user.id, product_id, quantity)
     else:
         item = None
         return jsonify({}), 404
