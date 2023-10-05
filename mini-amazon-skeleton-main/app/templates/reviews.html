@@ -8,19 +8,19 @@
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">Review ID</th>
-      <!-- <th scope="col">Product or Seller ID</th> -->
-      <!-- <th scope="col">Rating</th> -->
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
       <th scope="col">Review</th>
+      <th scope="col">Post Date</th>
     </tr>
   </thead>
   <tbody>
     {% for review in review_history%}
       <tr>
-        <th scope="row">{{review.id}}</th>
-        <!-- <td>{{purchase.pid}}</td> -->
-        <!-- <td>{{purchase.time_posted}}</td> -->
+        <td>{{review.pid}}</td>
+        <td>{{review.name}}</td>
         <td>{{review.review_text}}</td>
+        <td>{{review.time_posted}}</td>
       </tr>
     {% endfor %}
   </tbody>

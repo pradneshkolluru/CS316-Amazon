@@ -1,21 +1,23 @@
 from flask import current_app as app
 
 class Review:
-    def __init__(self, id, uid, pid, review_type, time_posted, rating, review_text):
+    def __init__(self, id, uid, pid, time_posted, rating, review_text, name):
         self.id = id
         self.uid = uid
         self.pid = pid
         # self.sellerId = sellerId
-        self.review_type = review_type
+        # self.review_type = review_type
         self.time_posted = time_posted
         self.rating = rating
         self.review_text = review_text
+        self.name = name
 
     @staticmethod
     def get(id):
         rows = app.db.execute('''
 SELECT id, uid, pid, time_posted
 FROM Reviews
+JOIN Products ON Products.pit = Reviews.pid
 WHERE id = :id
 ''',
                               id=id)
@@ -37,8 +39,9 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
         rows = app.db.execute('''
-SELECT *
+SELECT Reviews.id, uid, pid, time_posted, rating, review_text, Products.name
 FROM Reviews
+JOIN Products ON Products.id = Reviews.pid
 WHERE uid = :uid
 ORDER BY time_posted DESC
 ''',
