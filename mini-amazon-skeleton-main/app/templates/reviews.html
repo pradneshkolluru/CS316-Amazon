@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Your recent reviews:</h2>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Review ID</th>
+      <!-- <th scope="col">Product or Seller ID</th> -->
+      <!-- <th scope="col">Rating</th> -->
+      <th scope="col">Review</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for review in review_history%}
+      <tr>
+        <th scope="row">{{review.id}}</th>
+        <!-- <td>{{purchase.pid}}</td> -->
+        <!-- <td>{{purchase.time_posted}}</td> -->
+        <td>{{review.review_text}}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your review history!</p>
+{% endif %}
+
+{% endblock %}
