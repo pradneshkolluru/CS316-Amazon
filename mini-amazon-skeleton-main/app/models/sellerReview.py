@@ -1,7 +1,7 @@
 from flask import current_app as app
 
 class SellerReview:
-    def __init__(self, id, uid, sid, time_posted, rating, review_text, first_name, last_name):
+    def __init__(self, id, uid, sid, time_posted, rating, review_text):
         self.id = id
         self.uid = uid
         self.sid = sid
@@ -10,8 +10,6 @@ class SellerReview:
         self.time_posted = time_posted
         self.rating = rating
         self.review_text = review_text
-        self.first_name = first_name
-        self.last_name = last_name
 
     @staticmethod
     def get(id):
@@ -40,7 +38,7 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
         rows = app.db.execute('''
-SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
+SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text
 FROM SellerReviews
 JOIN Users ON Users.id = SellerReviews.sid
 WHERE uid = :uid
