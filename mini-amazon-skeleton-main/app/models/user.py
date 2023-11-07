@@ -6,16 +6,17 @@ from .. import login
 
 
 class User(UserMixin):
-    def __init__(self, id, email, firstname, lastname):
+    def __init__(self, id, email, firstname, lastname, address):
         self.id = id
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
+        self.address = address
 
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname
+SELECT password, id, email, firstname, lastname, address
 FROM Users
 WHERE email = :email
 """,
@@ -39,16 +40,16 @@ WHERE email = :email
         return len(rows) > 0
 
     @staticmethod
-    def register(email, password, firstname, lastname):
+    def register(email, password, firstname, lastname, homeAddress):
         try:
             rows = app.db.execute("""
-INSERT INTO Users(email, password, firstname, lastname)
+INSERT INTO Users(email, password, firstname, lastname, homeAddress)
 VALUES(:email, :password, :firstname, :lastname)
 RETURNING id
 """,
                                   email=email,
                                   password=generate_password_hash(password),
-                                  firstname=firstname, lastname=lastname)
+                                  firstname=firstname, lastname=lastname, homeAddress=homeAddress)
             id = rows[0][0]
             return User.get(id)
         except Exception as e:
@@ -61,9 +62,42 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname
+SELECT id, email, firstname, lastname, address
 FROM Users
 WHERE id = :id
 """,
                               id=id)
         return User(*(rows[0])) if rows else None
+    @staticmethod
+    def update_email(id, newInput):
+        rows = app.db.execute("""
+UPDATE Users
+SET email = :newInput
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
+    @staticmethod
+    def update_firstName(id, newInput):
+        rows = app.db.execute("""
+UPDATE Users
+SET firstname = :newInput
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
+    @staticmethod
+    def update_lastName(id, newInput):
+        rows = app.db.execute("""
+UPDATE Users
+SET lastname = :newInput
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
+    @staticmethod
+    def update_address(id, newInput):
+        rows = app.db.execute("""
+UPDATE Users
+SET address = :newInput
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
+
