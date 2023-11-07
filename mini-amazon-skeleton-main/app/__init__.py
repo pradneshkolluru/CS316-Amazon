@@ -39,9 +39,5 @@ def create_app():
 
     from .inventory import bp as inventory_bp
     app.register_blueprint(inventory_bp)
-=========
-    from .reviews import bp as reviews_bp
-    app.register_blueprint(reviews_bp)
->>>>>>>>> Temporary merge branch 2
 
     return app
