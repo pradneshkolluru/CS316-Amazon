@@ -54,6 +54,7 @@
     </tr>
   </tbody>
 </table>
+<h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5>
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your account information!</p>
 {% endif %}
