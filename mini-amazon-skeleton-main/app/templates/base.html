@@ -53,9 +53,15 @@
         {% if current_user.is_authenticated %}
           <h2>Hello {{current_user.firstname}}! </h2>
           <br><br>
+          <a href="{{ '/' }}" type="button" class="btn btn-light">Home Page</a>
+          <a href="{{ '/cart' }}" type="button" class="btn btn-light">Cart</a>
+          <a href="{{ '/purchases' }}" type="button" class="btn btn-light">Purchases</a>
+          <a href="{{ '/products' }}" type="button" class="btn btn-light">Products</a>
           <a href="{{ url_for('users.show_info') }}" type="button" class="btn btn-light">Update Account Info</a>
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
         {% else %}
+          <a href="{{ '/' }}" type="button" class="btn btn-light">Home Page</a>
+          <a href="{{ '/products' }}" type="button" class="btn btn-light">Products</a>
           <a href="{{ url_for('users.login') }}" type="button" class="btn btn-light">Log in</a>
         {% endif %}
       </div>

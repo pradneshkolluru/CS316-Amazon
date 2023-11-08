@@ -1,6 +1,0 @@
-**/*~
-**/__pycache__
-**/.venv
-poetry.lock
-
-.flaskenv
