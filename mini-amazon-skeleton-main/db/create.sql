@@ -7,7 +7,7 @@ CREATE TABLE Users (
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
-    address VARCHAR (255),
+    address VARCHAR (255)
 );
 
 CREATE TABLE Products (
