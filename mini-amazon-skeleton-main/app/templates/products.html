@@ -33,11 +33,7 @@
     {% for product in avail_products%}
       <tr>
         <td>{{ loop.index + pagination.skip }}</td>
-        <th scope="row"><form action="{{ url_for('products.product_info', id=product.id) }}"
-          method="POST">
-                 <input type="submit" value= {{product.id}}>
-            </form>
-        </th>
+        <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th>
         <td>{{product.name}}</td>
         <td>{{product.price}}</td>
         <td><form action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
@@ -51,5 +47,5 @@
   </tbody>
 </table>
 {{ pagination.links }}
-  {% endblock %}
+{% endblock %}
  
