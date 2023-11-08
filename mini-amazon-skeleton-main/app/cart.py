@@ -1,5 +1,6 @@
 from flask import render_template
 from flask import redirect, url_for
+from flask import request
 from flask_login import current_user
 import datetime
 
@@ -28,6 +29,17 @@ def cart():
 
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
 def add_to_cart(product_id):
+    Cart.update_item_qty(current_user.id, product_id, 1)
+    return redirect(url_for('cart.cart'))
 
-    Cart.add_item_to_cart(current_user.id, product_id, 1)
+@bp.route('/cart/delete/<int:product_id>', methods=['POST'])
+def delete_from_cart(product_id):
+    Cart.delete_item_from_cart(current_user.id, product_id)
+    return redirect(url_for('cart.cart'))
+
+@bp.route('/cart/update', methods=['POST'])
+def change_item_qty():
+    pid = int(request.form.get('pid'))
+    qty = int(request.form.get('qty'))
+    Cart.update_item_qty(current_user.id, pid, qty)
     return redirect(url_for('cart.cart'))
