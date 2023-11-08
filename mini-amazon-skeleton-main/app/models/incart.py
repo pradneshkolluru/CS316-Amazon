@@ -10,31 +10,58 @@ class InCart:
     @staticmethod
     def get_items_in_cart(uid):
         rows = app.db.execute('''
-SELECT uid, pid, qty
-FROM InCart
+SELECT pid, name, qty, price
+FROM InCart I, Products P
 WHERE uid = :uid
+    AND I.pid = P.id
 ''',
                               uid=uid)
-        return [InCart(*row) for row in rows]
+        return rows
 
     @staticmethod
-    def addItem(uid, pid, qty):
-        rows = app.db.execute("""
+    def get_total_price(uid):
+        rows = app.db.execute('''
+SELECT SUM(I.qty * P.price)
+FROM InCart I, Products P
+WHERE uid = :uid
+    AND I.pid = P.id
+GROUP BY uid
+''',
+                              uid=uid)
+        return rows[0][0] if rows else None
+
+    @staticmethod
+    def add_item_to_cart(uid, pid, qty):
+        qty_in_cart = app.db.execute("""
+SELECT *
+FROM InCart
+WHERE uid = :uid AND pid = :pid
+""",
+                            uid=uid,
+                            pid=pid)
+
+        if len(qty_in_cart) == 0:
+            rows = app.db.execute("""
 INSERT INTO InCart(uid, pid, qty)
 VALUES(:uid, :pid, :qty)
 """,
                             uid=uid,
                             pid=pid,
                             qty=qty)
-        return InCart(*(rows[0])) if rows else None
-        # except Exception as e:
-        #     # likely email already in use; better error checking and reporting needed;
-        #     # the following simply prints the error to the console:
-        #     print(str(e))
-        #     return None
+        else:
+            rows = app.db.execute("""
+UPDATE InCart
+SET qty = qty + :add_qty
+WHERE uid = :uid 
+    AND pid = :pid
+""",
+                            add_qty=qty,
+                            uid=uid,
+                            pid=pid)
+        return rows if rows else None
 
     @staticmethod
-    def deleteItem(uid, pid, qty):
+    def delete_item_from_cart(uid, pid, qty):
         old_qty = app.db.execute("""
 SELECT qty FROM InCart
 WHERE uid = :uid

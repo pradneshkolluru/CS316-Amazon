@@ -26,6 +26,7 @@
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
       <th scope="col">Add to Wishlist</th>
+      <th scope="col">Add to Cart</th>
       <th scope="col">Photo</th>
     </tr>
   </thead>
@@ -43,6 +44,11 @@
         <td><form action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
           method="POST">
                  <input type="submit" value="Add to Wishlist"/>
+            </form>
+        </td>
+        <td><form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+          method="POST">
+                 <input type="submit" value="Add to Cart"/>
             </form>
         </td>
         <td><img src="/static/images/gargi.jpeg" style="width:128px;height:128px;"></td>
