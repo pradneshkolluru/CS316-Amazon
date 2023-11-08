@@ -38,3 +38,16 @@ WHERE id = :id
                                 available=available)
 
         return [Product(*row) for row in rows]
+
+
+    def get_product_info(product_id):
+
+
+        rows = app.db.execute('''
+        SELECT id, name, price, available
+        FROM Products
+        WHERE id = :id ORDER BY price
+        ''', id = product_id)
+
+
+        return [Product(*row) for row in rows]
