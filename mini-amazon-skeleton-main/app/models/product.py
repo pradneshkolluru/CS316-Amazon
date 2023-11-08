@@ -2,10 +2,12 @@ from flask import current_app as app
 
 
 class Product:
-    def __init__(self, id, name, price, available):
+    def __init__(self, id, name, price, available, description, category):
         self.id = id
         self.name = name
         self.price = price
+        self.description = description
+        self.category = category
         self.available = available
 
     @staticmethod
@@ -24,14 +26,14 @@ WHERE id = :id
         if k > -1:
 
             rows = app.db.execute('''
-    SELECT id, name, price, available
+    SELECT id, name, price, available, description, category
     FROM Products
     WHERE available = :available ORDER BY price DESC LIMIT :topK
     ''',
                                 available=available, topK = k)
         else:
             rows = app.db.execute('''
-    SELECT id, name, price, available
+    SELECT id, name, price, available, description, category
     FROM Products
     WHERE available = :available ORDER BY price DESC
     ''',
@@ -44,7 +46,7 @@ WHERE id = :id
 
 
         rows = app.db.execute('''
-        SELECT id, name, price, available
+        SELECT id, name, price, available, description, category
         FROM Products
         WHERE id = :id ORDER BY price
         ''', id = product_id)
