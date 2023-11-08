@@ -28,7 +28,8 @@ def gen_users(num_users):
             name_components = profile['name'].split(' ')
             firstname = name_components[0]
             lastname = name_components[-1]
-            writer.writerow([uid, email, password, firstname, lastname])
+            address = profile['residence']
+            writer.writerow([uid, email, password, firstname, lastname, address])
         print(f'{num_users} generated')
     return
 
