@@ -22,6 +22,7 @@
   <thead class="thead-dark">
     <tr>
       <th>#</th>
+      <th scope="col">Category</th>
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
       <th scope="col">Price</th>
@@ -33,6 +34,7 @@
     {% for product in avail_products%}
       <tr>
         <td>{{ loop.index + pagination.skip }}</td>
+        <td>{{product.category}}</td>
         <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th>
         <td>{{product.name}}</td>
         <td>{{product.price}}</td>
