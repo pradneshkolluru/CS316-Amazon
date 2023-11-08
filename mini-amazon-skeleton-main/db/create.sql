@@ -61,11 +61,6 @@ CREATE TABLE Inventory (
 );
 
 CREATE TABLE Cart (
-    uid INT NOT NULL PRIMARY KEY REFERENCES Users(id),
-    curr_total_price DECIMAL(12,2) NOT NULL
-);
-
-CREATE TABLE InCart (
     uid INT NOT NULL REFERENCES Users(id),
     pid INT NOT NULL REFERENCES Products(id),
     qty INT NOT NULL,
