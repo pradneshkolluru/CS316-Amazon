@@ -18,7 +18,7 @@
     {% for review in review_history%}
       <tr>
         <td>{{review.pid}}</td>
-        <td>{{review.name}}</td>
+        <td>{{review.first_name}} {{review.last_name}}</td>
         <td>{{review.review_text}}</td>
         <td>{{review.time_posted}}</td>
       </tr>
