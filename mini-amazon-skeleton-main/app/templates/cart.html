@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<head><style>
+  .changeQuantity{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 5px;
+  }
+</style></head>
 <br><br>
 {% if current_user.is_authenticated %}
 <h2>Your Cart:</h2>
@@ -20,7 +27,7 @@
       <tr>
         <th scope="row">{{item.pid}}</th> <!-- product id -->
         <td>{{item.product_name}}</td> <!-- product name -->
-        <td>  <!-- quantity -->
+        <td class="changeQuantity">  <!-- quantity -->
           <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
             <input name="pid" value="{{item.pid}}" hidden="true">
             <input name="qty" value="-1" hidden="true">
