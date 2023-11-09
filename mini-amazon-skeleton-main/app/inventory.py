@@ -6,16 +6,14 @@ from flask import redirect, url_for
 from .models.inventory import InventoryItem
 
 from flask import Blueprint
+from flask_paginate import Pagination, get_page_parameter
+
 bp = Blueprint('inventory', __name__)
 
 @bp.route('/inventory/<int:sid>')
 def inventory(sid):
     # get products in inventory of one seller
-    if current_user.is_authenticated:
-        items = InventoryItem.get_all_by_sid(sid)
-    else:
-        items = None
-        return jsonify({}), 404
+    items = InventoryItem.get_all_by_sid(sid)
     return render_template('inventory.html',
                       items=items)
 
