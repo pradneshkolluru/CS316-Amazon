@@ -21,7 +21,11 @@
         height: 100%;
         background-color: #000;
         overflow-x: hidden;
-        padding-top: 20px;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 15px;
+        align-items: center;
     }
 
     .main {
@@ -42,6 +46,12 @@
         background-color: #000 !important;
         color: #fff;
     }
+    .headerBtns{
+      display: flex;
+      flex-direction: row;
+      gap: 5px;
+      align-items: center;
+    }
   </style>
 </head>
 
@@ -49,7 +59,7 @@
   <div class="sidenav">
     {% block msg %}
       <h1 style="color:aliceblue">Welcome to CompSci 316 Mini Amazon!</h1>
-      <div style="color: aliceblue; text-align: right; margin-bottom: 25px">
+      <div class="headerBtns" style="color: aliceblue; text-align: right; ">
         {% if current_user.is_authenticated %}
           <h2>Hello {{current_user.firstname}}! </h2>
           <br><br>
