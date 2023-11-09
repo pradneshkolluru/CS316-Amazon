@@ -6,7 +6,7 @@ Gargi Mahadeshwar (Users Guru)
 Pradnesh Kolluru (Products Guru)
 Divya Nataraj (Carts Guru)
 Soumya Bodavula (Sellers Guru)
-Lindsay Liu (Social Guru)
+Lindsay Liu (Social Guru) 
 
 # GitHub Link
 
@@ -29,4 +29,4 @@ Gargi: Generated updated users data; added update account information; generated
 Pradnesh: Generated updated products data; included images for products; added pagination to products; created endpoint for individual product pages
 Divya: Generated cart data; implemented add to cart, change quantity, and delete from cart functionality; paginated cart items
 Soumya: Generated inventory data; 
-Lindsay: Generated reviews data; 
+Lindsay: Generated seller and products reviews data; changed navigation bar to flexbox; updated ui for quantity in cart
