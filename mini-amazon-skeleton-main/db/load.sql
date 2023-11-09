@@ -25,7 +25,7 @@ SELECT pg_catalog.setval('public.wishes_id_seq',
                          (SELECT MAX(id)+1 FROM Wishes),
                          false);
 
-\COPY Reviews FROM 'Reviews Copy.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY Reviews FROM 'Reviews Generated.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.reviews_id_seq',
                          (SELECT MAX(id)+1 FROM Reviews),
                          false);
