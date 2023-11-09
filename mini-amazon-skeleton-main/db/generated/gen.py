@@ -1,6 +1,7 @@
 from werkzeug.security import generate_password_hash
 import csv
 from faker import Faker
+import random
 
 num_users = 100
 num_products = 2000
@@ -82,7 +83,32 @@ def gen_cart(available_pids):
 
 # def gen_reviews():
 
+def gen_inventory(num_users, available_pids):
+    sellers = [] #contains sid/uid of sellers
+    with open('db/generated/Inventory.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('Inventory...', end=' ', flush=True)
+        for uid in range(num_users):
+            if random.randint(1,5) == 5: # 20% chance that a user is also seller
+                sellers.append(uid)
+        id = 0
+        for pid in available_pids:
+            num_sellers = random.randint(1,9)  # number of sellers who have this same pid in inventory
+            seller_pid = [] # all sellers who have this pid in inventory
+            for i in range(num_sellers):
+                if id % 200 == 0:
+                    print(f'{id}', end=' ', flush=True)
+                sid = random.choice(sellers)
+                if sid not in seller_pid: # prevents duplicate sid/pid pairing
+                    seller_pid.append(sid)
+                    qty = random.choice([1,1,1,10,10,10,20,20,30,50,70,100]) + random.randint(1,9)
+                    writer.writerow([id, sid, pid, qty])
+                    id += 1
+        print(f'{id} entries generated')
+    return
+
 gen_users(num_users)
 available_pids = gen_products(num_products)
 gen_purchases(num_purchases, available_pids)
 gen_cart(available_pids)
+gen_inventory(num_users, available_pids)
