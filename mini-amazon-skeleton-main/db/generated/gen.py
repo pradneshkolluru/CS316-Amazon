@@ -62,10 +62,22 @@ def gen_purchases(num_purchases, available_pids):
             if id % 100 == 0:
                 print(f'{id}', end=' ', flush=True)
             uid = fake.random_int(min=0, max=num_users-1)
-            pid = fake.random_element(elements=available_pids)
+            pid = fake.random_element(elements=available_pids, unique = True)
             time_purchased = fake.date_time()
             writer.writerow([id, uid, pid, time_purchased])
         print(f'{num_purchases} generated')
+    return
+
+def gen_cart(available_pids):
+    with open('db/generated/Cart.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('Cart...', end=' ', flush=True)
+        for uid in range(num_users):
+            if uid % 10 == 0:
+                print(f'{uid}', end=' ', flush=True)
+            for pid in fake.random_elements(available_pids, length=fake.random_int(min=1, max=30), unique=True):
+                qty = fake.random_int(min=1, max=20)
+                writer.writerow([uid, pid, qty])
     return
 
 # def gen_reviews():
@@ -73,3 +85,4 @@ def gen_purchases(num_purchases, available_pids):
 gen_users(num_users)
 available_pids = gen_products(num_products)
 gen_purchases(num_purchases, available_pids)
+gen_cart(available_pids)
