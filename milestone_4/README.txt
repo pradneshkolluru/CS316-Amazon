@@ -15,7 +15,7 @@ https://github.com/pradneshkolluru/CS316-Amazon/tree/main/mini-amazon-skeleton-m
 
 # Video Link
 
-<add link>
+https://duke.box.com/s/xvcx7rg6bl8hpdomi2vnvwxv2op2ik53
 
 
 # Where to find data generation
