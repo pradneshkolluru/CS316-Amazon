@@ -15,8 +15,8 @@
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
-      <th scope="col">Product ID</th>
+      <!-- <th scope="col">#</th> -->
+      <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product Name</th>
       <th scope="col">Quantity</th>
       <th scope="col">Unit Price</th>
@@ -26,8 +26,8 @@
   <tbody>
     {% for item in cart_products%}
       <tr>
-        <td>{{ loop.index + pagination.skip }}</td>
-        <th scope="row">{{item.pid}}</th> <!-- product id -->
+        <!-- <td>{{ loop.index + pagination.skip }}</td> -->
+        <!-- <th scope="row">{{item.pid}}</th> product id -->
         <td>{{item.product_name}}</td> <!-- product name -->
         <td class="changeQuantity">  <!-- quantity -->
           <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
