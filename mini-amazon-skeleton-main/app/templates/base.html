@@ -26,6 +26,7 @@
         justify-content: space-between;
         padding: 15px;
         align-items: center;
+        overflow: visible;
     }
 
     .main {
@@ -52,6 +53,55 @@
       gap: 5px;
       align-items: center;
     }
+    /* Style The Dropdown Button */
+/* .dropbtn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+  cursor: pointer;
+} */
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 2;
+    /* position: relative; */
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1;
+  right: 0;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: black;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: #f1f1f1}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {
+  background-color: #3e8e41;
+}
   </style>
 </head>
 
@@ -68,8 +118,16 @@
           <a href="{{ '/purchases' }}" type="button" class="btn btn-light">Purchases</a>
           <a href="{{ '/products' }}" type="button" class="btn btn-light">Products</a>
           <a href="/inventory/{{current_user.id}}" type="button" class="btn btn-light">Inventory</a>
-          <a href="{{ url_for('users.show_info') }}" type="button" class="btn btn-light">Account</a>
+          <!-- <a href="{{ url_for('users.show_info') }}" type="button" class="btn btn-light">Account</a> -->
           <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a>
+          <div class="dropdown">
+            <button class="btn btn-light">Account</button>
+            <div class="dropdown-content">
+              <a href="{{ url_for('users.show_info') }}" type="button">Update Account</a>
+              <a href="{{ url_for('purchases.purchases') }}">Purchase History</a>
+              <a href="{{ url_for('sellerReviews.sellerReviews') }}">Seller Reviews</a>
+            </div>
+          </div>
         {% else %}
           <a href="{{ '/' }}" type="button" class="btn btn-light">Home Page</a>
           <a href="{{ '/products' }}" type="button" class="btn btn-light">Products</a>
