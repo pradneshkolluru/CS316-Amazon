@@ -1,7 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
-
+<style>
+  a{
+    text-decoration:none;
+  }
+  a:hover{
+    text-decoration: underline;
+  }
+</style>
 
 <tbody>
   
@@ -37,7 +44,7 @@
         <!-- <td>{{ loop.index + pagination.skip }}</td> -->
         <!-- <td>{{product.category}}</td> -->
         <!-- <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th> -->
-        <td>{{product.name}}</td>
+        <td><a style="color: black;" href="{{ url_for('products.product_info', id=product.id) }}">{{product.name}}</a></td>
         <td>{{product.price}}</td>
         <td><form action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
           method="POST">
@@ -49,7 +56,7 @@
                  <input type="submit" value="Add to Cart"/>
             </form>
         </td>
-        <td><img src="/static/images/gargi.jpeg" style="width:128px;height:128px;"></td>
+        <td><a href="{{ url_for('products.product_info', id=product.id) }}"><img src="/static/images/gargi.jpeg" style="width:128px;height:128px;"></a></td>
       </tr>
     {% endfor %}
   </tbody>
