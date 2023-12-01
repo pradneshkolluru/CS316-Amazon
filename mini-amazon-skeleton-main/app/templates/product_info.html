@@ -1,64 +1,67 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 
 <style>
-  .productInfoContainer{
+  .pageContainer {
+    margin-left: 50px;
+    margin-right: 50px;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+  }
+  .productInfoContainer {
     display: flex;
     flex-direction: row;
     align-content: center;
-    justify-content: space-evenly;
+    justify-content: space-between;
     gap: 40px;
-    margin-left: 50px;
-    margin-right: 50px;
     @media only screen and (max-width: 990px) {
       flex-direction: column;
       align-items: center;
     }
   }
-  .leftContainer{
+  .leftContainer {
     /* @medxia only screen and (min-width: 992px){ max-width: 30%;} */
     /* max-width: 50%; */
     /* overflow: hidden; */
-        /* max-height: 100vh; */
+    /* max-height: 100vh; */
     /* overflow: auto; */
     @media only screen and (max-width: 990px) {
-      max-width:fit-content;
+      max-width: fit-content;
     }
   }
-  .rightContainer{
+  .rightContainer {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     overflow-y: scroll;
   }
-  input{
-      background-color: #FF9900;
-  border-radius: 30px;
-  border: none;
-  color: black;
-  padding: 10px;
-  width: 300px;
-  text-decoration: none;
-  margin: 4px 2px;
-  cursor: pointer;
-    }
-    input:hover{
-      background-color: #FFB84D;
-  border-radius: 30px;
-  border: none;
-  color: black;
-  padding: 10px;
-  width: 300px;
-  text-decoration: none;
-  margin: 4px 2px;
-  cursor: pointer;
-    }
-    img{
-      height: 550px;
-    }
+  input {
+    background-color: #ff9900;
+    border-radius: 30px;
+    border: none;
+    color: black;
+    padding: 10px;
+    width: 300px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  input:hover {
+    background-color: #ffb84d;
+    border-radius: 30px;
+    border: none;
+    color: black;
+    padding: 10px;
+    width: 300px;
+    text-decoration: none;
+    margin: 4px 2px;
+    cursor: pointer;
+  }
+  img {
+    height: 550px;
+  }
 </style>
-<br><br>
+<br /><br />
 <!-- <h2>Product Info:</h2> -->
 <!-- <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -72,33 +75,51 @@
     </tr>
   </thead>
   <tbody> -->
-    {% for product in product_info%}
-    <div class="productInfoContainer">
-      <div class="leftContainer" >
-        <img src="/static/images/gargi.jpeg">
-      </div>
-        <div class = "rightContainer">
-          <div>
-      <div style="display: flex; flex-direction: row; justify-content: space-between;">
-        <h1 style="font-weight: 400;">{{product.name}}</h1>
-        <h1>${{product.price}}</h1>
-      </div>
-      {{product.description}}
+<div class="pageContainer">
+  {% for product in product_info%}
+  <div class="productInfoContainer">
+    <div class="leftContainer">
+      <img src="/static/images/gargi.jpeg" />
     </div>
-      <div style="width: 100%; display: flex; flex-direction:column; align-items: center; margin-top: 30px;">
-        <form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
-          method="POST">
-                 <input type="submit" value="Add to Cart"/>
+    <div class="rightContainer">
+      <div>
+        <div
+          style="
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+          "
+        >
+          <h1 style="font-weight: 400">{{product.name}}</h1>
+          <h1>${{product.price}}</h1>
+        </div>
+        {{product.description}}
+      </div>
+      <div
+        style="
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          margin-top: 30px;
+        "
+      >
+        <form
+          action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+          method="POST"
+        >
+          <input type="submit" value="Add to Cart" />
         </form>
-        <form action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
-          method="POST">
-          <input type="submit" value="Add to Wishlist"/>
+        <form
+          action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+          method="POST"
+        >
+          <input type="submit" value="Add to Wishlist" />
         </form>
       </div>
-    </div></div>
-    <p contenteditable="true">This is an editable paragraph.</p>
     </div>
-      <!-- <tr>
+  </div>
+  <!-- <tr>
         <th scope="row">{{product.id}}</th>
         <td>{{product.name}}</td>
         <td>{{product.price}}</td>
@@ -110,8 +131,23 @@
         </td>
         <td><img src="/static/images/gargi.jpeg" style="width:128px;height:128px;"></td>
       </tr> -->
+  {% endfor %}
+  <div>
+    <h2>Reviews</h2>
+    {% for review in review_info%}
+    <div style="margin-left: 1em">
+      <div style="display: flex; flex-direction: column; margin-bottom: 1em">
+        <h5 style="margin: 0%">{{review.firstname}}</h5>
+        <p style="margin: 0%">{{review.time_posted}}</p>
+        <p style="margin: 0%">{{review.rating}}/5 stars</p>
+      </div>
+      <p>{{review.review_text}}</p>
+      <hr style="background-color: #d3d3d3" />
+    </div>
     {% endfor %}
-  <!-- </tbody>
+  </div>
+</div>
+<!-- </tbody>
 </table> -->
 
-  {% endblock %}
+{% endblock %}

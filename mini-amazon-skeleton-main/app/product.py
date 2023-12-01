@@ -4,6 +4,7 @@ import datetime
 
 from .models.product import Product
 from .models.purchase import Purchase
+from .models.review import Review
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -80,7 +81,10 @@ def product_info(id):
     # get specified product:
 
     product = Product.get_product_info(id)
+    review = Review.get_all_by_pid(id)
 
     # render the page by adding information to the products_indiv.html file
     return render_template('product_info.html',
-                           product_info = product)
+                           product_info = product, 
+                           review_info = review
+                           )
