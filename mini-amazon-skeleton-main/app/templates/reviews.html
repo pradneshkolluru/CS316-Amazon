@@ -32,11 +32,22 @@
           method="POST"
         >
           <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-          <textarea id="newReview" name="newReview" rows="4" cols="50">
+          <textarea
+            id="newReview"
+            name="newReview"
+            style="width: 100%"
+            rows="4"
+          >
 {{review.review_text}}</textarea
           >
           <input type="submit" value="Update Review" />
         </form>
+        <!-- <form
+          action="{{ url_for('reviews.delete_review', id=review.id) }}"
+          method="POST"
+        >
+          <input type="submit" value="Delete from Cart" />
+        </form> -->
         <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
       </td>
       <td>{{review.time_posted}}</td>
