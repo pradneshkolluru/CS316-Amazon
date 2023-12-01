@@ -1,31 +1,25 @@
-{% extends "base.html" %}
-
-{% block content %}
+{% extends "base.html" %} {% block content %}
 <style>
-  a{
-    text-decoration:none;
+  a {
+    text-decoration: none;
   }
-  a:hover{
+  a:hover {
     text-decoration: underline;
   }
 </style>
 
 <tbody>
-  
-    <!-- val = <script> document.getElementById("fname")</script> -->
-    <form action="{{ url_for('products.products')}}" method = "POST">
-      <label for="fname">Top K Most Expensive: </label>
-      <input type="number" id="fname" name="fname"><br><br>
-    </form>
-    
+  <!-- val = <script> document.getElementById("fname")</script> -->
+  <form action="{{ url_for('products.products')}}" method="POST">
+    <label for="fname">Top K Most Expensive: </label>
+    <input type="number" id="fname" name="fname" /><br /><br />
+  </form>
 </tbody>
 
-
-<br><br>
+<br /><br />
 <h2>Products for sale:</h2>
-{{ pagination.info }}
-{{ pagination.links }}
-<table class='table table-hover table-bordered container'>
+{{ pagination.info }} {{ pagination.links }}
+<table class="table table-hover table-bordered container">
   <thead class="thead-dark">
     <tr>
       <!-- <th>#</th> -->
@@ -40,27 +34,43 @@
   </thead>
   <tbody>
     {% for product in avail_products%}
-      <tr>
-        <!-- <td>{{ loop.index + pagination.skip }}</td> -->
-        <!-- <td>{{product.category}}</td> -->
-        <!-- <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th> -->
-        <td><a style="color: black;" href="{{ url_for('products.product_info', id=product.id) }}">{{product.name}}</a></td>
-        <td>{{product.price}}</td>
-        <td><form action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
-          method="POST">
-                 <input type="submit" value="Add to Wishlist"/>
-            </form>
-        </td>
-        <td><form action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
-          method="POST">
-                 <input type="submit" value="Add to Cart"/>
-            </form>
-        </td>
-        <td><a href="{{ url_for('products.product_info', id=product.id) }}"><img src="/static/images/gargi.jpeg" style="width:128px;height:128px;"></a></td>
-      </tr>
+    <tr>
+      <!-- <td>{{ loop.index + pagination.skip }}</td> -->
+      <!-- <td>{{product.category}}</td> -->
+      <!-- <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th> -->
+      <td>
+        <a
+          style="color: black"
+          href="{{ url_for('products.product_info', id=product.id) }}"
+          >{{product.name}}</a
+        >
+      </td>
+      <td>{{product.price}}</td>
+      <td>
+        <form
+          action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+          method="POST"
+        >
+          <input type="submit" value="Add to Wishlist" />
+        </form>
+      </td>
+      <td>
+        <form
+          action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+          method="POST"
+        >
+          <input type="submit" value="Add to Cart" />
+        </form>
+      </td>
+      <td>
+        <a href="{{ url_for('products.product_info', id=product.id) }}"
+          ><img
+            src="/static/images/gargi.jpeg"
+            style="width: 128px; height: 128px"
+        /></a>
+      </td>
+    </tr>
     {% endfor %}
   </tbody>
 </table>
-{{ pagination.links }}
-{% endblock %}
- 
+{{ pagination.links }} {% endblock %}
