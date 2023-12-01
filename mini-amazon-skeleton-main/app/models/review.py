@@ -51,7 +51,7 @@ ORDER BY time_posted DESC
     def update_review(id, newInput):
         rows = app.db.execute("""
 UPDATE Reviews
-SET review_text = :newInput
+SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
 WHERE id = :id
 """,
                               id=id, newInput=newInput)
