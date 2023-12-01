@@ -1,4 +1,4 @@
-from flask import render_template
+from flask import render_template, request, redirect, url_for
 from flask_login import current_user
 import datetime
 
@@ -19,3 +19,9 @@ def reviews():
     # render the page by adding information to the index.html file
     return render_template('reviews.html',
                            review_history=reviews)
+@bp.route('/updateReview/<id>', methods = ['POST', 'GET'])
+def update_review(id):
+    if current_user.is_authenticated:
+        newReview = request.form.get("newReview")
+        Review.update_review(id=id, newInput=newReview)
+        return redirect(url_for('reviews.reviews'))

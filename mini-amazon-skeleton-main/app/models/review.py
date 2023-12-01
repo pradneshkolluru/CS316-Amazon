@@ -46,3 +46,12 @@ WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
         return [Review(*row) for row in rows]
+
+    @staticmethod
+    def update_review(id, newInput):
+        rows = app.db.execute("""
+UPDATE Reviews
+SET review_text = :newInput
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
