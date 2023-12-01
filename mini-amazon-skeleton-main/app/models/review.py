@@ -55,3 +55,11 @@ SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
 WHERE id = :id
 """,
                               id=id, newInput=newInput)
+    @staticmethod
+    def delete_review(id):
+        rows = app.db.execute("""
+DELETE FROM Reviews
+WHERE id = :id
+""",
+                            id=id)
+        return rows        

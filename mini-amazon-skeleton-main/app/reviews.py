@@ -25,3 +25,8 @@ def update_review(id):
         newReview = request.form.get("newReview")
         Review.update_review(id=id, newInput=newReview)
         return redirect(url_for('reviews.reviews'))
+
+@bp.route('/review/delete/<id>', methods=['POST'])
+def delete_review(id):
+    Review.delete_review(id=id)
+    return redirect(url_for('reviews.reviews'))
