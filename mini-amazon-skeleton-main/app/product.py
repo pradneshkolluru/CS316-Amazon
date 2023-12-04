@@ -55,7 +55,7 @@ def products():
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
 
-    per_page = 10
+    per_page = 12
     offset = (page - 1) * per_page
 
     sliced_products = products[offset: offset + per_page]

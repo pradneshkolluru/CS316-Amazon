@@ -1,76 +1,158 @@
 {% extends "base.html" %} {% block content %}
-<style>
-  a {
-    text-decoration: none;
-  }
-  a:hover {
-    text-decoration: underline;
-  }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+    />
+    <title>Bootstrap demo</title>
+    <style>
+      a {
+        text-decoration: none;
+      }
+      a:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <form action="{{ url_for('products.products')}}" method="POST">
+      <label for="fname">Top K Most Expensive: </label>
+      <input type="number" id="fname" name="fname" /><br /><br />
+    </form>
+    <h2>Products for sale:</h2>
+    {{ pagination.info }} {{ pagination.links }}
+    <main>
+      <div class="album py-5 bg-body-tertiary">
+        <div class="container">
+          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+            {% for product in avail_products%}
+            <div class="col">
+              <div class="card shadow-sm">
+                <a href="{{ url_for('products.product_info', id=product.id) }}">
+                  <img
+                    class="bd-placeholder-img card-img-top"
+                    src="/static/images/gargi.jpeg"
+                    width="100%"
+                    height="100%"
+                    xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-label="product image"
+                    preserveAspectRatio="xMidYMid slice"
+                    focusable="false"
+                /></a>
+                <div class="card-body">
+                  <p class="card-text">
+                    <a
+                      style="color: black"
+                      href="{{ url_for('products.product_info', id=product.id) }}"
+                      >{{product.name}}</a
+                    >
+                  </p>
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <small class="text-body-secondary"
+                      >${{product.price}}</small
+                    >
+                    <div style="position: relative">
+                      <form
+                        style="width: auto"
+                        action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+                        method="POST"
+                      >
+                        <input type="submit" value="Add to Wishlist" />
+                      </form>
+                      <form
+                        action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+                        method="POST"
+                      >
+                        <input
+                          style="width: 100%"
+                          type="submit"
+                          value="Add to Cart"
+                        />
+                      </form>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+    </main>
+    {{ pagination.links }}
+    <script
+      src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  <!--
+  <body>
+    <tbody>
+      <form action="{{ url_for('products.products')}}" method="POST">
+        <label for="fname">Top K Most Expensive: </label>
+        <input type="number" id="fname" name="fname" /><br /><br />
+      </form>
+    </tbody>
 
-<tbody>
-  <!-- val = <script> document.getElementById("fname")</script> -->
-  <form action="{{ url_for('products.products')}}" method="POST">
-    <label for="fname">Top K Most Expensive: </label>
-    <input type="number" id="fname" name="fname" /><br /><br />
-  </form>
-</tbody>
-
-<br /><br />
-<h2>Products for sale:</h2>
-{{ pagination.info }} {{ pagination.links }}
-<table class="table table-hover table-bordered container">
-  <thead class="thead-dark">
-    <tr>
-      <!-- <th>#</th> -->
-      <!-- <th scope="col">Category</th> -->
-      <!-- <th scope="col">Product ID</th> -->
-      <th scope="col">Product Name</th>
-      <th scope="col">Price</th>
-      <th scope="col">Add to Wishlist</th>
-      <th scope="col">Add to Cart</th>
-      <th scope="col">Photo</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for product in avail_products%}
-    <tr>
-      <!-- <td>{{ loop.index + pagination.skip }}</td> -->
-      <!-- <td>{{product.category}}</td> -->
-      <!-- <th scope="row"><a href="{{ url_for('products.product_info', id=product.id) }}">{{product.id}}</a></th> -->
-      <td>
-        <a
-          style="color: black"
-          href="{{ url_for('products.product_info', id=product.id) }}"
-          >{{product.name}}</a
-        >
-      </td>
-      <td>{{product.price}}</td>
-      <td>
-        <form
-          action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
-          method="POST"
-        >
-          <input type="submit" value="Add to Wishlist" />
-        </form>
-      </td>
-      <td>
-        <form
-          action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
-          method="POST"
-        >
-          <input type="submit" value="Add to Cart" />
-        </form>
-      </td>
-      <td>
-        <a href="{{ url_for('products.product_info', id=product.id) }}"
-          ><img
-            src="/static/images/gargi.jpeg"
-            style="width: 128px; height: 128px"
-        /></a>
-      </td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{{ pagination.links }} {% endblock %}
+    <br /><br />
+    <h2>Products for sale:</h2>
+    {{ pagination.info }} {{ pagination.links }}
+    <table class="table table-hover table-bordered container">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Product Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Add to Wishlist</th>
+          <th scope="col">Add to Cart</th>
+          <th scope="col">Photo</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in avail_products%}
+        <tr>
+          <td>
+            <a
+              style="color: black"
+              href="{{ url_for('products.product_info', id=product.id) }}"
+              >{{product.name}}</a
+            >
+          </td>
+          <td>{{product.price}}</td>
+          <td>
+            <form
+              action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+              method="POST"
+            >
+              <input type="submit" value="Add to Wishlist" />
+            </form>
+          </td>
+          <td>
+            <form
+              action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+              method="POST"
+            >
+              <input type="submit" value="Add to Cart" />
+            </form>
+          </td>
+          <td>
+            <a href="{{ url_for('products.product_info', id=product.id) }}"
+              ><img
+                src="/static/images/gargi.jpeg"
+                style="width: 128px; height: 128px"
+            /></a>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    {{ pagination.links }} {% endblock %}
+  </body>
+--></html>
