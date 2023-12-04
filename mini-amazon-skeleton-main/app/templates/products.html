@@ -23,14 +23,16 @@
       <label for="fname">Top K Most Expensive: </label>
       <input type="number" id="fname" name="fname" /><br /><br />
     </form>
-    <h2>Products for sale:</h2>
-    {{ pagination.info }} {{ pagination.links }}
     <main>
       <div class="album py-5 bg-body-tertiary">
         <div class="container">
-          <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+          <h2>Products for sale:</h2>
+          <div style="padding-bottom: 2em">{{ pagination.info }}</div>
+          <div
+            class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2"
+          >
             {% for product in avail_products%}
-            <div class="col">
+            <div class="col" style="height: 100%">
               <div class="card shadow-sm">
                 <a href="{{ url_for('products.product_info', id=product.id) }}">
                   <img
@@ -45,13 +47,21 @@
                     focusable="false"
                 /></a>
                 <div class="card-body">
-                  <p class="card-text">
-                    <a
-                      style="color: black"
-                      href="{{ url_for('products.product_info', id=product.id) }}"
-                      >{{product.name}}</a
-                    >
-                  </p>
+                  <!-- <p style="text-overflow: ellipsis"> -->
+                  <a
+                    style="
+                      color: black;
+                      width: 100%;
+                      display: block;
+                      white-space: nowrap;
+                      text-overflow: ellipsis;
+                      overflow: hidden;
+                      padding-bottom: 10px;
+                    "
+                    href="{{ url_for('products.product_info', id=product.id) }}"
+                    >{{product.name}}</a
+                  >
+                  <!-- </p> -->
                   <div
                     class="d-flex justify-content-between align-items-center"
                   >
@@ -84,9 +94,11 @@
             {% endfor %}
           </div>
         </div>
+        <div style="margin: auto; width: fit-content; padding: 10px">
+          {{ pagination.links }}
+        </div>
       </div>
     </main>
-    {{ pagination.links }}
     <script
       src="/docs/5.3/dist/js/bootstrap.bundle.min.js"
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
