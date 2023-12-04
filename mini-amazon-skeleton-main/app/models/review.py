@@ -40,10 +40,9 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
         rows = app.db.execute('''
-SELECT Reviews.id, uid, pid, time_posted, rating, review_text, Products.name
+SELECT Reviews.id, uid, pid, time_posted, rating, review_text, name, '' firstname
 FROM Reviews
 JOIN Products ON Products.id = Reviews.pid
-WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
         return [Review(*row) for row in rows]
