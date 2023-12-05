@@ -54,6 +54,17 @@
     </tr>
   </tbody>
 </table>
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+</p>
 <!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
 <!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
 <!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->

@@ -65,7 +65,7 @@ def register():
                          form.firstname.data,
                          form.lastname.data,
                          form.address.data):
-            flash('Congratulations, you are now a registered user!')
+            flash('Congratulations, you are now a registered user! Log into your account above.')
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -77,7 +77,10 @@ def show_info():
 def update_email():
     if current_user.is_authenticated:
         newEmail = request.form.get("newEmail")
-        User.update_email(id=current_user.id, newInput=newEmail)
+        if User.email_exists(newEmail):
+            flash('Already a user with this email.')
+        else:
+            User.update_email(id=current_user.id, newInput=newEmail)
         return redirect(url_for('users.show_info'))
 @bp.route('/updateFirstName', methods = ['POST', 'GET'])
 def update_first_name():
