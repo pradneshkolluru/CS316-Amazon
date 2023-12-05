@@ -47,3 +47,19 @@ WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
         return [SellerReview(*row) for row in rows]
+    @staticmethod
+    def update_review(id, newInput, newInputRating):
+        rows = app.db.execute("""
+UPDATE SellerReviews
+SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC', rating = :newInputRating
+WHERE id = :id
+""",
+                              id=id, newInput=newInput,newInputRating=newInputRating)
+    @staticmethod
+    def delete_review(id):
+        rows = app.db.execute("""
+DELETE FROM SellerReviews
+WHERE id = :id
+""",
+                            id=id)
+        return rows 
