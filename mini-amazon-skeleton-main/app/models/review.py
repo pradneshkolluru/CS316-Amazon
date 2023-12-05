@@ -47,15 +47,31 @@ WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
         return [Review(*row) for row in rows]
-
     @staticmethod
-    def update_review(id, newInput):
+    def update_review(id, newInput, newInputRating):
         rows = app.db.execute("""
 UPDATE Reviews
-SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
+SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC', rating = :newInputRating
 WHERE id = :id
 """,
-                              id=id, newInput=newInput)
+                              id=id, newInput=newInput,newInputRating=newInputRating)
+
+#     @staticmethod
+#     def update_review(id, newInput):
+#         rows = app.db.execute("""
+# UPDATE Reviews
+# SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
+# WHERE id = :id
+# """,
+#                               id=id, newInput=newInput)
+#     @staticmethod
+#     def update_rating(id, newInput):
+#         rows = app.db.execute("""
+# UPDATE Reviews
+# SET rating = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
+# WHERE id = :id
+# """,
+#                               id=id, newInput=newInput)    
     @staticmethod
     def delete_review(id):
         rows = app.db.execute("""
