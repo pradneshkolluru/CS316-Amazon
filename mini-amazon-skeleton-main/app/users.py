@@ -43,7 +43,6 @@ class RegistrationForm(FlaskForm):
     lastname = StringField('Last Name', validators=[DataRequired()])
     email = StringField('Email', validators=[DataRequired(), Email()])
     address = StringField('Address', validators=[DataRequired()])
-    # Validate address is in proper format??
     password = PasswordField('Password', validators=[DataRequired()])
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(),
