@@ -8,6 +8,7 @@
     <tr>
       <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product Name</th>
+      <th scope="col">Rating</th>
       <th scope="col">Review</th>
       <th scope="col">Post Date</th>
     </tr>
@@ -23,32 +24,45 @@
           >{{review.name}}</a
         >
       </td>
+      <td>{{review.rating}}</td>
       <td>
         <!-- <div id="currReview">{{review.review_text}}</div> -->
-
-        <form
-          id="updateReview"
-          action="{{ url_for('reviews.update_review', id=review.id)}}"
-          method="POST"
-        >
-          <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-          <textarea
-            id="newReview"
-            name="newReview"
-            style="width: 100%"
-            rows="3"
+        <div>
+          <form
+            id="updateReview"
+            action="{{ url_for('reviews.update_review', id=review.id)}}"
+            method="POST"
           >
+            <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
+            <textarea
+              id="newReview"
+              name="newReview"
+              style="width: 100%"
+              rows="3"
+            >
 {{review.review_text}}</textarea
+            >
+            <button
+              type="submit"
+              formaction="{{ url_for('reviews.update_review', id=review.id)}}"
+            >
+              Update
+            </button>
+            <button
+              type="submit"
+              formaction="{{ url_for('reviews.delete_review', id=review.id) }}"
+            >
+              Delete
+            </button>
+          </form>
+          <!-- <form
+            action="{{ url_for('reviews.delete_review', id=review.id) }}"
+            method="POST"
           >
-          <input type="submit" value="Update Review" />
-        </form>
-        <form
-          action="{{ url_for('reviews.delete_review', id=review.id) }}"
-          method="POST"
-        >
-          <input type="submit" value="Delete from Cart" />
-        </form>
-        <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
+            <input type="submit" value="Delete" />
+          </form> -->
+          <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
+        </div>
       </td>
       <td>{{review.time_posted}}</td>
     </tr>
