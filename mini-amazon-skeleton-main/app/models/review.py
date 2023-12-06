@@ -51,7 +51,7 @@ ORDER BY time_posted DESC
     def update_review(id, newInput, newInputRating):
         rows = app.db.execute("""
 UPDATE Reviews
-SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC', rating = :newInputRating
+SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'EST', rating = :newInputRating
 WHERE id = :id
 """,
                               id=id, newInput=newInput,newInputRating=newInputRating)
@@ -90,3 +90,22 @@ WHERE pid = :pid
 ORDER BY time_posted DESC
 ''', pid = pid)
         return [Review(*row) for row in rows]
+    
+    @staticmethod
+    def add_review(uid, pid, time_posted, rating, review_text):
+        
+        # try:
+            rows = app.db.execute("""
+INSERT INTO Reviews(uid, pid, time_posted, rating, review_text)
+VALUES(:uid, :pid, :time_posted, :rating, :review_text)                              
+""",
+                                  uid=uid,
+                                  pid=pid,
+                                  time_posted=time_posted, rating=rating, review_text=review_text)
+            # id = rows[0][0]
+            return rows if rows else None
+        # except Exception as e:
+        #     # likely email already in use; better error checking and reporting needed;
+        #     # the following simply prints the error to the console:
+        #     print(str(e))
+        #     return None
