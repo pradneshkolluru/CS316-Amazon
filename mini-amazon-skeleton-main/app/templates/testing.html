@@ -1,10 +1,5 @@
 {% extends "base.html" %} {% block content %}
-<style>
-  img {
-    border-right: 1px solid #000;
-    padding-right: 10px;
-  }
-</style>
+
 <br /><br />
 {% if current_user.is_authenticated %}
 <h2>Your recent reviews:</h2>
@@ -12,25 +7,30 @@
   <thead class="thead-dark">
     <tr>
       <!-- <th scope="col">Product ID</th> -->
-      <th scope="col">Seller</th>
-      <th width="50px" scope="col">Rating</th>
-      <th width="50%" scope="col">Review</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Rating</th>
+      <th scope="col">Review</th>
       <th scope="col">Post Date</th>
-      <th width="100px"></th>
     </tr>
   </thead>
   <tbody>
     {% for review in review_history%}
     <tr>
       <!-- <td>{{review.pid}}</td> -->
-      <td>{{review.first_name}} {{review.last_name}}</td>
-      <form
-        id="updateReview"
-        action="{{ url_for('sellerReviews.update_review', id=review.id)}}"
-        method="POST"
-      >
-        <td style="text-align: center">
-          <!-- {{review.rating}} -->
+      <td>
+        <a
+          style="color: black"
+          href="{{ url_for('products.product_info', id=review.pid) }}"
+          >{{review.name}}</a
+        >
+      </td>
+      <td>
+        <!-- {{review.rating}} -->
+        <form
+          id="updateRating"
+          action="{{ url_for('reviews.update_rating', id=review.id)}}"
+          method="POST"
+        >
           <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
           <!-- <textarea
             id="newRating"
@@ -49,10 +49,17 @@
             <option>4</option>
             <option>5</option>
           </select>
-        </td>
-        <td>
-          <!-- <div id="currReview">{{review.review_text}}</div> -->
-          <div>
+          <input type="submit" value="Submit" />
+        </form>
+      </td>
+      <td>
+        <!-- <div id="currReview">{{review.review_text}}</div> -->
+        <div>
+          <form
+            id="updateReview"
+            action="{{ url_for('reviews.update_review', id=review.id)}}"
+            method="POST"
+          >
             <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
             <textarea
               id="newReview"
@@ -62,34 +69,29 @@
             >
 {{review.review_text}}</textarea
             >
-
-            <!-- <form
+            <button
+              type="submit"
+              formaction="{{ url_for('reviews.update_review', id=review.id)}}"
+            >
+              Update
+            </button>
+            <button
+              type="submit"
+              formaction="{{ url_for('reviews.delete_review', id=review.id) }}"
+            >
+              Delete
+            </button>
+          </form>
+          <!-- <form
             action="{{ url_for('reviews.delete_review', id=review.id) }}"
             method="POST"
           >
             <input type="submit" value="Delete" />
           </form> -->
-            <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
-          </div>
-        </td>
-        <td>{{review.time_posted}}</td>
-        <td style="vertical-align: middle">
-          <button
-            style="width: 100%"
-            type="submit"
-            formaction="{{ url_for('sellerReviews.update_review', id=review.id)}}"
-          >
-            Update
-          </button>
-          <button
-            style="width: 100%"
-            type="submit"
-            formaction="{{ url_for('sellerReviews.delete_review', id=review.id) }}"
-          >
-            Delete
-          </button>
-        </td>
-      </form>
+          <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
+        </div>
+      </td>
+      <td>{{review.time_posted}}</td>
     </tr>
     {% endfor %}
   </tbody>

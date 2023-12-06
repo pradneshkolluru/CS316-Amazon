@@ -1,32 +1,134 @@
-{% extends "base.html" %}
-
-{% block content %}
-
-<br><br>
+{% extends "base.html" %} {% block content %}
+<style>
+  img {
+    border-right: 1px solid #000;
+    padding-right: 10px;
+  }
+</style>
+<br /><br />
 {% if current_user.is_authenticated %}
 <h2>Your recent reviews:</h2>
-<table class='table table-hover table-bordered container'>
+<table class="table table-hover table-bordered container">
   <thead class="thead-dark">
     <tr>
       <!-- <th scope="col">Product ID</th> -->
-      <th scope="col">Product Name</th>
-      <th scope="col">Review</th>
+      <th scope="col">Product</th>
+      <th width="50px" scope="col">Rating</th>
+      <th width="50%" scope="col">Review</th>
       <th scope="col">Post Date</th>
+      <th width="100px"></th>
     </tr>
   </thead>
   <tbody>
     {% for review in review_history%}
-      <tr>
-        <!-- <td>{{review.pid}}</td> -->
-        <td>{{review.name}}</td>
-        <td>{{review.review_text}}</td>
+    <tr>
+      <!-- <td>{{review.pid}}</td> -->
+      <td
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: flex-start;
+          gap: 10px;
+        "
+      >
+        <a href="{{ url_for('products.product_info', id=review.pid) }}"
+          ><img src="/static/images/gargi.jpeg" style="max-height: 100px"
+        /></a>
+        <a
+          style="color: black"
+          href="{{ url_for('products.product_info', id=review.pid) }}"
+          >{{review.name}}</a
+        >
+      </td>
+      <form
+        id="updateReview"
+        action="{{ url_for('reviews.update_review', id=review.id)}}"
+        method="POST"
+      >
+        <td style="text-align: center">
+          <!-- {{review.rating}} -->
+          <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
+          <!-- <textarea
+            id="newRating"
+            name="newRating"
+            style="width: 100%"
+            rows="3"
+          >
+          {{review.rating}}
+          </textarea> -->
+          <select id="newRating" name="newRating">
+            <option>{{review.rating}}</option>
+            <option disabled>─</option>
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+        </td>
+        <td>
+          <!-- <div id="currReview">{{review.review_text}}</div> -->
+          <div>
+            <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
+            <textarea
+              id="newReview"
+              name="newReview"
+              style="width: 100%"
+              rows="3"
+            >
+{{review.review_text}}</textarea
+            >
+
+            <!-- <form
+            action="{{ url_for('reviews.delete_review', id=review.id) }}"
+            method="POST"
+          >
+            <input type="submit" value="Delete" />
+          </form> -->
+            <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
+          </div>
+        </td>
         <td>{{review.time_posted}}</td>
-      </tr>
+        <td style="vertical-align: middle">
+          <button
+            style="width: 100%"
+            type="submit"
+            formaction="{{ url_for('reviews.update_review', id=review.id)}}"
+          >
+            Update
+          </button>
+          <button
+            style="width: 100%"
+            type="submit"
+            formaction="{{ url_for('reviews.delete_review', id=review.id) }}"
+          >
+            Delete
+          </button>
+        </td>
+      </form>
+    </tr>
     {% endfor %}
   </tbody>
 </table>
 {% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your review history!</p>
+<p>
+  <a href="{{ url_for('users.login') }}">Log in</a> to see your review history!
+</p>
 {% endif %}
-
+<script>
+  function myFunction() {
+    var x = document.getElementById("updateReview");
+    // var curr = document.getElementById("currReview");
+    // var btn = document.getElementById("editBtn");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+      // curr.style.display = "none"
+      // btn.innerHTML = "Cancel"
+    } else {
+      x.style.display = "none";
+      // curr.style.display = "block"
+      // btn.innerHTML = "Edit"
+    }
+  }
+</script>
 {% endblock %}

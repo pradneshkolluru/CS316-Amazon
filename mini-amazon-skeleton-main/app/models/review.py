@@ -1,7 +1,7 @@
 from flask import current_app as app
 
 class Review:
-    def __init__(self, id, uid, pid, time_posted, rating, review_text, name):
+    def __init__(self, id, uid, pid, time_posted, rating, review_text, name, firstname):
         self.id = id
         self.uid = uid
         self.pid = pid
@@ -11,6 +11,7 @@ class Review:
         self.rating = rating
         self.review_text = review_text
         self.name = name
+        self.firstname = firstname
 
     @staticmethod
     def get(id):
@@ -39,10 +40,53 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
         rows = app.db.execute('''
-SELECT Reviews.id, uid, pid, time_posted, rating, review_text, Products.name
+SELECT Reviews.id, uid, pid, time_posted, rating, review_text, name, '' firstname
 FROM Reviews
 JOIN Products ON Products.id = Reviews.pid
 WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
+        return [Review(*row) for row in rows]
+    @staticmethod
+    def update_review(id, newInput, newInputRating):
+        rows = app.db.execute("""
+UPDATE Reviews
+SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC', rating = :newInputRating
+WHERE id = :id
+""",
+                              id=id, newInput=newInput,newInputRating=newInputRating)
+
+#     @staticmethod
+#     def update_review(id, newInput):
+#         rows = app.db.execute("""
+# UPDATE Reviews
+# SET review_text = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
+# WHERE id = :id
+# """,
+#                               id=id, newInput=newInput)
+#     @staticmethod
+#     def update_rating(id, newInput):
+#         rows = app.db.execute("""
+# UPDATE Reviews
+# SET rating = :newInput, time_posted = current_timestamp AT TIME ZONE 'UTC'
+# WHERE id = :id
+# """,
+#                               id=id, newInput=newInput)    
+    @staticmethod
+    def delete_review(id):
+        rows = app.db.execute("""
+DELETE FROM Reviews
+WHERE id = :id
+""",
+                            id=id)
+        return rows        
+    @staticmethod 
+    def get_all_by_pid(pid):
+        rows = app.db.execute('''
+SELECT Reviews.id, uid, pid, time_posted, rating, review_text, Products.name, Users.firstname
+FROM Reviews
+JOIN Products ON Products.id = Reviews.pid JOIN Users ON Reviews.uid = Users.id
+WHERE pid = :pid
+ORDER BY time_posted DESC
+''', pid = pid)
         return [Review(*row) for row in rows]
