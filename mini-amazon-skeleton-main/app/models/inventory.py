@@ -31,7 +31,7 @@ AND Inventory.pid = Products.id
 
     @staticmethod
     def add_new_item(sid, pid, quantity):
-        # adding new product id to inventory
+        # adding new product id to inventory with an initial quantity
         try:
             rows = app.db.execute("""
 INSERT INTO Inventory(sid, pid, quantity)
@@ -63,7 +63,7 @@ AND pid = :pid
              
     @staticmethod
     def update_quantity(sid, pid, quantity):
-        # updating quantity of existing product in inventory
+        # updating quantity of existing product in inventory (quantity parameter is the updated/new quantity)
         try:
             rows = app.db.execute("""
 UPDATE Inventory
@@ -96,16 +96,17 @@ AND pid = :pid
         
         
     @staticmethod
-    def update_inventory(sid, pid, quantity):
+    def update_inventory(sid, pid, quantity): # quantity parameter is the number being added / deleted to existing quantity in inventory
         # get quantity of existing product in seller's inventory
-        qty = InventoryItem.get_qty(sid, pid)
+        qty = InventoryItem.get_qty(sid, pid) # should be either 0 or 1 row
         if len(qty) == 0: 
-            # pid not currently in sid's inventory
+            # pid not currently in sid's inventory (add new product to inventory)
             rows = InventoryItem.add_new_item(sid, pid, quantity)
         elif (quantity + qty[0][0] <= 0):
+            # if quantity of product is decreased to 0 or below, then delete product from inventory
             rows = InventoryItem.delete_item(sid, pid)
         else: 
-            # update quantity of existing pid
+            # update quantity of existing product (should work for incrementing and decrementing)
             new_quantity = quantity + qty[0][0]
             rows = InventoryItem.update_quantity(sid, pid, new_quantity)
         return rows if rows else None

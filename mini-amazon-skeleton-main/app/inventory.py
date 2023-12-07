@@ -31,13 +31,24 @@ def inventory_add(product_id, quantity):
     else:
         item = None
         return jsonify({}), 404
-    return redirect(url_for('inventory.inventory'))
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
 
-@bp.route('/inventory/update/<int:product_id>/<int:quantity>', methods=['POST'])
-def inventory_update(product_id, quantity):
+@bp.route('/inventory/delete/<int:product_id>', methods=['POST'])
+def inventory_delete(product_id):
     if current_user.is_authenticated:
-        item = InventoryItem.update_item(current_user.id, product_id, quantity)
+        item = InventoryItem.delete_item(current_user.id, product_id)
     else:
         item = None
         return jsonify({}), 404
-    return redirect(url_for('inventory.inventory'))
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
+
+@bp.route('/inventory/update', methods=['POST'])
+def inventory_update_quantity():
+    if current_user.is_authenticated:
+        pid = int(request.form.get('pid'))
+        quantity = int(request.form.get('quantity'))
+        item = InventoryItem.update_inventory(current_user.id, pid, quantity)
+    else:
+        item = None
+        return jsonify({}), 404
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
