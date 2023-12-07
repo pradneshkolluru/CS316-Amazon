@@ -18,12 +18,13 @@
 
 <td>
   <form action="{{ url_for('inventory.inventory_add') }}" method="POST">
-    <h5>Add a new product to your inventory:</h5>
-    <input name="pid" placeholder="Input product ID" />
-    <input name="quantity" placeholder="Input change in quantity" />
-    <input type="submit" value="Add new product to your inventory" />
+    <h5>Add a new product to your inventory by typing either the product ID or product name and its change in quantity:</h5>
+    <input name="pid" placeholder="Product ID" />
+    <input name="product_name" placeholder="Product name" />
+    <input name="quantity" placeholder="Change in quantity" />
+    <input type="submit" value="Add product" />
   </form>
-</td>
+</td>  
 
 <br>
 

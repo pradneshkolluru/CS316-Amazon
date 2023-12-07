@@ -59,6 +59,20 @@ VALUES(:sid, :pid, :quantity)
             return None
         
     @staticmethod
+    def get_pid(product_name):
+        try:
+            rows = app.db.execute("""
+SELECT id
+FROM Products
+WHERE name = :p_name
+""",
+                                  p_name = product_name.capitalize())
+            return rows if rows else None
+        except Exception as e:
+            print(str(e))
+            return None
+        
+    @staticmethod
     def get_qty(sid, pid):
         try:
             rows = app.db.execute("""
@@ -109,17 +123,26 @@ AND pid = :pid
         
         
     @staticmethod
-    def update_inventory(sid, pid, quantity): # quantity parameter is the number being added / deleted to existing quantity in inventory
+    def update_inventory(sid, quantity, pid=None, product_name=""): # quantity parameter is the number being added / deleted to existing quantity in inventory
+
+        if pid == None: # user gave product_name instead of pid
+            if InventoryItem.get_pid(product_name) == None: # pid doesn't exist --> product name doesn't exist
+                return "error" # do nothing; page just refreshes
+            pid = InventoryItem.get_pid(product_name)[0][0]
+            
         # get quantity of existing product in seller's inventory
         qty = InventoryItem.get_qty(sid, pid) # should be either 0 or 1 row
         if qty == None: 
             # pid not currently in sid's inventory (add new product to inventory)
+            # product_name is given by user to add new product
+            # input product_name has to be already existing (Products relation)
             rows = InventoryItem.add_new_item(sid, pid, quantity)
         elif (quantity + qty[0][0] <= 0):
             # if quantity of product is decreased to 0 or below, then delete product from inventory
             rows = InventoryItem.delete_item(sid, pid)
         else: 
             # update quantity of existing product (should work for incrementing and decrementing)
+
             new_quantity = quantity + qty[0][0]
             rows = InventoryItem.update_quantity(sid, pid, new_quantity)
         return rows if rows else None

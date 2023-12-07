@@ -26,16 +26,22 @@ def inventory(sid):
                            pagination=pagination)
 
 @bp.route('/inventory/add', methods=['POST'])
-def inventory_add():
+def inventory_add():  
     if current_user.is_authenticated:
-        pid = int(request.form.get('pid'))
-        quantity = int(request.form.get('quantity'))
-        existing_pids = InventoryItem.get_all_products_by_sid(current_user.id)
-        # if pid in [item[0] for item in existing_pids]:
-        #     item = InventoryItem.update_inventory(current_user.id, pid, quantity)
-        # else:
-        #     item = InventoryItem.add_new_item(current_user.id, pid, quantity)
-        item = InventoryItem.update_inventory(current_user.id, pid, quantity)
+        pid_input = request.form.get('pid')
+        product_name = request.form.get('product_name').lower()
+        quantity_input = request.form.get('quantity')
+
+        if quantity_input == "" or (pid_input == "" and product_name == ""): # invalid submission
+            return redirect(url_for('inventory.inventory', sid=current_user.id))
+        if pid_input == "": # used product_name
+            product_name = request.form.get('product_name').lower()
+            quantity = int(request.form.get('quantity'))
+            item = InventoryItem.update_inventory(current_user.id, quantity, product_name=product_name)
+        elif product_name == "": # used pid
+            pid = int(pid_input)
+            quantity = int(request.form.get('quantity'))
+            item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
     else:
         item = None
         return jsonify({}), 404
@@ -55,7 +61,7 @@ def inventory_update_quantity():
     if current_user.is_authenticated:
         pid = int(request.form.get('pid'))
         quantity = int(request.form.get('quantity'))
-        item = InventoryItem.update_inventory(current_user.id, pid, quantity)
+        item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
     else:
         item = None
         return jsonify({}), 404
