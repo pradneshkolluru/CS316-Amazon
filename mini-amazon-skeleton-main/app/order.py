@@ -41,4 +41,17 @@ def orders():
     # render the page by adding information to the order.html file
     return render_template('orders.html',
                            orders_list=orders_list)
-                        #    pagination=pagination)
+                        #    pagination=pagination) 
+
+@bp.route('/orders/seller')
+def seller_orders():
+    if current_user.is_authenticated:
+        orders_list = Order.get_all_orders_for_seller(current_user.id)
+    else:
+        orders = None
+    return render_template('seller_orders.html',
+                           orders_list=orders_list)
+
+
+
+
