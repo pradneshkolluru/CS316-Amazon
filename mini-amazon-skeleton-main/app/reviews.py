@@ -1,4 +1,5 @@
-from flask import render_template, request, redirect, url_for
+from curses import window
+from flask import flash, render_template, request, redirect, url_for
 from flask_login import current_user
 from datetime import datetime
 from .models.review import Review
@@ -38,11 +39,15 @@ def delete_review(id):
     Review.delete_review(id=id)
     return redirect(url_for('reviews.reviews'))
 
+
 @bp.route('/reviews/add/<id>', methods=['POST', 'GET'])
 def add_review(id):
-    uid=current_user.id
-    time_posted = datetime.now()
-    rating = request.form.get("newRating")
-    review_text = request.form.get("newReview")
-    Review.add_review(uid=uid, pid=id, time_posted=time_posted,rating=rating, review_text=review_text)
-    return redirect(url_for('reviews.reviews'))
+    if Review.review_exists(current_user.id, id):
+        return "You have already reviewed this product"
+    else:
+        uid=current_user.id
+        time_posted = datetime.now()
+        rating = request.form.get("newRating")
+        review_text = request.form.get("newReview")
+        Review.add_review(uid=uid, pid=id, time_posted=time_posted,rating=rating, review_text=review_text)
+        return redirect(url_for('reviews.reviews'))
