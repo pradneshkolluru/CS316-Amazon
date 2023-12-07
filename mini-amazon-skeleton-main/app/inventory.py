@@ -22,6 +22,7 @@ def inventory(sid):
     pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(items), record_name='Entries')
     return render_template('inventory.html',
                            items=sliced_items,
+                           items_length=len(items),
                            pagination=pagination)
 
 @bp.route('/inventory/add/<int:product_id>/<int:quantity>', methods=['POST'])

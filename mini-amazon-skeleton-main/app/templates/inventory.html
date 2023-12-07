@@ -12,13 +12,15 @@
 
 <br><br>
 
-<h2>Your Seller Inventory:</h2>
+<h2>Your Seller Inventory</h2>
+<p>You currently have {{items_length}} products listed for sale:</p>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
       <!--th scope="col">#</th-->
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Current Selling Price</th>
       <th scope="col">Available Quantity</th>
       <th scope="col">Remove Product</th>
     </tr>
@@ -32,7 +34,7 @@
 
         <td>{{item.product_name}}</td>
 
-        <!-- <td>{{item.quantity}}</td> -->
+        <td>${{item.product_price}}</td>
 
         <td class="changeQuantity">
           <form action="{{ url_for('inventory.inventory_update_quantity') }}" method="POST">

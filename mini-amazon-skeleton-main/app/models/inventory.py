@@ -1,12 +1,14 @@
 from flask import current_app as app
 
 class InventoryItem:
-    def __init__(self, id, sid, pid, quantity, product_name):
+    #def __init__(self, id, sid, pid, quantity, product_name, product_price):
+    def __init__(self, id, sid, pid, quantity, product_name, product_price, **kwargs):
         self.id = id
         self.sid = sid
         self.pid = pid
         self.quantity = quantity
         self.product_name = product_name
+        self.product_price = product_price
 
 #     @staticmethod
 #     def get(id):
@@ -21,7 +23,7 @@ class InventoryItem:
     @staticmethod
     def get_all_by_sid(sid):
         rows = app.db.execute('''
-SELECT Inventory.id, sid, pid, quantity, Products.name
+SELECT Inventory.id, sid, pid, quantity, Products.name, Products.price
 FROM Inventory, Products
 WHERE sid = :sid 
 AND Inventory.pid = Products.id
