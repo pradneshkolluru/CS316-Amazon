@@ -25,10 +25,17 @@ def inventory(sid):
                            items_length=len(items),
                            pagination=pagination)
 
-@bp.route('/inventory/add/<int:product_id>/<int:quantity>', methods=['POST'])
-def inventory_add(product_id, quantity):
+@bp.route('/inventory/add', methods=['POST'])
+def inventory_add():
     if current_user.is_authenticated:
-        item = InventoryItem.add_item(current_user.id, product_id, quantity)
+        pid = int(request.form.get('pid'))
+        quantity = int(request.form.get('quantity'))
+        existing_pids = InventoryItem.get_all_products_by_sid(current_user.id)
+        # if pid in [item[0] for item in existing_pids]:
+        #     item = InventoryItem.update_inventory(current_user.id, pid, quantity)
+        # else:
+        #     item = InventoryItem.add_new_item(current_user.id, pid, quantity)
+        item = InventoryItem.update_inventory(current_user.id, pid, quantity)
     else:
         item = None
         return jsonify({}), 404

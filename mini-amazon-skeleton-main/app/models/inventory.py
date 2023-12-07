@@ -30,6 +30,17 @@ AND Inventory.pid = Products.id
 ''',
                               sid=sid)
         return [InventoryItem(*row) for row in rows]
+    
+    @staticmethod
+    def get_all_products_by_sid(sid):
+        rows = app.db.execute('''
+SELECT pid
+FROM Inventory, Products
+WHERE sid = :sid 
+AND Inventory.pid = Products.id
+''',
+                              sid=sid)
+        return rows if rows else None
 
     @staticmethod
     def add_new_item(sid, pid, quantity):
@@ -101,7 +112,7 @@ AND pid = :pid
     def update_inventory(sid, pid, quantity): # quantity parameter is the number being added / deleted to existing quantity in inventory
         # get quantity of existing product in seller's inventory
         qty = InventoryItem.get_qty(sid, pid) # should be either 0 or 1 row
-        if len(qty) == 0: 
+        if qty == None: 
             # pid not currently in sid's inventory (add new product to inventory)
             rows = InventoryItem.add_new_item(sid, pid, quantity)
         elif (quantity + qty[0][0] <= 0):
