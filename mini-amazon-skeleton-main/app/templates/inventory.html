@@ -1,26 +1,77 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<head>
+  <style>
+    .changeQuantity {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 5px;
+    }
+  </style>
+</head>
 
-{% block content %}
+<br>
 
-<br><br>
+<h2>Your Seller Inventory</h2>
 
-<h2>Inventory:</h2>
+<br>
+
+<td>
+  <form action="{{ url_for('inventory.inventory_add') }}" method="POST">
+    <h5>Add a new product to your inventory by typing either the product ID or product name and its change in quantity:</h5>
+    <input name="pid" placeholder="Product ID" />
+    <input name="product_name" placeholder="Product name" />
+    <input name="quantity" placeholder="Change in quantity" />
+    <input type="submit" value="Add/modify product" />
+  </form>
+</td>  
+
+<br>
+
+<h5>You currently have {{items_length}} products listed for sale:</h5>
+
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
-      <th scope="col">#</th>
+      <!--th scope="col">#</th-->
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
+      <th scope="col">Current Selling Price</th>
+      <th scope="col">Available Quantity</th>
+      <th scope="col">Remove Product</th>
     </tr>
   </thead>
   <tbody>
     {% for item in items%}
       <tr>
-        <td>{{ loop.index + pagination.skip }}</td>
+        <!--td>{{ loop.index + pagination.skip }}</td-->
+
         <th scope="row">{{item.pid}}</th>
+
         <td>{{item.product_name}}</td>
-        <td>{{item.quantity}}</td>
+
+        <td>${{item.product_price}}</td>
+
+        <td class="changeQuantity">
+          <form action="{{ url_for('inventory.inventory_update_quantity') }}" method="POST">
+            <input name="pid" value="{{item.pid}}" hidden="true" />
+            <input name="quantity" value="-1" hidden="true" />
+            <input type="submit" value="-" />
+          </form>
+          {{item.quantity}}
+          <form action="{{ url_for('inventory.inventory_update_quantity') }}" method="POST">
+            <input name="pid" value="{{item.pid}}" hidden="true" />
+            <input name="quantity" value="1" hidden="true" />
+            <input type="submit" value="+" />
+          </form>
+        </td>
+
+        <td>
+          <form action="{{ url_for('inventory.inventory_delete', product_id=item.pid) }}" method="POST">
+            <input type="submit" value="Remove from inventory" />
+          </form>
+        </td>
+
       </tr>
     {% endfor %}
   </tbody>

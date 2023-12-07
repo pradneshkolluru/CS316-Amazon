@@ -43,6 +43,7 @@ WHERE uid = :uid AND pid = :pid
                             pid=pid)
 
         if len(qty_in_cart) == 0:
+        # if qty_in_cart == None:
             rows = app.db.execute("""
 INSERT INTO Cart(uid, pid, qty)
 VALUES(:uid, :pid, :qty)
