@@ -12,7 +12,7 @@ from .models.order import Order
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
 
-bp = Blueprint('cart', __name__)
+bp = Blueprint('order', __name__)
 
 
 @bp.route('/orders')

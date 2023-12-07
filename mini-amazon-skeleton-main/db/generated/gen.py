@@ -30,7 +30,8 @@ def gen_users(num_users):
             firstname = name_components[0]
             lastname = name_components[-1]
             address = profile['residence']
-            writer.writerow([uid, email, password, firstname, lastname, address])
+            balance = fake.random_int(min=0)
+            writer.writerow([uid, email, password, firstname, lastname, address, balance])
         print(f'{num_users} generated')
     return
 
@@ -141,9 +142,9 @@ def gen_inventory(num_users, available_pids):
     return
 
 gen_users(num_users)
-available_pids = gen_products(num_products)
-gen_purchases(num_purchases, available_pids)
-gen_cart(available_pids)
-gen_inventory(num_users, available_pids)
-gen_reviews(num_products, available_pids)
-gen_sellerReviews(num_users)
+# available_pids = gen_products(num_products)
+# gen_purchases(num_purchases, available_pids)
+# gen_cart(available_pids)
+# gen_inventory(num_users, available_pids)
+# gen_reviews(num_products, available_pids)
+# gen_sellerReviews(num_users)
