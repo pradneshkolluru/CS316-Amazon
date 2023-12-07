@@ -8,14 +8,19 @@ class Order:
         self.order_fulfilled = order_fulfilled
 
     @staticmethod
-    def get_all_orders_for_user(uid):
+    def get_items_in_order(uid, oid):
         rows = app.db.execute('''
-SELECT id, uid, order_fulfilled
-FROM Orders
-WHERE uid = :uid
+SELECT O.id, O.uid, P.pid, P.qty, Pr.name, P.unit_price, P.purchase_fulfilled, O.order_fulfilled
+FROM Orders O, Purchases P, Products Pr
+WHERE O.id = P.oid 
+    AND P.pid = Pr.id
+    AND O.uid = :uid
+    AND O.id = :oid
 ''',
-                              uid=uid)
-        return [Order(*row) for row in rows]
+                              uid=uid,
+                              oid=oid)
+        return rows if rows else None
+        # return [Order(*row) for row in rows]
     
     @staticmethod
     def get_all_purchases_in_orders(uid):
