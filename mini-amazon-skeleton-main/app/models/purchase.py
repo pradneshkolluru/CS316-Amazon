@@ -40,3 +40,19 @@ ORDER BY time_purchased DESC
 ''',
                               uid=uid)
         return [Purchase(*row) for row in rows]
+
+    @staticmethod
+    def add_new_purchase(uid, pid, oid, qty, sid, unit_price):
+        rows = app.db.execute('''
+INSERT INTO Purchases(uid, pid, oid, qty, purchase_fulfilled, sid, unit_price)
+VALUES(:uid, :order_fulfilled)
+''',
+                                uid=uid,
+                                pid=pid,
+                                oid=oid,
+                                qty=qty,
+                                purchase_fulfilled=False,
+                                sid=sid,
+                                unit_price=unit_price)
+        return rows if rows else None
+        

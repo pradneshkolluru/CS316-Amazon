@@ -4,8 +4,10 @@ from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
+from decimal import Decimal
 
 from .models.user import User
+from .models.sellerReview import SellerReview
 
 
 from flask import Blueprint
@@ -65,7 +67,7 @@ def register():
                          form.firstname.data,
                          form.lastname.data,
                          form.address.data):
-            flash('Congratulations, you are now a registered user!')
+            flash('Congratulations, you are now a registered user! Log into your account above.')
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
@@ -77,7 +79,10 @@ def show_info():
 def update_email():
     if current_user.is_authenticated:
         newEmail = request.form.get("newEmail")
-        User.update_email(id=current_user.id, newInput=newEmail)
+        if User.email_exists(newEmail):
+            flash('Already a user with this email.')
+        else:
+            User.update_email(id=current_user.id, newInput=newEmail)
         return redirect(url_for('users.show_info'))
 @bp.route('/updateFirstName', methods = ['POST', 'GET'])
 def update_first_name():
@@ -97,6 +102,34 @@ def update_address():
         newAddress = request.form.get("newAddress")
         User.update_address(id=current_user.id, newInput=newAddress)
         return redirect(url_for('users.show_info'))
+@bp.route('/addBalance', methods = ['POST', 'GET'])
+def add_balance():
+    if current_user.is_authenticated:
+        input = request.form.get("newBalance")
+        newBalance = current_user.balance
+        if input:
+            newBalance += Decimal(input)
+        User.update_balance(id=current_user.id, newInput=str(newBalance))
+        return redirect(url_for('users.show_info'))
+@bp.route('/withdraw', methods = ['POST', 'GET'])
+def withdraw():
+    if current_user.is_authenticated:
+        input = request.form.get("withdraw")
+        newBalance = current_user.balance
+        if input:
+            newBalance -= Decimal(input)
+        User.update_balance(id=current_user.id, newInput=str(newBalance))
+        return redirect(url_for('users.show_info'))
+    
+@bp.route('/user/<id>', methods = ['POST', 'GET'])
+def public_view(id):
+    user_info = User.get(id)
+    seller = User.is_seller(id)
+    if seller: 
+        reviews = SellerReview.get_all(id)
+    else:
+        reviews = None
+    return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews)
 
 @bp.route('/logout')
 def logout():

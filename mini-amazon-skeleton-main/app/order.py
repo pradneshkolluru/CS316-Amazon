@@ -15,14 +15,13 @@ from flask_paginate import Pagination, get_page_parameter
 bp = Blueprint('order', __name__)
 
 
-@bp.route('/orders')
-def orders():
-    # find the products current user has added to cart:
+@bp.route('/order/<int:oid>')
+def orders(oid):
+    # find all the products from all the current user's orders:
     if current_user.is_authenticated:
-        orders_list = Order.get_all_orders_for_user(current_user.id)
-        # all_products = Order.get_all_products_in_orders(orders)
+        purchases_in_order = Order.get_items_in_order(current_user.id, oid)
     else:
-        orders = None
+        purchases_in_order = None
         
     # search = False
     # q = request.args.get('q')
@@ -40,8 +39,9 @@ def orders():
 
     # render the page by adding information to the order.html file
     return render_template('orders.html',
-                           orders_list=orders_list)
-                        #    pagination=pagination) 
+                           purchases_in_order=purchases_in_order)
+                        #    orders_list=orders_list)
+                        #    pagination=pagination)
 
 @bp.route('/orders/seller')
 def seller_orders():
@@ -51,7 +51,3 @@ def seller_orders():
         orders = None
     return render_template('seller_orders.html',
                            orders_list=orders_list)
-
-
-
-
