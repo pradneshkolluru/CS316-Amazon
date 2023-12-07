@@ -22,22 +22,47 @@ def inventory(sid):
     pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(items), record_name='Entries')
     return render_template('inventory.html',
                            items=sliced_items,
+                           items_length=len(items),
                            pagination=pagination)
 
-@bp.route('/inventory/add/<int:product_id>/<int:quantity>', methods=['POST'])
-def inventory_add(product_id, quantity):
+@bp.route('/inventory/add', methods=['POST'])
+def inventory_add():  
     if current_user.is_authenticated:
-        item = InventoryItem.add_item(current_user.id, product_id, quantity)
-    else:
-        item = None
-        return jsonify({}), 404
-    return redirect(url_for('inventory.inventory'))
+        pid_input = request.form.get('pid')
+        product_name = request.form.get('product_name').lower()
+        quantity_input = request.form.get('quantity')
 
-@bp.route('/inventory/update/<int:product_id>/<int:quantity>', methods=['POST'])
-def inventory_update(product_id, quantity):
-    if current_user.is_authenticated:
-        item = InventoryItem.update_item(current_user.id, product_id, quantity)
+        if quantity_input == "" or (pid_input == "" and product_name == ""): # invalid submission
+            return redirect(url_for('inventory.inventory', sid=current_user.id))
+        if pid_input == "": # used product_name
+            product_name = request.form.get('product_name').lower()
+            quantity = int(request.form.get('quantity'))
+            item = InventoryItem.update_inventory(current_user.id, quantity, product_name=product_name)
+        elif product_name == "": # used pid
+            pid = int(pid_input)
+            quantity = int(request.form.get('quantity'))
+            item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
     else:
         item = None
         return jsonify({}), 404
-    return redirect(url_for('inventory.inventory'))
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
+
+@bp.route('/inventory/delete/<int:product_id>', methods=['POST'])
+def inventory_delete(product_id):
+    if current_user.is_authenticated:
+        item = InventoryItem.delete_item(current_user.id, product_id)
+    else:
+        item = None
+        return jsonify({}), 404
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
+
+@bp.route('/inventory/update', methods=['POST'])
+def inventory_update_quantity():
+    if current_user.is_authenticated:
+        pid = int(request.form.get('pid'))
+        quantity = int(request.form.get('quantity'))
+        item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
+    else:
+        item = None
+        return jsonify({}), 404
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
