@@ -7,7 +7,12 @@ CREATE TABLE Users (
     password VARCHAR(255) NOT NULL,
     firstname VARCHAR(255) NOT NULL,
     lastname VARCHAR(255) NOT NULL,
-    address VARCHAR (255)
+    address VARCHAR (255),
+    balance DECIMAL(12,2) NOT NULL DEFAULT 0
+);
+
+CREATE TABLE Seller(
+    uid INT NOT NULL REFERENCES Users(id)
 );
 
 CREATE TABLE Products (

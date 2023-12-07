@@ -5,6 +5,18 @@
 <br><br>
 {% if current_user.is_authenticated %}
 <h4>Your account information:</h4>
+<h5>Account Number: {{current_user.id}}</h5>
+<h5>Current Balance: ${{current_user.balance}}</h5>
+<form action="{{ url_for('users.add_balance')}}" method = "POST">
+  <label for="NewBalance">Add money: </label>
+  <input type="number" min="0" step="0.01" id="newBalance" name="newBalance">
+  <!-- <input type="submit" value="Submit"> -->
+</form>
+<form action="{{ url_for('users.withdraw')}}" method = "POST">
+  <label for="Withdraw">Withdraw money: </label>
+  <input type="number" min="0" max="{{current_user.balance}}" step="0.01" id="withdraw" name="withdraw">
+  <!-- <input type="submit" value="Submit"> -->
+</form>
 
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -54,6 +66,17 @@
     </tr>
   </tbody>
 </table>
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+</p>
 <!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
 <!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
 <!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->
