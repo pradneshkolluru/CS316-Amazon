@@ -45,3 +45,4 @@ SELECT pg_catalog.setval('public.sellerReviews_id_seq',
                          false);
 
 \COPY Cart FROM 'Cart.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY Seller FROM 'Sellers.csv' WITH DELIMITER ',' NULL '' CSV
