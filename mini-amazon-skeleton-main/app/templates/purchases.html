@@ -23,7 +23,9 @@
   <tbody>
     {% for item in all_purchases%}
       <tr>
-        <th scope="row">{{item[0]}}</th>
+        <th scope="row">
+          <a href="{{ url_for('order.orders', oid=item[0]) }}"> {{item[0]}} </a>
+        </th>  
         <td>{{item[4]}}</td>
         <td>{{item[3]}}</td>
         <td>{{item[5]}}</td>
