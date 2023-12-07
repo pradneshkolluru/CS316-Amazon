@@ -16,11 +16,15 @@ WHERE uid = :uid
 ''',
                               uid=uid)
         return [Order(*row) for row in rows]
-
-# '''
-# SELECT O.id, O.uid, P.pid, P.qty, Pr.name, P.unit_price, P.purchase_fulfilled, O.order_fulfilled
-# FROM Orders O, Purchases P, Products Pr
-# WHERE O.id = P.oid 
-#     AND P.pid = Pr.id
-#     AND O.uid = :uid
-# '''
+    
+    @staticmethod
+    def get_all_purchases_in_orders(uid):
+        rows = app.db.execute('''
+SELECT O.id, O.uid, P.pid, P.qty, Pr.name, P.unit_price, P.purchase_fulfilled, O.order_fulfilled
+FROM Orders O, Purchases P, Products Pr
+WHERE O.id = P.oid 
+    AND P.pid = Pr.id
+    AND O.uid = :uid
+''',
+                            uid =uid)
+        return rows if rows else None

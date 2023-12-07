@@ -17,12 +17,12 @@ bp = Blueprint('order', __name__)
 
 @bp.route('/orders')
 def orders():
-    # find the products current user has added to cart:
+    # find all the products from all the current user's orders:
     if current_user.is_authenticated:
-        orders_list = Order.get_all_orders_for_user(current_user.id)
-        # all_products = Order.get_all_products_in_orders(orders)
+        # orders_list = Order.get_all_orders_for_user(current_user.id)
+        all_purchases = Order.get_all_purchases_in_orders(current_user.id)
     else:
-        orders = None
+        all_purchases = None
         
     # search = False
     # q = request.args.get('q')
@@ -40,5 +40,6 @@ def orders():
 
     # render the page by adding information to the order.html file
     return render_template('orders.html',
-                           orders_list=orders_list)
+                           all_purchases=all_purchases)
+                        #    orders_list=orders_list)
                         #    pagination=pagination)
