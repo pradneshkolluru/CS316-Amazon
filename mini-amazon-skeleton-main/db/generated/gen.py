@@ -4,6 +4,7 @@ from faker import Faker
 import random
 
 num_users = 100
+num_sellers = 50
 num_products = 2000
 num_purchases = 2500
 
@@ -30,9 +31,21 @@ def gen_users(num_users):
             firstname = name_components[0]
             lastname = name_components[-1]
             address = profile['residence']
-            writer.writerow([uid, email, password, firstname, lastname, address])
+            balance = fake.random_int(min=0)
+            writer.writerow([uid, email, password, firstname, lastname, address, balance])
         print(f'{num_users} generated')
     return
+
+def gen_sellers(num_sellers):
+    sellers = []
+    with open('db/generated/Sellers.csv', 'w') as f:
+        writer = get_csv_writer(f)
+        print('Sellers...', end=' ', flush=True)
+        for uid in fake.random_elements(list(range(num_users)), length=num_sellers, unique=True):
+            sellers.append(uid)
+            writer.writerow([uid])
+        print(f'{num_sellers} generated')
+    return sellers
 
 
 def gen_products(num_products):
@@ -141,6 +154,7 @@ def gen_inventory(num_users, available_pids):
     return
 
 gen_users(num_users)
+gen_sellers(num_sellers)
 available_pids = gen_products(num_products)
 gen_purchases(num_purchases, available_pids)
 gen_cart(available_pids)

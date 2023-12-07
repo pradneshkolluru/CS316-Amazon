@@ -6,17 +6,18 @@ from .. import login
 
 
 class User(UserMixin):
-    def __init__(self, id, email, firstname, lastname, address):
+    def __init__(self, id, email, firstname, lastname, address, balance):
         self.id = id
         self.email = email
         self.firstname = firstname
         self.lastname = lastname
         self.address = address
+        self.balance = balance
 
     @staticmethod
     def get_by_auth(email, password):
         rows = app.db.execute("""
-SELECT password, id, email, firstname, lastname, address
+SELECT password, id, email, firstname, lastname, address, balance
 FROM Users
 WHERE email = :email
 """,
@@ -62,7 +63,7 @@ RETURNING id
     @login.user_loader
     def get(id):
         rows = app.db.execute("""
-SELECT id, email, firstname, lastname, address
+SELECT id, email, firstname, lastname, address, balance
 FROM Users
 WHERE id = :id
 """,
@@ -100,4 +101,23 @@ SET address = :newInput
 WHERE id = :id
 """,
                               id=id, newInput=newInput)
+    @staticmethod
+    def update_balance(id, newInput):
+        rows = app.db.execute("""
+UPDATE Users
+SET balance = :newInput 
+WHERE id = :id
+""",
+                              id=id, newInput=newInput)
+        
+    @staticmethod
+    def is_seller(id):
+        rows = app.db.execute("""
+SELECT *
+FROM Seller
+WHERE uid = :id
+""",
+                              id=id)
+        
+        return len(rows) > 0
 
