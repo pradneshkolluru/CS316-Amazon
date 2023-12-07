@@ -23,12 +23,12 @@
   <tbody>
     {% for item in all_purchases%}
       <tr>
-        <th scope="row">{{item[0]}}</th>
-        <td>{{item[4]}}</td>
-        <td>{{item[3]}}</td>
-        <td>{{item[5]}}</td>
-        <td>{{item[6]}}</td>
-        <td>{{item[7]}}</td>
+        <th scope="row">{{item.oid}}</th>
+        <td>{{item.product_name}}</td>
+        <td>{{item.qty}}</td>
+        <td>{{item.unit_price}}</td>
+        <td>{{item.purchase_fulfilled}}</td>
+        <td>{{item.order_fulfilled}}</td>
       </tr>
     {% endfor %}
   </tbody>

@@ -23,9 +23,9 @@ class InventoryItem:
     @staticmethod
     def get_all_by_sid(sid):
         rows = app.db.execute('''
-SELECT Inventory.id, sid, pid, quantity, Products.name, Products.price
+SELECT Inventory.id, Inventory.sid, pid, quantity, Products.name, Products.price
 FROM Inventory, Products
-WHERE sid = :sid 
+WHERE Inventory.sid = :sid 
 AND Inventory.pid = Products.id
 ''',
                               sid=sid)
@@ -36,7 +36,7 @@ AND Inventory.pid = Products.id
         rows = app.db.execute('''
 SELECT pid
 FROM Inventory, Products
-WHERE sid = :sid 
+WHERE Inventory.sid = :sid 
 AND Inventory.pid = Products.id
 ''',
                               sid=sid)
