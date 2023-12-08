@@ -109,12 +109,13 @@ RETURNING id
         rows = app.db.execute("""
 UPDATE Orders
 SET order_fulfilled = True
-WHERE oid = :oid
+WHERE id = :oid
 """,
                             oid=oid)
         return rows if rows else None
 
-def update_purchase_fulfillment(oid, pid, new_status):
+    @staticmethod
+    def update_purchase_fulfillment(oid, pid, new_status):
         rows = app.db.execute("""
 UPDATE Purchases
 SET purchase_fulfilled = :new_status

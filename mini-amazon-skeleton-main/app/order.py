@@ -137,5 +137,5 @@ def change_purchase_fulfillment_status(sid, oid, pid):
         purchases = Order.update_purchase_fulfillment(oid, pid, new_status)
 
         # then trigger function to show change in status in buyer's view
-        #Order.check_and_update_order_fulfillment()
+        # Order.check_and_update_order_fulfillment(oid)
     return redirect(url_for('order.seller_order_details', sid=sid, oid = oid))
