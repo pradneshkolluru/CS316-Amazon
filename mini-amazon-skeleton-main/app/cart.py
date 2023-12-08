@@ -25,26 +25,29 @@ def cart():
             total_cart_price = 0
         num_line_items = len(cart_products)
         saved_items = SaveForLater.get_saved_items(current_user.id)
+
+        search = False
+        q = request.args.get('q')
+        if q:
+            search = True
+        
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        sliced_items = cart_products[offset: offset + per_page]
+
+        pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(cart_products), search=search, record_name='Items')
+
     else:
-        cart_products = None
+        sliced_items = None
         total_cart_price = 0
         num_line_items = 0
         saved_items = None
+        pagination = None
     
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
     
-    page = request.args.get(get_page_parameter(), type=int, default=1)
-
-    per_page = 10
-    offset = (page - 1) * per_page
-
-    sliced_items = cart_products[offset: offset + per_page]
-
-    pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(cart_products), search=search, record_name='Items')
-
     # render the page by adding information to the cart.html file
     return render_template('cart.html',
                            cart_products=sliced_items,
