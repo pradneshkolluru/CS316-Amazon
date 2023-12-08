@@ -1,5 +1,4 @@
 from enum import unique
-from mini-amazon-skeleton-main.app.models import purchase
 from werkzeug.security import generate_password_hash
 import csv
 from faker import Faker
@@ -8,7 +7,8 @@ import random
 num_users = 100
 num_sellers = 50
 num_products = 2000
-num_purchases = 2500
+#num_purchases = 2500
+num_orders = 400
 
 Faker.seed(0)
 fake = Faker()
@@ -98,42 +98,49 @@ def gen_products(num_products, seller_pid, available_pids):
     return unique_pid_available, unique_pid_unavailable
 
 
-def gen_purchases(num_purchases, unique_pid_available):
+def gen_purchases(purchases):
     with open('db/generated/Purchases.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Purchases...', end=' ', flush=True)
-        unique_available_pids = list(unique_pid_available.keys())
-        for id in range(num_purchases):
-            if id % 100 == 0:
-                print(f'{id}', end=' ', flush=True)
-            uid = fake.random_int(min=0, max=num_users-1)
-            unique_pid = random.choice(unique_available_pids)
-            sid = unique_pid_available[unique_pid][1]
-            unit_price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
-            qty = fake.random_int(min=1, max=20)
-            purchase_fulfilled='false' # default is false
-
-            oid =
-            time_fulfilled=
-            writer.writerow([id, uid, unique_pid, oid, qty, purchase_fulfilled, time_fulfilled, unit_price])
-        print(f'{num_purchases} generated')
+        for p in purchases:
+            writer.writerow(p)
+        print(f'{len(purchases)} generated')
     return
 
+
+
 # product, seller, buyer, time_purchased
-def gen_orders():
+def gen_orders(num_orders, num_users, unique_pid_available):
     with open('db/generated/Orders.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Orders...', end=' ', flush=True)
-        id = 0 # called oid in other relations
-        for uid in range(num_users):
-            if id % 100 == 0:
-                print(f'{id}', end=' ', flush=True)
-            order_fulfilled = 'true'
-            time_purchased = fake.date_time() # time_purchased has to be earlier than time
-            total_price = ____() # function to total price with quantity for purchase id's for each oid
-            writer.writerow([id, uid, order_fulfilled, time_purchased, total_price])
-            id += 1
-    return
+        purchases = []
+        purchase_id = 0
+        available_unique_pids = list(unique_pid_available.keys())
+        time_fulfilled = ''
+        for oid in range(num_orders):
+            if oid % 100 == 0:
+                    print(f'{oid}', end=' ', flush=True)
+            order_price = 0
+            uid = random.choice(list(range(num_users)))
+            order_fulfilled = 'false'
+            num_purchases_per_order = random.randint(1, 10)
+            time_purchased = fake.date_time()
+            for purchase in range(num_purchases_per_order):
+                if purchase_id % 100 == 0:
+                    print(f'{purchase_id}', end=' ', flush=True)
+                unique_pid = fake.random_element(available_unique_pids)
+                # if (purchase_id) and unique_pid in purchases[purchase_id]:
+                #     break # skip purchase if the product is already in this order
+                sid = unique_pid_available[unique_pid][1]
+                unit_price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+                qty = fake.random_int(min=1, max=20)
+                purchase_fulfilled='false'
+                purchases.append([purchase_id, uid, unique_pid, oid, qty, purchase_fulfilled, time_fulfilled, sid, unit_price])
+                order_price += float(unit_price) * qty
+                purchase_id += 1
+            writer.writerow([oid, uid, order_fulfilled, time_purchased, order_price])
+    return purchases
 
 
 def gen_cart(unique_pid_available):
@@ -144,12 +151,12 @@ def gen_cart(unique_pid_available):
         for uid in range(num_users):
             if uid % 10 == 0:
                 print(f'{uid}', end=' ', flush=True)
-            for pid in fake.random_elements(unique_available_pids, length=fake.random_int(min=1, max=30), unique=True):
+            for pid in fake.random_elements(unique_available_pids, length=fake.random_int(min=1, max=10), unique=True):
                 qty = fake.random_int(min=1, max=20)
                 writer.writerow([uid, pid, qty])
     return
 
-def gen_reviews(num_products, unique_pid_available):
+def gen_reviews(num_products, unique_pid_available, num_purchases):
     # available_pids = []
     unique_available_pids = list(unique_pid_available.keys())
     with open('db/generated/Reviews.csv', 'w') as f:
@@ -186,13 +193,12 @@ def gen_sellerReviews(num_users):
 
 # function that assigns sellers to available pids
 def get_seller_to_pid(available_pids, sellers): #### use all pids, not just available_pids
+    seller_pid = {} # dictionary with key:pid and value:list of sids that sell pid
     for pid in available_pids:
         seller_pid[pid] = [] # all sellers who have this pid in inventory
         num_sellers = random.randint(1,9)  # number of sellers who have this same pid in inventory
         #seller_pid = [] # all sellers who have this pid in inventory
         for i in range(num_sellers):
-            if id % 50 == 0:
-                print(f'{id}', end=' ', flush=True)
             sid = random.choice(sellers)
             if sid not in seller_pid[pid]: # prevents duplicate sid/pid pairing
                 seller_pid[pid].append(sid)
@@ -201,7 +207,7 @@ def get_seller_to_pid(available_pids, sellers): #### use all pids, not just avai
 # inventory needs products to set unavailable pids to qty = 0
 def gen_inventory(unique_pid_available, unique_pid_unavailable):
     #sellers = [] #contains sid/uid of sellers
-    seller_pid = {} # dictionary with key:pid and value:list of sids that sell pid
+    #seller_pid = {} # dictionary with key:pid and value:list of sids that sell pid
     with open('db/generated/Inventory.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Inventory...', end=' ', flush=True) 
@@ -213,7 +219,7 @@ def gen_inventory(unique_pid_available, unique_pid_unavailable):
             id += 1
                 
         for unique_pid in unique_pid_unavailable:
-            sid = unique_pid_available[unique_pid][1]
+            sid = unique_pid_unavailable[unique_pid][1]
             qty = 0
             writer.writerow([id, sid, unique_pid, qty])
             id += 1
@@ -227,8 +233,10 @@ seller_pid = get_seller_to_pid(available_pids, sellers)
 unique_pid_available, unique_pid_unavailable = gen_products(num_products, seller_pid, available_pids)
 gen_inventory(unique_pid_available, unique_pid_unavailable)
 
-gen_purchases(num_purchases, unique_pid_available)
-gen_cart(unique_pid_available)
+purchases = gen_orders(num_orders, num_users, unique_pid_available)
+num_purchases = len(purchases)
+gen_purchases(purchases)
 
-gen_reviews(num_products, unique_pid_available)
+gen_cart(unique_pid_available)
+gen_reviews(num_products, unique_pid_available, num_purchases)
 gen_sellerReviews(num_users)
