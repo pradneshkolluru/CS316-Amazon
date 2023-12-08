@@ -104,7 +104,7 @@
                 <a href="{{ url_for('products.product_info', id=product.id) }}">
                   <img
                     class="bd-placeholder-img card-img-top"
-                    src="/static/images/gargi.jpeg"
+                    src="data:image/jpeg;base64,{{ product.image }}"
                     width="100%"
                     height="100%"
                     xmlns="http://www.w3.org/2000/svg"

@@ -17,6 +17,7 @@ humanize = "^4.8.0"
 flask = "2.3.3"
 werkzeug = "2.3.7"
 flask-paginate = "^2023.10.24"
+matplotlib = "^3.8.2"
 
 [build-system]
 requires = ["poetry-core"]
