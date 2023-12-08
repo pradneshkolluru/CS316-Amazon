@@ -38,12 +38,12 @@ bp = Blueprint('products', __name__)
 @bp.route('/products', methods = ['POST', 'GET'])
 def products():
 
-    topK = request.form.get('fname')
+    stringMatch = request.form.get('stringMatch')
+    kMost = request.form.get('topK')
+    catOpt = request.form.get('options')
+    sortOpt = request.form.get('priceSort')
 
-    if topK == None or topK == '':
-        topK = -1
-    else:
-        topK = int(topK)
+    print(sortOpt)
 
     search = False
     q = request.args.get('q')
@@ -51,7 +51,7 @@ def products():
         search = True
 
     # get all available products for sale:
-    products = Product.get_all(True, topK)
+    products = Product.get_filtered2(True, strMatch = stringMatch, k = kMost, catMatch = catOpt, priceSort = sortOpt)
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
 
@@ -69,6 +69,11 @@ def products():
     else:
         purchases = None
     # render the page by adding information to the index.html file
+
+    # for i in sliced_products:
+
+    #     i.avgRating = round(i.avgRating, 2)
+        
     return render_template('products.html',
                            avail_products=sliced_products,
                            purchase_history=purchases,
