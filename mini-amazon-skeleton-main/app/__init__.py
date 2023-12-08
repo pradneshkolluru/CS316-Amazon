@@ -44,6 +44,9 @@ def create_app():
 
     from .order import bp as order_bp
     app.register_blueprint(order_bp)
+
+    from .saveForLater import bp as save_bp
+    app.register_blueprint(save_bp)
     
 
     return app

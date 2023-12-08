@@ -7,6 +7,7 @@ import datetime
 from .models.product import Product
 from .models.purchase import Purchase
 from .models.cart import Cart
+from .models.saveForLater import SaveForLater
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -23,10 +24,12 @@ def cart():
         if total_cart_price == None:
             total_cart_price = 0
         num_line_items = len(cart_products)
+        saved_items = SaveForLater.get_saved_items(current_user.id)
     else:
         cart_products = None
         total_cart_price = 0
         num_line_items = 0
+        saved_items = None
     
     search = False
     q = request.args.get('q')
@@ -47,12 +50,13 @@ def cart():
                            cart_products=sliced_items,
                            total_cart_price=total_cart_price,
                            num_line_items=num_line_items,
+                           saved_items=saved_items,
                            pagination=pagination)
 
 
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    Cart.update_item_qty(current_user.id, product_id, 1)
+def add_to_cart(product_id, qty=1):
+    Cart.update_item_qty(current_user.id, product_id, qty)
     return redirect(url_for('cart.cart'))
 
 @bp.route('/cart/delete/<int:product_id>', methods=['POST'])
