@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+<h2>Order Details for Order ID: {{oid}}</h2>
+<br>
+<h4>Buyer Information:</h4>
+<h5>Buyer Name: {{name}}</h5>
+<h5>Delivery Address: {{address}}</h5>
+<h5>Buyer Contact Information: {{email}}</h5>
+<br>
+<h5>Click on a specific order ID to view an order summary and edit its fulfillment status.</h5>
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product ID</th>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity Sold</th>
+      <th scope="col">Purchase Fulfillment Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in purchase_items%}
+      <tr>
+        <th scope="row">{{item[0]}}</th>
+        <td>{{item[3]}}</td>
+        <td>{{item[1]}}</td>
+
+        {% if item[2]==False %}
+        <td style="color:#FF0000;">Not fulfilled</td>
+        {% else %}
+        <td style="color:#23A129;">Fulfilled</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<u><a href="{{url_for('order.seller_orders', sid=current_user.id) }}">Click here to go back to your order history</a></u>
+{% endif %}
+
+{% endblock %}

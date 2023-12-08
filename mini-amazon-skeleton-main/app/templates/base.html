@@ -136,11 +136,12 @@
               >Update Account</a
             >
             <a href="{{ url_for('purchases.purchases') }}">Purchase History</a>
+            <a href="/order-seller/{{current_user.id}}" type="button">Seller Order History</a>
+            <a href="/inventory/{{current_user.id}}" type="button">Seller Inventory</a>
             <a href="{{ url_for('sellerReviews.sellerReviews') }}"
               >Seller Reviews</a
             >
             <a href="{{ url_for('reviews.reviews') }}">Product Reviews</a>
-            <a href="/inventory/{{current_user.id}}" type="button">Inventory</a>
             <a href="{{ url_for('users.logout') }}" type="button">Log Out</a>
           </div>
         </div>

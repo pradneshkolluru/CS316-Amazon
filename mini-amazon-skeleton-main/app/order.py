@@ -49,3 +49,86 @@ def get_order(oid):
                            purchases_in_order=sliced_items,
                            humanize_time=humanize_time,
                            pagination=pagination)
+
+@bp.route('/order-seller/<int:sid>')
+def seller_orders(sid):
+    if current_user.is_authenticated:
+        orders_list = Order.get_all_orders_for_seller(sid)
+        oids = []
+        # list of dictionaries with key: oid
+        order_revenue = {}
+        order_num_items = {}
+        order_fulfillment = {}
+        order_purchase_date = {} #default value
+        for purchase in orders_list:
+            oid = purchase[0]
+            qty = purchase[2]
+            unit_price = purchase[3]
+            purchase_fulfilled = purchase[4]
+            time_purchased = purchase[5]
+            oids.append(oid)
+            if oid in order_revenue:
+                order_revenue[oid] += qty * unit_price
+            if oid not in order_revenue:
+                order_revenue[oid] = qty * unit_price
+            if oid in order_num_items:
+                order_num_items[oid] += qty
+            if oid not in order_num_items:
+                order_num_items[oid] = qty
+            if oid in order_fulfillment:
+                if order_fulfillment[oid]:
+                    if not purchase_fulfilled:
+                        order_fulfillment[oid] = "Not fulfilled"
+            if oid not in order_fulfillment:
+                if purchase_fulfilled:
+                    order_fulfillment[oid] = "Fulfilled"
+                else:
+                    order_fulfillment[oid] = "Not fulfilled"
+            if not oid in order_purchase_date:
+                order_purchase_date[oid] = time_purchased
+        
+        oids = list(set(oids)) # only unique order ids
+
+        # sort oids by time_purchased (reverse chronological order)
+        oid_time = []
+        for oid in oids:
+            oid_time.append((oid, order_purchase_date[oid]))
+        oid_time.sort(key = lambda x:x[1], reverse = True)
+        oids = [o[0] for o in oid_time]
+
+    else:
+        oids_list = None
+        revenue = None,
+        num_items = None,
+        fulfillment = None,
+        purchase_date = None
+    return render_template('seller_orders.html',
+                           oids_list = oids,
+                           revenue = order_revenue,
+                           num_items = order_num_items,
+                           fulfillment = order_fulfillment,
+                           purchase_date = order_purchase_date)
+
+@bp.route('/order-seller/<int:sid>/<int:oid>')
+def seller_order_details(sid, oid):
+    if current_user.is_authenticated:
+        purchase_items = Order.get_order_info_for_seller(sid, oid)
+
+        buyer_info = Order.get_buyer_info_from_purchase(oid)[0]
+
+        buyer_name = str(buyer_info[0]).capitalize() + " " + str(buyer_info[1]).capitalize()
+        buyer_address = buyer_info[2]
+        buyer_email = buyer_info[3]
+
+    return render_template('seller_order_details.html',
+                           purchase_items=purchase_items,
+                           oid = oid,
+                           name = buyer_name,
+                           address = buyer_address,
+                           email = buyer_email)
+
+# @bp.route('/order-seller/<int:sid>/<int:pid>')
+# def change_purchase_fulfillment_status(sid, pid):
+#     if current_user.is_authenticated:
+#         purchases = Order.update_purchase_fulfillment
+#     return render_template('')
