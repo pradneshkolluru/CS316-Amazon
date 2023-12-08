@@ -47,25 +47,52 @@ def gen_sellers(num_sellers):
         print(f'{num_sellers} generated')
     return sellers
 
-
-def gen_products(num_products):
+# determines which products are available
+def get_available_products(num_products):
     available_pids = []
+    for pid in range(num_products):
+        if pid % 100 == 0:
+            print(f'{pid}', end=' ', flush=True)
+        available = fake.random_element(elements=('true', 'false'))
+        if available == 'true':
+            available_pids.append(pid)
+    return available_pids
+
+def gen_products(num_products, seller_pid, available_pids):
+    #available_pids = []
     with open('db/generated/Products.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Products...', end=' ', flush=True)
-        for pid in range(num_products):
+        unavailable_pids = list(set(range(num_products)) - set(available_pids))
+        unique_pid_available = {} # key: id, value: (pid, sid)
+        unique_pid_unavailable = {} # key: id, value: (pid, sid)
+        id = 0
+        for pid in available_pids:
             if pid % 100 == 0:
                 print(f'{pid}', end=' ', flush=True)
+            for sid in seller_pid[pid]: # for each seller that sells current pid
+                name = fake.sentence(nb_words=4)[:-1]
+                category = fake.random_element(elements=('toys', 'electronic', 'clothes', 'tools', 'food', 'beauty'))
+                description = fake.sentence(nb_words=15)[:-1]
+                price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
+                # available = fake.random_element(elements=('true', 'false'))
+                # if available == 'true':
+                #     available_pids.append(pid)
+                available = 'true'
+                unique_pid_available[id] = (pid, sid)
+                writer.writerow([id, pid, sid, name, category, description, price, available])
+                id += 1 # id is unique, pid is not unique (multiple sellers can have same pid)
+        for pid in unavailable_pids:
             name = fake.sentence(nb_words=4)[:-1]
-            category = fake.random_element(elements=('toys', 'electronic', 'clothes', 'tools'))
+            category = fake.random_element(elements=('toys', 'electronic', 'clothes', 'tools', 'food', 'beauty'))
             description = fake.sentence(nb_words=15)[:-1]
             price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
-            available = fake.random_element(elements=('true', 'false'))
-            if available == 'true':
-                available_pids.append(pid)
-            writer.writerow([pid, name, category, description, price, available])
-        print(f'{num_products} generated; {len(available_pids)} available')
-    return available_pids
+            unique_pid_unavailable[id] = (pid, sid)
+            available = 'false'
+            writer.writerow([id, pid, sid, name, category, description, price, available])
+            id += 1 # id is unique, pid is not unique (multiple sellers can have same pid)
+        print(f'{id} product listings generated; {len(available_pids)} products available; {len(unavailable_pids)} products unavailable')
+    return unique_pid_available, unique_pid_unavailable
 
 
 def gen_purchases(num_purchases, available_pids):
@@ -128,36 +155,51 @@ def gen_sellerReviews(num_users):
         # print(f'{num_products} generated; {len(available_pids)} available')
     return    
 
+# function that assigns sellers to available pids
+def get_seller_to_pid(available_pids, sellers): #### use all pids, not just available_pids
+    for pid in available_pids:
+        seller_pid[pid] = [] # all sellers who have this pid in inventory
+        num_sellers = random.randint(1,9)  # number of sellers who have this same pid in inventory
+        #seller_pid = [] # all sellers who have this pid in inventory
+        for i in range(num_sellers):
+            if id % 50 == 0:
+                print(f'{id}', end=' ', flush=True)
+            sid = random.choice(sellers)
+            if sid not in seller_pid[pid]: # prevents duplicate sid/pid pairing
+                seller_pid[pid].append(sid)
+    return seller_pid
 
-def gen_inventory(num_users, available_pids):
-    sellers = [] #contains sid/uid of sellers
+# inventory needs products to set unavailable pids to qty = 0
+def gen_inventory(sellers, unique_pid_available, unique_pid_unavailable):
+    #sellers = [] #contains sid/uid of sellers
+    seller_pid = {} # dictionary with key:pid and value:list of sids that sell pid
     with open('db/generated/Inventory.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Inventory...', end=' ', flush=True)
-        for uid in range(num_users):
-            if random.randint(1,5) == 5: # 20% chance that a user is also seller
-                sellers.append(uid)
+        print('Inventory...', end=' ', flush=True) 
         id = 0
-        for pid in available_pids:
-            num_sellers = random.randint(1,9)  # number of sellers who have this same pid in inventory
-            seller_pid = [] # all sellers who have this pid in inventory
-            for i in range(num_sellers):
-                if id % 200 == 0:
-                    print(f'{id}', end=' ', flush=True)
-                sid = random.choice(sellers)
-                if sid not in seller_pid: # prevents duplicate sid/pid pairing
-                    seller_pid.append(sid)
-                    qty = random.choice([1,1,1,10,10,10,20,20,30,50,70,100]) + random.randint(1,9)
-                    writer.writerow([id, sid, pid, qty])
-                    id += 1
+        for unique_pid in unique_pid_available:
+            sid = unique_pid_available[unique_pid][1]
+            qty = random.choice([1,1,1,10,10,10,20,20,30,50,70,100]) + random.randint(1,9)
+            writer.writerow([id, sid, unique_pid, qty])
+            id += 1
+                
+        for unique_pid in unique_pid_unavailable:
+            sid = unique_pid_available[unique_pid][1]
+            qty = 0
+            writer.writerow([id, sid, unique_pid, qty])
+            id += 1
         print(f'{id} entries generated')
     return
 
 gen_users(num_users)
-gen_sellers(num_sellers)
-available_pids = gen_products(num_products)
+sellers = gen_sellers(num_sellers)
+available_pids = get_available_products(num_products)
+seller_pid = get_seller_to_pid(available_pids, sellers)
+unique_pid_available, unique_pid_unavailable = gen_products(num_products, seller_pid, available_pids)
+gen_inventory(sellers, unique_pid_available, unique_pid_unavailable)
+
 gen_purchases(num_purchases, available_pids)
 gen_cart(available_pids)
-gen_inventory(num_users, available_pids)
+gen_inventory(sellers, available_pids)
 gen_reviews(num_products, available_pids)
 gen_sellerReviews(num_users)
