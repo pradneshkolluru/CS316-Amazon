@@ -15,6 +15,7 @@ def purchases():
     if current_user.is_authenticated:
         years = Order.get_years(current_user.id)
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
+        print(all_purchases)
         query=[]
         stringMatch = request.form.get('stringMatch')
         if stringMatch:
@@ -26,10 +27,9 @@ def purchases():
         if year:
             query.append(year)
         querystring=", ".join(query)
+        
         all_purchases = Order.get_filtered(strMatch = stringMatch, uid=current_user.id, sellerMatch=sellerMatch, year=year)
-    else:
-        all_purchases
-
+    
         search = False
         q = request.args.get('q')
         if q:
@@ -45,9 +45,8 @@ def purchases():
     
     else:
         # purchases = None
-        all_purchases = None
+        #all_purchases = None
         pagination= None
-
     return render_template('purchases.html',
                             # purchase_history=purchases,
                             all_purchases=all_purchases,
