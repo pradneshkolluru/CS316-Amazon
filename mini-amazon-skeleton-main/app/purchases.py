@@ -13,16 +13,21 @@ bp = Blueprint('purchases', __name__)
 @bp.route('/purchases', methods = ['POST', 'GET'])
 def purchases():
     if current_user.is_authenticated:
+        years = Order.get_years(current_user.id)
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
-        # purchases = Purchase.get_all(
-        #     current_user.id)
+        query=[]
         stringMatch = request.form.get('stringMatch')
-        kMost = request.form.get('topK')
+        if stringMatch:
+            query.append(stringMatch)
         sellerMatch = request.form.get('sellerMatch')
-        print(sellerMatch)
-        all_purchases = Order.get_filtered(strMatch = stringMatch, k = kMost, uid=current_user.id, sellerMatch=sellerMatch)
+        if sellerMatch:
+            query.append(sellerMatch)
+        year = request.form.get('years')
+        if year:
+            query.append(year)
+        querystring=", ".join(query)
+        all_purchases = Order.get_filtered(strMatch = stringMatch, uid=current_user.id, sellerMatch=sellerMatch, year=year)
     else:
-        # purchases = None
         all_purchases
 
     search = False
@@ -40,4 +45,4 @@ def purchases():
     return render_template('purchases.html',
                             # purchase_history=purchases,
                             all_purchases=all_purchases,
-                            pagination=pagination)    
+                            pagination=pagination, years=years, query=querystring)    

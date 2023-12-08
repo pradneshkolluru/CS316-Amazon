@@ -7,7 +7,6 @@ from .models.review import Review
 from flask import Blueprint
 bp = Blueprint('reviews', __name__)
 
-
 @bp.route('/reviews')
 def reviews():
     # get all reviews by user:   
