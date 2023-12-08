@@ -1,8 +1,10 @@
 from flask import current_app as app
+from flask import flash
 
 from .inventory import InventoryItem
 from .order import Order
 from .purchase import Purchase
+from .user import User
 
 class Cart:
     def __init__(self, uid, pid, sid, product_name, qty, unit_price):
@@ -75,6 +77,15 @@ WHERE uid = :uid
         return rows
     
     @staticmethod
+    def delete_all_user_items_from_cart(uid):
+        rows = app.db.execute("""
+DELETE FROM Cart
+WHERE uid = :uid
+""",
+                            uid=uid)
+        return rows
+    
+    @staticmethod
     def get_qty_in_cart(uid, pid):
         qty = app.db.execute("""
 SELECT qty
@@ -88,21 +99,49 @@ WHERE uid = :uid AND pid = :pid
     @staticmethod
     def submit_cart(uid):
         items_in_cart = Cart.get_items_in_cart(uid)
+        buyer = User.get(uid)
+
         enough_inventory = True
+        total_cart_price = 0
         
+        # check if all sellers have enough inventory - if even one seller doesn't have enough, don't submit cart
         for item in items_in_cart:
             qty_in_inventory = InventoryItem.get_qty(item.sid, item.pid)
-            if qty_in_inventory < item.qty:
+            total_cart_price += item.qty * item.unit_price      # keep track of total cost to buyer
+            if qty_in_inventory == None or qty_in_inventory[0][0] < item.qty:
                 enough_inventory = False
+                flash("There is not enough inventory for product: {p_name}. Please check and try again.".format(p_name = item.product_name))
+                return False
         
-        if enough_inventory:
+        if buyer.balance < total_cart_price:
+            flash("There isn't enough money in your account to make this order.")
+
+        if enough_inventory and buyer.balance >= total_cart_price:
+            # add to Orders table and get corresponding order id
             new_order = Order.add_new_order(uid)
             oid = new_order[0][0]
+
+            # decrement buyer balance
+            User.update_balance(uid, buyer.balance - total_cart_price)
+
             for item in items_in_cart:
-                InventoryItem.update_quantity(item.sid, item.pid, item.qty*-1)
+                # update seller inventory for product
+                qty_in_inventory = InventoryItem.get_qty(item.sid, item.pid)
+                new_quantity = qty_in_inventory[0][0] - item.qty
+                InventoryItem.update_quantity(item.sid, item.pid, new_quantity)
+
+                # add product to Purchases table
                 Purchase.add_new_purchase(uid, item.pid, oid, item.qty, item.sid, item.unit_price)
-                # delete from cart
-            return "Cart Submitted!"
+
+                # increment seller balance
+                items_total_price = item.qty * item.unit_price
+                seller = User.get(item.sid)
+                User.update_balance(item.sid, seller.balance + items_total_price)
+            
+            # clear cart for user
+            Cart.delete_all_user_items_from_cart(uid)
+
+            return oid
         else:
-            return "There is not enough inventory for one or more of your items. Please check and try again."
+            return False
 

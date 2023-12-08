@@ -47,6 +47,7 @@ WHERE O.id = P.oid
         rows = app.db.execute("""
 INSERT INTO Orders(uid, order_fulfilled)
 VALUES(:uid, :order_fulfilled)
+RETURNING id
 """,
                             uid=uid,
                             order_fulfilled=False)

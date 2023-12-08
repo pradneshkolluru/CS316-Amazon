@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<br><br>
+{% if current_user.is_authenticated %}
+
+<h2>Order #{{oid}}</h2>
+
+{% if num_items_in_order > 0 %}
+  {% if purchases_in_order[0].order_fulfilled %}
+  <h2 style="color:#23A129">Order Fulfilled!</h2>
+  {% else %}
+  <h2 style="color:#FF0000">Order Not Fulfilled Yet</h2>
+  {% endif %}
+{% endif %}
+
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <li>{{ message }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+</p>
+
+<table class='table table-hover table-bordered container'>
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">Product Name</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Unit Price</th>
+      <th scope="col">Purchase Fulfilled?</th>
+
+      <!-- O.id, O.uid, P.pid, P.qty, Pr.name, P.unit_price, P.purchase_fulfilled, O.order_fulfilled -->
+
+
+    </tr>
+  </thead>
+  <tbody>
+    {% for item in purchases_in_order%}
+      <tr>
+        <td><a href="{{ url_for('products.product_info', id=item.pid) }}">{{item.product_name}}</a></td>
+        <td>{{item.qty}}</td>
+        <td>${{item.unit_price}}</td>
+        {% if item.purchase_fulfilled %}
+        <td style="color:#23A129">&#x2713;</td>
+        {% else %}
+        <td style="color:#FF0000">&#10007;</td>
+        {% endif %}
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{{ pagination.links }}
+
+{% else %}
+<p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>
+{% endif %}
+
+{% endblock %}

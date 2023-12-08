@@ -1,5 +1,5 @@
 from flask import render_template
-from flask import redirect, url_for
+from flask import redirect, url_for, flash
 from flask import request
 from flask_login import current_user
 import datetime
@@ -20,9 +20,13 @@ def cart():
     if current_user.is_authenticated:
         cart_products = Cart.get_items_in_cart(current_user.id)
         total_cart_price = Cart.get_total_price(current_user.id)
+        if total_cart_price == None:
+            total_cart_price = 0
+        num_line_items = len(cart_products)
     else:
         cart_products = None
         total_cart_price = 0
+        num_line_items = 0
     
     search = False
     q = request.args.get('q')
@@ -42,6 +46,7 @@ def cart():
     return render_template('cart.html',
                            cart_products=sliced_items,
                            total_cart_price=total_cart_price,
+                           num_line_items=num_line_items,
                            pagination=pagination)
 
 
@@ -61,3 +66,13 @@ def change_item_qty():
     qty = int(request.form.get('qty'))
     Cart.update_item_qty(current_user.id, pid, qty)
     return redirect(url_for('cart.cart'))
+
+@bp.route('/cart/submit', methods=['POST'])
+def try_submit_order():
+    order_id = Cart.submit_cart(current_user.id)
+    if order_id:
+        flash("Order Submitted!")
+        return redirect(url_for('order.get_order', oid = order_id))
+    else:
+        return redirect(url_for('cart.cart'))
+    

@@ -45,7 +45,7 @@ ORDER BY time_purchased DESC
     def add_new_purchase(uid, pid, oid, qty, sid, unit_price):
         rows = app.db.execute('''
 INSERT INTO Purchases(uid, pid, oid, qty, purchase_fulfilled, sid, unit_price)
-VALUES(:uid, :order_fulfilled)
+VALUES(:uid, :pid, :oid, :qty, :purchase_fulfilled, :sid, :unit_price)
 ''',
                                 uid=uid,
                                 pid=pid,
