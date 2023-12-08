@@ -112,5 +112,16 @@ SET order_fulfilled = True
 WHERE oid = :oid
 """,
                             oid=oid)
-        
         return
+
+def update_purchase_fulfillment(oid, pid, new_status):
+        rows = app.db.execute("""
+UPDATE Purchases
+SET purchase_fulfilled = :new_status
+WHERE oid = :oid
+AND pid = :pid
+""",
+                            oid=oid,
+                            pid=pid,
+                            new_status=new_status)
+        return rows if rows else None

@@ -127,8 +127,15 @@ def seller_order_details(sid, oid):
                            address = buyer_address,
                            email = buyer_email)
 
-# @bp.route('/order-seller/<int:sid>/<int:pid>')
-# def change_purchase_fulfillment_status(sid, pid):
-#     if current_user.is_authenticated:
-#         purchases = Order.update_purchase_fulfillment
-#     return render_template('')
+@bp.route('/order-seller/<int:sid>/<int:oid>/<int:pid>',methods=['POST'])
+def change_purchase_fulfillment_status(sid, oid, pid):
+    if current_user.is_authenticated:
+        curr_status = str(request.form.get('fulfillment_status'))
+        new_status = False
+        if curr_status == "Fulfilled":
+            new_status = True
+        purchases = Order.update_purchase_fulfillment(oid, pid, new_status)
+
+        # then trigger function to show change in status in buyer's view
+        #Order.check_and_update_order_fulfillment()
+    return redirect(url_for('order.seller_order_details', sid=sid, oid = oid))
