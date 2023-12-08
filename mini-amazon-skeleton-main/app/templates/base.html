@@ -125,6 +125,11 @@
         min-width: 5%;
         border: none;
       }
+      @media only screen and (max-width: 1575px) {
+        .hello {
+          display: none;
+        }
+      }
     </style>
   </head>
   <body>
@@ -167,7 +172,7 @@
       </form>
       <div class="headerBtns" style="color: aliceblue; text-align: right">
         {% if current_user.is_authenticated %}
-        <h2>Hello {{current_user.firstname}}!</h2>
+        <h2 class="hello">Hello {{current_user.firstname}}!</h2>
         <br /><br />
         <a href="{{ '/' }}" type="button" class="btn btn-light">Home Page</a>
         <!-- <a href="{{ '/purchases' }}" type="button" class="btn btn-light">Purchases</a> -->

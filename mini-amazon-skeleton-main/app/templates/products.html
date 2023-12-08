@@ -16,47 +16,64 @@
       a:hover {
         text-decoration: underline;
       }
+      .sidebar {
+        width: max-content;
+        height: max-content;
+        min-height: max-content;
+        overflow: auto;
+        position: -webkit-sticky;
+        position: sticky;
+        top: 5%;
+      }
+      .wrapper {
+        display: flex;
+      }
+      .prodGrid {
+        min-width: 90%;
+        min-height: 100%;
+      }
     </style>
   </head>
   <body>
-    <form method="POST" action="{{ url_for('products.products')}}">
-      <label for="topK">K Most Items: </label>
-      <input type="number" id="topK" name="topK" /><br /><br />
+    <main class="wrapper">
+      <div class="sidebar">
+        <form method="POST" action="{{ url_for('products.products')}}">
+          <label for="topK">K Most Items: </label>
+          <input type="number" id="topK" name="topK" /><br /><br />
 
-      <label>Product Category:</label><br />
-      <input type="radio" id="option1" name="options" value="toys" />
-      <label for="option1">Toys</label>
+          <label>Product Category:</label><br />
+          <input type="radio" id="option1" name="options" value="toys" />
+          <label for="option1">Toys</label>
 
-      <input type="radio" id="option2" name="options" value="electronic" />
-      <label for="option2">Electronic</label>
+          <input type="radio" id="option2" name="options" value="electronic" />
+          <label for="option2">Electronic</label>
 
-      <input type="radio" id="option3" name="options" value="clothes" />
-      <label for="option3">Clothes</label>
+          <input type="radio" id="option3" name="options" value="clothes" />
+          <label for="option3">Clothes</label>
 
-      <input type="radio" id="option4" name="options" value="tools" />
-      <label for="option4">Tools</label><br /><br />
+          <input type="radio" id="option4" name="options" value="tools" />
+          <label for="option4">Tools</label><br /><br />
 
-      <label>Price Sort:</label><br />
+          <label>Price Sort:</label><br />
 
-      <input type="radio" id="option1" name="priceSort" value="ASC" />
-      <label for="option1">Low -> High</label>
+          <input type="radio" id="option1" name="priceSort" value="ASC" />
+          <label for="option1">Low -> High</label>
 
-      <input type="radio" id="option2" name="priceSort" value="DESC" />
-      <label for="option2">High -> Low</label><br />
+          <input type="radio" id="option2" name="priceSort" value="DESC" />
+          <label for="option2">High -> Low</label><br />
 
-      <input type="submit" value="Filter/ Sort Items" /><br /><br />
-    </form>
+          <input type="submit" value="Filter/ Sort Items" /><br /><br />
+        </form>
 
-    <form
-      style="width: auto"
-      action="{{ url_for('products.products')}}"
-      method="POST"
-    >
-      <input type="submit" value="Reset Filters" />
-    </form>
-
-    <main>
-      <div class="album py-5 bg-body-tertiary">
+        <form
+          style="width: auto"
+          action="{{ url_for('products.products')}}"
+          method="POST"
+        >
+          <input type="submit" value="Reset Filters" />
+        </form>
+      </div>
+      <div class="album py-5 bg-body-tertiary prodGrid">
         <div class="container">
           <h2>Products for sale:</h2>
           <div style="padding-bottom: 2em">{{ pagination.info }}</div>
