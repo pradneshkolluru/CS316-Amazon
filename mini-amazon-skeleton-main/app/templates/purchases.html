@@ -5,6 +5,24 @@
 <br><br>
 {% if current_user.is_authenticated %}
 <h2>Your Purchases:</h2>
+<form action="{{ url_for('purchases.purchases')}}" method="POST">
+  <label for="stringMatch">Search by Name: </label>
+  <input type="text" id="stringMatch" name="stringMatch" />
+</form>
+<form action="{{ url_for('purchases.purchases')}}" method="POST">
+  <label for="sellerMatch">Search by Seller Last Name: </label>
+  <input type="text" id="sellerMatch" name="sellerMatch" />
+</form>
+<form action="{{ url_for('purchases.purchases')}}" method="POST">
+  <label for="topK">K Most Items: </label>
+  <input type="number" id="topK" name="topK" />
+</form>
+<form style="width: auto" action="" method="POST">
+  <input type="submit" value="Filter Items" />
+</form>
+<form style="width: auto" action="{{ url_for('purchases.purchases')}}" method="POST">
+  <input type="submit" value="Reset Filter" />
+</form>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
@@ -14,6 +32,8 @@
       <th scope="col">Unit Price</th>
       <th scope="col">Purchase Fulfilled?</th>
       <th scope="col">Order Fulfilled?</th>
+      <th scope="col">Date Purchased</th>
+      <th scope="col">Seller Name</th>
 
       <!-- O.id, O.uid, P.pid, P.qty, Pr.name, P.unit_price, P.purchase_fulfilled, O.order_fulfilled -->
 
@@ -31,6 +51,8 @@
         <td>{{item.unit_price}}</td>
         <td>{{item.purchase_fulfilled}}</td>
         <td>{{item.order_fulfilled}}</td>
+        <td>{{item.time_purchased}}</td>
+        <td>{{item.sellerfirst}} {{item.sellerlast}}</td>
       </tr>
     {% endfor %}
   </tbody>

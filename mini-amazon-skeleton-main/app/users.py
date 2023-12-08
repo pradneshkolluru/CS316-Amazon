@@ -2,7 +2,7 @@ from flask import render_template, redirect, url_for, flash, request
 from werkzeug.urls import url_parse
 from flask_login import login_user, logout_user, current_user
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from decimal import Decimal
 
@@ -49,6 +49,7 @@ class RegistrationForm(FlaskForm):
     password2 = PasswordField(
         'Repeat Password', validators=[DataRequired(),
                                        EqualTo('password')])
+    seller = RadioField ('Register as a seller?', choices=[('yes', 'Yes'), ('no', 'No')])
     submit = SubmitField('Register')
 
     def validate_email(self, email):
@@ -62,18 +63,32 @@ def register():
         return redirect(url_for('index.index'))
     form = RegistrationForm()
     if form.validate_on_submit():
-        if User.register(form.email.data,
+        user = User.register(form.email.data,
                          form.password.data,
                          form.firstname.data,
                          form.lastname.data,
-                         form.address.data):
-            flash('Congratulations, you are now a registered user! Log into your account above.')
+                         form.address.data)
+        if user:
+            print(form.seller.data)
+            if form.seller.data == "yes":
+                User.register_seller(user.id)
+            flash('Congratulations, you are now a registered user! Log into your account below.')
             return redirect(url_for('users.login'))
     return render_template('register.html', title='Register', form=form)
 
 @bp.route('/account', methods = ['POST', 'GET'])
 def show_info():
-    return render_template('account.html')
+    seller = None
+    if current_user.is_authenticated:
+        seller = User.is_seller(current_user.id)
+    return render_template('account.html', seller=seller)
+
+@bp.route('/seller', methods = ['POST', 'GET'])
+def register_seller():
+    if current_user.is_authenticated:
+        User.register_seller(current_user.id)
+    return redirect(url_for('users.show_info'))
+
     
 @bp.route('/updateEmail', methods = ['POST', 'GET'])
 def update_email():
@@ -84,12 +99,14 @@ def update_email():
         else:
             User.update_email(id=current_user.id, newInput=newEmail)
         return redirect(url_for('users.show_info'))
+    
 @bp.route('/updateFirstName', methods = ['POST', 'GET'])
 def update_first_name():
     if current_user.is_authenticated:
         newFirst = request.form.get("newFirst")
         User.update_firstName(id=current_user.id, newInput=newFirst)
         return redirect(url_for('users.show_info'))
+    
 @bp.route('/updateLastName', methods = ['POST', 'GET'])
 def update_last_name():
     if current_user.is_authenticated:

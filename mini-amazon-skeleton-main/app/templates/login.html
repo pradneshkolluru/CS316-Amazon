@@ -3,6 +3,17 @@
 {% block content %}
 <br>
 <h1>Login</h1>
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+  <ul>
+    {% for message in messages %}
+    <span style="color: blue;">{{ message }}</span>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endwith %}
+</p>
 
 <form action="" method="post" novalidate>
   {{ form.hidden_tag() }}
@@ -19,17 +30,6 @@
     {% for error in form.password.errors %}
     <span style="color: red;">[{{ error }}]</span>
     {% endfor %}
-  </p>
-  <p>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <ul>
-      {% for message in messages %}
-      <li>{{ message }}</li>
-      {% endfor %}
-    </ul>
-    {% endif %}
-    {% endwith %}
   </p>
   {{ form.submit(class_="btn btn-black") }}
 </form>
