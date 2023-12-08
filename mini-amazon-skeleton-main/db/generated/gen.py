@@ -153,7 +153,7 @@ def gen_inventory(num_users, available_pids):
         print(f'{id} entries generated')
     return
 
-gen_users(num_users
+gen_users(num_users)
 gen_sellers(num_sellers)
 available_pids = gen_products(num_products)
 gen_purchases(num_purchases, available_pids)

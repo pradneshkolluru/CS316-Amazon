@@ -46,7 +46,7 @@
         justify-content: space-between;
         overflow-y: scroll;
       }
-      input {
+      .addBtn {
         background-color: #ff9900;
         border-radius: 30px;
         border: none;
@@ -57,7 +57,7 @@
         margin: 4px 2px;
         cursor: pointer;
       }
-      input:hover {
+      .addBtn:hover {
         background-color: #ffb84d;
         border-radius: 30px;
         border: none;
@@ -74,9 +74,24 @@
       .reviewContainer {
         display: flex;
         flex-direction: row;
+        gap: 8em;
         @media only screen and (max-width: 990px) {
           flex-direction: column;
           align-items: center;
+          gap: 0;
+        }
+      }
+      /* .reviewContainer > .inputReview {
+        @media only screen and (max-width: 990px) {
+          flex-direction: column;
+          align-items: center;
+          gap: 0;
+        }
+      } */
+      .inputReview {
+        min-width: 30%;
+        @media only screen and (max-width: 990px) {
+          width: 80%;
         }
       }
     </style>
@@ -96,6 +111,7 @@
                 display: flex;
                 flex-direction: row;
                 justify-content: space-between;
+                gap: 2em;
               "
             >
               <h1 style="font-weight: 400">{{product.name}}</h1>
@@ -116,40 +132,69 @@
               action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
               method="POST"
             >
-              <input type="submit" value="Add to Cart" />
+              <input class="addBtn" type="submit" value="Add to Cart" />
             </form>
             <form
               action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
               method="POST"
             >
-              <input type="submit" value="Add to Wishlist" />
+              <input class="addBtn" type="submit" value="Add to Wishlist" />
             </form>
           </div>
         </div>
       </div>
       <h2>Reviews</h2>
       <div class="reviewContainer">
-        <div>
+        <div class="inputReview">
           <h3># OF STARS</h3>
           <form
             action="{{ url_for('reviews.add_review', id=product.id) }}"
             method="POST"
           >
             <div class="form-group">
-              <label for="exampleFormControlTextarea1">Example textarea</label>
+              <!-- <label for="exampleFormControlTextarea1">Example textarea</label>
               <select id="newRating" name="newRating">
                 <option>1</option>
                 <option>2</option>
                 <option>3</option>
                 <option>4</option>
                 <option>5</option>
+              </select> -->
+              <label for="validationDefault04" class="form-label">Rating</label>
+              <select
+                class="form-select"
+                id="newRating"
+                name="newRating"
+                required
+                style="width: fit-content"
+              >
+                <option selected disabled value="">select</option>
+                <option>1</option>
+                <option>2</option>
+                <option>3</option>
+                <option>4</option>
+                <option>5</option>
               </select>
+              <div class="invalid-tooltip">
+                Please choose a unique and valid username.
+              </div>
+              <label for="newReview" class="form-label">Review</label>
               <textarea
                 class="form-control"
                 id="newReview"
                 name="newReview"
                 rows="3"
               ></textarea>
+              <!-- <label for="validationCustom03" class="form-label">Review</label>
+              <textarea
+                class="form-control"
+                id="newReview"
+                name="newReview"
+                placeholder="Required example textarea"
+                rows="3"
+                required
+              ></textarea>
+              <div class="invalid-feedback">Please provide a valid city.</div> -->
               <input type="submit" value="Submit" />
             </div>
           </form>

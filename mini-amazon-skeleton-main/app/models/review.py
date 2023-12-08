@@ -97,7 +97,7 @@ ORDER BY time_posted DESC
         # try:
             rows = app.db.execute("""
 INSERT INTO Reviews(uid, pid, time_posted, rating, review_text)
-VALUES(:uid, :pid, :time_posted, :rating, :review_text)                              
+VALUES(:uid, :pid, :time_posted, :rating, :review_text)                      
 """,
                                   uid=uid,
                                   pid=pid,
@@ -109,3 +109,12 @@ VALUES(:uid, :pid, :time_posted, :rating, :review_text)
         #     # the following simply prints the error to the console:
         #     print(str(e))
         #     return None
+    @staticmethod
+    def review_exists(uid, pid):
+        rows = app.db.execute("""
+SELECT *
+FROM Reviews
+WHERE uid = :uid AND pid =:pid
+""",
+                              uid=uid, pid=pid)
+        return len(rows) > 0
