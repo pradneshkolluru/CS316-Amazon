@@ -85,3 +85,9 @@ CREATE TABLE Cart (
     qty INT NOT NULL,
     PRIMARY KEY(uid, pid)
 );
+
+CREATE TABLE SaveForLater (
+    uid INT NOT NULL REFERENCES Users(id),
+    pid INT NOT NULL REFERENCES Products(id),
+    PRIMARY KEY(uid, pid)
+);

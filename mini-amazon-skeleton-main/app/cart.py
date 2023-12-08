@@ -7,6 +7,7 @@ import datetime
 from .models.product import Product
 from .models.purchase import Purchase
 from .models.cart import Cart
+from .models.saveForLater import SaveForLater
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -23,36 +24,42 @@ def cart():
         if total_cart_price == None:
             total_cart_price = 0
         num_line_items = len(cart_products)
+        saved_items = SaveForLater.get_saved_items(current_user.id)
+
+        search = False
+        q = request.args.get('q')
+        if q:
+            search = True
+        
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        sliced_items = cart_products[offset: offset + per_page]
+
+        pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(cart_products), search=search, record_name='Items')
+
     else:
-        cart_products = None
+        sliced_items = None
         total_cart_price = 0
         num_line_items = 0
+        saved_items = None
+        pagination = None
     
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
     
-    page = request.args.get(get_page_parameter(), type=int, default=1)
-
-    per_page = 10
-    offset = (page - 1) * per_page
-
-    sliced_items = cart_products[offset: offset + per_page]
-
-    pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(cart_products), search=search, record_name='Items')
-
     # render the page by adding information to the cart.html file
     return render_template('cart.html',
                            cart_products=sliced_items,
                            total_cart_price=total_cart_price,
                            num_line_items=num_line_items,
+                           saved_items=saved_items,
                            pagination=pagination)
 
 
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id):
-    Cart.update_item_qty(current_user.id, product_id, 1)
+def add_to_cart(product_id, qty=1):
+    Cart.update_item_qty(current_user.id, product_id, qty)
     return redirect(url_for('cart.cart'))
 
 @bp.route('/cart/delete/<int:product_id>', methods=['POST'])
