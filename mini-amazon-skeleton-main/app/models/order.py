@@ -104,7 +104,7 @@ RETURNING id
         purchases = Order.get_items_in_order(oid)
         for purchase in purchases:
             if not purchase.purchase_fulfilled:
-                return
+                return None
         
         rows = app.db.execute("""
 UPDATE Orders
@@ -112,7 +112,7 @@ SET order_fulfilled = True
 WHERE oid = :oid
 """,
                             oid=oid)
-        return
+        return rows if rows else None
 
 def update_purchase_fulfillment(oid, pid, new_status):
         rows = app.db.execute("""
