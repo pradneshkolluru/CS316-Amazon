@@ -2,31 +2,26 @@
 
 {% block content %}
 
-<br><br>
-{% if current_user.is_authenticated %}
+<p>
+  {% with messages = get_flashed_messages() %}
+  {% if messages %}
+    {% for message in messages %}
+      <p>{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+  {% endwith %}
+</p>
 
-<h2>Order #{{order_info[0][0]}}</h2>
-<p>Order Submitted on {{humanize_time(order_info[0][3])}}</p>
+{% if current_user.is_authenticated and order_info != None %}
 
-{% if num_items_in_order > 0 %}
-  {% if order_info[2] %}
+  <h2>Order #{{order_info[0][0]}}</h2>
+  <p>Date Submitted: {{humanize_time(order_info[0][3])}}</p>
+
+  {% if order_info[0][2] %}
   <h2 style="color:#23A129">Order Fulfilled!</h2>
   {% else %}
   <h2 style="color:#FF0000">Order Not Fulfilled Yet</h2>
   {% endif %}
-{% endif %}
-
-<p>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-</p>
 
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -57,7 +52,16 @@
   </tbody>
 </table>
 
+{% if num_items_in_order > 0 %}
+<p>Total Price: ${{order_info[0][4]}}</p>
+{% else %}
+<p>Total Price: $0</p>
+{% endif %}
+
 {{ pagination.links }}
+
+{% elif current_user.is_authenticated %}
+<p>Order does not exist for this user.</p>
 
 {% else %}
 <p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>

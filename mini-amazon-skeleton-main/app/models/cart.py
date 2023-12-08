@@ -102,12 +102,11 @@ WHERE uid = :uid AND pid = :pid
         buyer = User.get(uid)
 
         enough_inventory = True
-        total_cart_price = 0
+        total_cart_price = Cart.get_total_price(uid)
         
         # check if all sellers have enough inventory - if even one seller doesn't have enough, don't submit cart
         for item in items_in_cart:
             qty_in_inventory = InventoryItem.get_qty(item.sid, item.pid)
-            total_cart_price += item.qty * item.unit_price      # keep track of total cost to buyer
             if qty_in_inventory == None or qty_in_inventory[0][0] < item.qty:
                 enough_inventory = False
                 flash("There is not enough inventory for product: {p_name}. Please check and try again.".format(p_name = item.product_name))
@@ -115,10 +114,11 @@ WHERE uid = :uid AND pid = :pid
         
         if buyer.balance < total_cart_price:
             flash("There isn't enough money in your account to make this order.")
+            return False
 
-        if enough_inventory and buyer.balance >= total_cart_price:
+        if enough_inventory:
             # add to Orders table and get corresponding order id
-            new_order = Order.add_new_order(uid)
+            new_order = Order.add_new_order(uid, total_cart_price)
             oid = new_order[0][0]
 
             # decrement buyer balance

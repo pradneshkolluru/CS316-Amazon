@@ -23,7 +23,7 @@ def get_order(oid):
     # find all the products from all the current user's orders:
     if current_user.is_authenticated:
         order_info = Order.get_order_info(current_user.id, oid)
-        purchases_in_order = Order.get_items_in_order(current_user.id, oid)
+        purchases_in_order = Order.get_items_in_order(oid)
     else:
         order_info=None
         purchases_in_order = None

@@ -5,6 +5,8 @@ SELECT pg_catalog.setval('public.users_id_seq',
                          (SELECT MAX(id)+1 FROM Users),
                          false);
 
+\COPY Seller FROM 'Sellers.csv' WITH DELIMITER ',' NULL '' CSV
+
 \COPY Products FROM 'Products.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.products_id_seq',
                          (SELECT MAX(id)+1 FROM Products),
@@ -39,10 +41,9 @@ SELECT pg_catalog.setval('public.wishes_id_seq',
 SELECT pg_catalog.setval('public.reviews_id_seq',
                          (SELECT MAX(id)+1 FROM Reviews),
                          false);
-\COPY SellerReviews FROM 'SellerReviews Generated.csv' WITH DELIMITER ',' NULL '' CSV
+\COPY SellerReviews FROM 'SellerReviews.csv' WITH DELIMITER ',' NULL '' CSV
 SELECT pg_catalog.setval('public.sellerReviews_id_seq',
                          (SELECT MAX(id)+1 FROM SellerReviews),
                          false);
 
 \COPY Cart FROM 'Cart.csv' WITH DELIMITER ',' NULL '' CSV
-\COPY Seller FROM 'Sellers.csv' WITH DELIMITER ',' NULL '' CSV

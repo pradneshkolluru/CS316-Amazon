@@ -77,7 +77,7 @@ def gen_purchases(num_purchases, available_pids):
                 print(f'{id}', end=' ', flush=True)
             uid = fake.random_int(min=0, max=num_users-1)
             # pid = fake.random_element(elements=available_pids, unique = True)
-            time_purchased = fake.date_time()
+            # time_purchased = fake.date_time()
             # writer.writerow([id, uid, pid, time_purchased])
         print(f'{num_purchases} generated')
     return
