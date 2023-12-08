@@ -171,7 +171,7 @@ class Product:
         SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Inventory.quantity, Products.sid
         FROM getPid
         INNER JOIN Products ON Products.product_id = getPid.boppid
-        INNER JOIN Inventory ON Products.product_id = Inventory.pid
+        INNER JOIN Inventory ON Products.id = Inventory.pid
         INNER JOIN ProdAvg ON ProdAvg.uid = Products.id
         WHERE Products.available = TRUE
         ORDER BY Products.price;
