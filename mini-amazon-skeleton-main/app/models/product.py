@@ -12,34 +12,37 @@ class Product:
 
     @staticmethod
     def get(id):
-        rows = app.db.execute('''
-SELECT id, name, price, available
-FROM Products
-WHERE id = :id
-''',
-                              id=id)
+
+        query = '''
+            SELECT id, name, price, available
+            FROM Products
+            WHERE id = :id
+        '''
+        rows = app.db.execute(query, id=id)
         return Product(*(rows[0])) if rows is not None else None
+    
 
-    @staticmethod
-    def get_all(available=True, k = -1):
+    def get_filtered(available=True, k=0, strMatch=""):
 
-        if k > -1:
+        query = '''
+            SELECT id, name, price, available, description, category
+            FROM Products
+            WHERE available = :available
+        '''
 
-            rows = app.db.execute('''
-    SELECT id, name, price, available, description, category
-    FROM Products
-    WHERE available = :available ORDER BY price DESC LIMIT :topK
-    ''',
-                                available=available, topK = k)
-        else:
-            rows = app.db.execute('''
-    SELECT id, name, price, available, description, category
-    FROM Products
-    WHERE available = :available ORDER BY price DESC
-    ''',
-                                available=available)
+        params = {"available": available}
 
+        if strMatch:
+            query += " AND LOWER(name) LIKE :sMatch"
+            params["sMatch"] = f'%{strMatch.lower()}%'
+
+        if k:
+            query += " ORDER BY price ASC LIMIT :limitK"
+            params["limitK"] = k
+
+        rows = app.db.execute(query, **params)
         return [Product(*row) for row in rows]
+
 
 
     def get_product_info(product_id):

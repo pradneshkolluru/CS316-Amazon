@@ -38,12 +38,8 @@ bp = Blueprint('products', __name__)
 @bp.route('/products', methods = ['POST', 'GET'])
 def products():
 
-    topK = request.form.get('fname')
-
-    if topK == None or topK == '':
-        topK = -1
-    else:
-        topK = int(topK)
+    stringMatch = request.form.get('stringMatch')
+    kMost = request.form.get('topK')
 
     search = False
     q = request.args.get('q')
@@ -51,7 +47,7 @@ def products():
         search = True
 
     # get all available products for sale:
-    products = Product.get_all(True, topK)
+    products = Product.get_filtered(True, strMatch = stringMatch, k = kMost)
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
 

@@ -19,10 +19,40 @@
     </style>
   </head>
   <body>
-    <form action="{{ url_for('products.products')}}" method="POST">
+    <!-- <form action="{{ url_for('products.products')}}" method="POST">
       <label for="fname">Top K Most Expensive: </label>
       <input type="number" id="fname" name="fname" /><br /><br />
+    </form> -->
+    <form action="{{ url_for('products.products')}}" method="POST">
+      <label for="stringMatch">Product Search by Name: </label>
+      <input type="text" id="stringMatch" name="stringMatch" /><br /><br />
     </form>
+
+    <form action="{{ url_for('products.products')}}" method="POST">
+      <label for="topK">K Most Items: </label>
+      <input type="number" id="topK" name="topK" /><br /><br />
+    </form>
+
+    <!-- 'toys', 'electronic', 'clothes', 'tools' -->
+
+    <form>
+      <input type="radio" id="option1" name="options" value="option1">
+      <label for="option1">toys</label>
+    
+      <input type="radio" id="option2 " name="options" value="option2">
+      <label for="option2">electronic</label>
+    
+      <input type="radio" id="option3 " name="options" value="option3">
+      <label for="option3">clothes</label>
+
+      <input type="radio" id="option3 " name="options" value="option3">
+      <label for="option3">tools</label>
+    </form>
+
+    <form style="width: auto" action="" method="POST">
+      <input type="submit" value="Filter Items" />
+    </form>
+    
     <main>
       <div class="album py-5 bg-body-tertiary">
         <div class="container">
@@ -68,6 +98,10 @@
                     <small class="text-body-secondary"
                       >${{product.price}}</small
                     >
+                    <div>
+                    <small class="text-body-secondary"
+                      >{{product.category}}</small
+                    ></div>
                     <div style="position: relative">
                       <form
                         style="width: auto"
