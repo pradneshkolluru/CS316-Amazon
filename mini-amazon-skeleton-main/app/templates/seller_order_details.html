@@ -36,13 +36,7 @@
         <form action="{{url_for('order.change_purchase_fulfillment_status',sid=current_user.id, oid=oid, pid=item[0])}}"
               method="POST">
           <input name="fulfillment_status" value="Fulfilled" hidden="true">
-          <input type="submit" value="Click to fulfill">
-        
-            <!--select>
-                <option></option>
-                <option value="fulfilled">Fulfilled</option>
-              </select-->
-      
+          <input type="submit" value="Click to fulfill">      
         </form>
         </td>   
         {% endif %}
