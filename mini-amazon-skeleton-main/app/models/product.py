@@ -43,7 +43,7 @@ def imagePic(name, pid):
 
 
 class Product:
-    def __init__(self, id, name, price, available, description, category, avgRating = 0):
+    def __init__(self, id, name, price, available, description, category, avgRating = 0, quantity = None, sid = None):
         self.id = id
         self.name = name
         self.price = price
@@ -52,6 +52,8 @@ class Product:
         self.available = available
         self.avgRating = avgRating
         self.image = imagePic(self.name, self.id)
+        self.quantity = quantity
+        self.sid = sid
 
     @staticmethod
     def get(id):
@@ -140,14 +142,43 @@ class Product:
 
 
 
-    def get_product_info(product_id):
+    def get_product_info(id_spec):
 
 
         rows = app.db.execute('''
         SELECT id, name, price, available, description, category
         FROM Products
         WHERE id = :id ORDER BY price
-        ''', id = product_id)
+        ''', id = id_spec)
 
+
+        return [Product(*row) for row in rows]
+    
+
+    def getProductsFromOtherVenders(uId):
+
+        query = '''
+        WITH ProdAvg(uid, avgRating) AS (
+                SELECT products.id, ROUND(AVG(rating)::numeric, 2)
+                FROM Reviews, Products
+                WHERE Reviews.pid = products.id GROUP BY products.id
+            ),
+        getPid AS (
+        SELECT Products.product_id AS boppid
+        FROM Products
+        WHERE Products.id = :id
+        )
+        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Inventory.quantity, Products.sid
+        FROM getPid
+        INNER JOIN Products ON Products.product_id = getPid.boppid
+        INNER JOIN Inventory ON Products.product_id = Inventory.pid
+        INNER JOIN ProdAvg ON ProdAvg.uid = Products.id
+        WHERE Products.available = TRUE
+        ORDER BY Products.price;
+        '''
+
+        print(query)
+
+        rows = app.db.execute(query, id = uId)
 
         return [Product(*row) for row in rows]
