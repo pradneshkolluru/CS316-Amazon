@@ -4,31 +4,36 @@
 
 <br><br>
 {% if current_user.is_authenticated %}
-<h2>Your Seller Order History:</h2>
+<h2>Your Seller Order History</h2>
+<h5>Click on a specific order ID to view an order summary and edit its fulfillment status.</h5>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
     <tr>
       <th scope="col">Order ID</th>
       <th scope="col">Total Number of Items Sold</th>
-      <th scope="col">Total Revenue</th>
-      <th scope="col">Order Fulfillment Status</th>
+      <th scope="col">Total Order Revenue</th>
+      <th scope="col">Your Order Fulfillment Status</th>
       <th scope="col">Date of Purchase</th>
     </tr>
   </thead>
   <tbody>
-    {% for order in orders_list%}
+    {% for oid in oids_list%}
       <tr>
-        <th scope="row">{{order.id}}</th>
-        <td>{{order.id}}</td>
-        <td>{{order.id}}</td>
-        <td>{{order.order_fulfilled}}</td>
-        <td>{{order.order_fulfilled}}</td>
+        <th scope="row">{{oid}}</th>
+        <td>{{num_items[oid]}}</td>
+        <td>${{revenue[oid]}}</td>
+
+        {% if fulfillment[oid]=="Not fulfilled" %}
+        <td style="color:#FF0000;">{{fulfillment[oid]}}</td>
+        {% else %}
+        <td style="color:#23A129;">{{fulfillment[oid]}}</td>
+        {% endif %}
+
+        <td>{{purchase_date[oid]}}</td>
       </tr>
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>
 {% endif %}
 
 {% endblock %}

@@ -2,7 +2,7 @@ from flask import current_app as app
 
 
 class Order:
-    def __init__(self, oid, uid, pid, sid, qty, product_name, unit_price, time_purchased, purchase_fulfilled, order_fulfilled):
+    def __init__(self, oid, uid, pid, sid, qty, product_name, unit_price, time_purchased, purchase_fulfilled, order_fulfilled, **kwargs):
         self.oid = oid
         self.uid = uid
         self.pid = pid
@@ -37,7 +37,7 @@ FROM Purchases
 WHERE sid = :sid
 ''',
                               sid=sid)
-        return [Order(*row) for row in rows]
+        return rows if rows else None
     
     @staticmethod
     def get_order_info_for_seller(sid, oid):
