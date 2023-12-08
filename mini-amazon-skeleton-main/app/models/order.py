@@ -2,7 +2,7 @@ from flask import current_app as app
 
 
 class Order:
-    def __init__(self, oid, uid, pid, sid, qty, product_name, unit_price, time_purchased, purchase_fulfilled, order_fulfilled):
+    def __init__(self, oid, uid, pid, sid, qty, product_name, unit_price, time_purchased, purchase_fulfilled, time_fulfilled, order_fulfilled):
         self.oid = oid
         self.uid = uid
         self.pid = pid
@@ -12,12 +12,26 @@ class Order:
         self.unit_price = unit_price
         self.time_purchased = time_purchased
         self.purchase_fulfilled = purchase_fulfilled
+        self.time_fulfilled = time_fulfilled
         self.order_fulfilled = order_fulfilled
+    
+    @staticmethod
+    def get_order_info(uid, oid):
+        rows = app.db.execute('''
+SELECT id, uid, order_fulfilled, time_purchased
+FROM Orders
+WHERE uid = :uid
+    AND id = :oid
+''',
+                              uid=uid,
+                              oid=oid)
+        return rows if rows else None
+
 
     @staticmethod
     def get_items_in_order(uid, oid):
         rows = app.db.execute('''
-SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, P.time_purchased, P.purchase_fulfilled, O.order_fulfilled
+SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, O.time_purchased, P.purchase_fulfilled, P.time_fulfilled, O.order_fulfilled
 FROM Orders O, Purchases P, Products Pr
 WHERE O.id = P.oid 
     AND P.pid = Pr.id
@@ -26,20 +40,18 @@ WHERE O.id = P.oid
 ''',
                               uid=uid,
                               oid=oid)
-        # return rows if rows else None
         return [Order(*row) for row in rows]
     
     @staticmethod
     def get_all_purchases_in_orders(uid):
         rows = app.db.execute('''
-SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, P.time_purchased, P.purchase_fulfilled, O.order_fulfilled
+SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, O.time_purchased, P.purchase_fulfilled, P.time_fulfilled, O.order_fulfilled
 FROM Orders O, Purchases P, Products Pr
 WHERE O.id = P.oid 
     AND P.pid = Pr.id
     AND O.uid = :uid
 ''',
                             uid =uid)
-        # return rows if rows else None
         return [Order(*row) for row in rows]
     
     @staticmethod
@@ -52,3 +64,21 @@ RETURNING id
                             uid=uid,
                             order_fulfilled=False)
         return rows if rows else None
+
+    @staticmethod
+    def check_and_update_order_fulfillment(uid, oid):
+        purchases = Order.get_items_in_order(uid, oid)
+        for purchase in purchases:
+            if not purchase.purchase_fulfilled:
+                return
+        
+        rows = app.db.execute("""
+UPDATE Orders
+SET order_fulfilled = True
+WHERE uid = :uid 
+    AND oid = :oid
+""",
+                            uid=uid,
+                            oid=oid)
+        
+        return

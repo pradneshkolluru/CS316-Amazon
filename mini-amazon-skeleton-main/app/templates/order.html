@@ -5,10 +5,11 @@
 <br><br>
 {% if current_user.is_authenticated %}
 
-<h2>Order #{{oid}}</h2>
+<h2>Order #{{order_info[0][0]}}</h2>
+<p>Order Submitted on {{humanize_time(order_info[0][3])}}</p>
 
 {% if num_items_in_order > 0 %}
-  {% if purchases_in_order[0].order_fulfilled %}
+  {% if order_info[2] %}
   <h2 style="color:#23A129">Order Fulfilled!</h2>
   {% else %}
   <h2 style="color:#FF0000">Order Not Fulfilled Yet</h2>
