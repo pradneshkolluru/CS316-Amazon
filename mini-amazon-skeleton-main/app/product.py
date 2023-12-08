@@ -40,6 +40,10 @@ def products():
 
     stringMatch = request.form.get('stringMatch')
     kMost = request.form.get('topK')
+    catOpt = request.form.get('options')
+    sortOpt = request.form.get('priceSort')
+
+    print(sortOpt)
 
     search = False
     q = request.args.get('q')
@@ -47,7 +51,7 @@ def products():
         search = True
 
     # get all available products for sale:
-    products = Product.get_filtered(True, strMatch = stringMatch, k = kMost)
+    products = Product.get_filtered(True, strMatch = stringMatch, k = kMost, catMatch = catOpt, priceSort = sortOpt)
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
 

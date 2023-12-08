@@ -22,7 +22,9 @@ class Product:
         return Product(*(rows[0])) if rows is not None else None
     
 
-    def get_filtered(available=True, k=0, strMatch=""):
+    def get_filtered(available=True, k=0, strMatch="", catMatch = "", priceSort = ""):
+
+        print(catMatch)
 
         query = '''
             SELECT id, name, price, available, description, category
@@ -36,9 +38,18 @@ class Product:
             query += " AND LOWER(name) LIKE :sMatch"
             params["sMatch"] = f'%{strMatch.lower()}%'
 
+        if catMatch:
+            query += " AND category = :cat"
+            params["cat"] = catMatch
+        
+        if priceSort:
+            query += f" ORDER BY price {priceSort}"
+
         if k:
-            query += " ORDER BY price ASC LIMIT :limitK"
+            query += " LIMIT :limitK"
             params["limitK"] = k
+
+        print(query)
 
         rows = app.db.execute(query, **params)
         return [Product(*row) for row in rows]
