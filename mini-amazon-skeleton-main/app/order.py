@@ -91,11 +91,37 @@ def seller_orders(sid):
 
     else:
         oids_list = None
-    # return render_template('seller_orders.html',
-    #                        orders_list=orders_list)
+        revenue = None,
+        num_items = None,
+        fulfillment = None,
+        purchase_date = None
     return render_template('seller_orders.html',
                            oids_list = oids,
                            revenue = order_revenue,
                            num_items = order_num_items,
                            fulfillment = order_fulfillment,
                            purchase_date = order_purchase_date)
+
+@bp.route('/order-seller/<int:sid>/<int:oid>')
+def seller_order_details(sid, oid):
+    if current_user.is_authenticated:
+        purchase_items = Order.get_order_info_for_seller(sid, oid)
+
+        buyer_info = Order.get_buyer_info_from_purchase(oid)[0]
+
+        buyer_name = str(buyer_info[0]).capitalize() + " " + str(buyer_info[1]).capitalize()
+        buyer_address = buyer_info[2]
+        buyer_email = buyer_info[3]
+
+    return render_template('seller_order_details.html',
+                           purchase_items=purchase_items,
+                           oid = oid,
+                           name = buyer_name,
+                           address = buyer_address,
+                           email = buyer_email)
+
+# @bp.route('/order-seller/<int:sid>/<int:pid>')
+# def change_purchase_fulfillment_status(sid, pid):
+#     if current_user.is_authenticated:
+#         purchases = Order.update_purchase_fulfillment
+#     return render_template('')

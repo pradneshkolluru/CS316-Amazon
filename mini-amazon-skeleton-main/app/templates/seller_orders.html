@@ -19,7 +19,7 @@
   <tbody>
     {% for oid in oids_list%}
       <tr>
-        <th scope="row">{{oid}}</th>
+        <th scope="row"><a href="{{url_for('order.seller_order_details', sid=current_user.id, oid = oid) }}">{{oid}}</a></th>
         <td>{{num_items[oid]}}</td>
         <td>${{revenue[oid]}}</td>
 

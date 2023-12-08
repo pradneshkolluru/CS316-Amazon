@@ -44,7 +44,7 @@ WHERE sid = :sid
         rows = app.db.execute('''
 SELECT Purchases.pid, Purchases.qty, Purchases.purchase_fulfilled, Products.name
 FROM Purchases, Products
-WHERE sid = :sid
+WHERE Purchases.sid = :sid
 AND oid = :oid
 AND Purchases.pid = Products.id                              
 ''',
@@ -81,6 +81,18 @@ WHERE O.id = P.oid
         rows = app.db.execute("""
 INSERT INTO Orders(uid, order_fulfilled)
 VALUES(:uid, :order_fulfilled)
+""",
+                            uid=uid,
+                            order_fulfilled=False)
+        return rows if rows else None
+    
+    @staticmethod
+    def update_purchase_fulfillment(oid, pid, curr_status):
+        rows = app.db.execute("""
+UPDATE Purchases
+SET purchase_fulfilled = NOT purchase_fulfilled
+WHERE oid = :oid
+AND pid = :pid
 """,
                             uid=uid,
                             order_fulfilled=False)
