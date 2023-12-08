@@ -10,24 +10,17 @@ from flask_paginate import Pagination, get_page_parameter
 bp = Blueprint('purchases', __name__)
 
 
-@bp.route('/purchases')
-# def purchases():
-#     # get all available products for sale:
-#     # find the products current user has bought:
-#     if current_user.is_authenticated:
-#         purchases = Purchase.get_all(
-#             current_user.id)
-#     else:
-#         purchases = None
-#     # render the page by adding information to the index.html file
-#     return render_template('purchases.html',
-#                            purchase_history=purchases)
-
+@bp.route('/purchases', methods = ['POST', 'GET'])
 def purchases():
     if current_user.is_authenticated:
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
         # purchases = Purchase.get_all(
         #     current_user.id)
+        stringMatch = request.form.get('stringMatch')
+        kMost = request.form.get('topK')
+        sellerMatch = request.form.get('sellerMatch')
+        print(sellerMatch)
+        all_purchases = Order.get_filtered(strMatch = stringMatch, k = kMost, uid=current_user.id, sellerMatch=sellerMatch)
     else:
         # purchases = None
         all_purchases

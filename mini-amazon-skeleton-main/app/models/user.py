@@ -121,3 +121,11 @@ WHERE uid = :id
         
         return len(rows) > 0
 
+    @staticmethod
+    def register_seller(id):
+        rows = app.db.execute("""
+INSERT INTO Seller (uid)
+VALUES (:id)       
+""",
+                              id=id)
+

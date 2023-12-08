@@ -20,85 +20,29 @@
       <th width="50px" scope="col">Rating</th>
       <th width="50%" scope="col">Review</th>
       <th scope="col">Post Date</th>
-      <th width="100px"></th>
     </tr>
   </thead>
   <tbody>
     {% for review in review_history%}
     <tr>
-      <!-- <td>{{review.pid}}</td> -->
       <td>{{review.first_name}} {{review.last_name}}</td>
-      <form
-        id="updateReview"
-        action="{{ url_for('sellerReviews.update_review', id=review.id)}}"
-        method="POST"
-      >
         <td style="text-align: center">
-          <!-- {{review.rating}} -->
-          <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-          <!-- <textarea
-            id="newRating"
-            name="newRating"
-            style="width: 100%"
-            rows="3"
-          >
           {{review.rating}}
-          </textarea> -->
-          <select id="newRating" name="newRating">
-            <option>{{review.rating}}</option>
-            <option disabled>─</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
         </td>
         <td>
-          <!-- <div id="currReview">{{review.review_text}}</div> -->
           <div>
-            <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-            <textarea
-              id="newReview"
-              name="newReview"
+            <body
               style="width: 100%"
               rows="3"
             >
-{{review.review_text}}</textarea
+{{review.review_text}}</body
             >
-
-            <!-- <form
-            action="{{ url_for('reviews.delete_review', id=review.id) }}"
-            method="POST"
-          >
-            <input type="submit" value="Delete" />
-          </form> -->
-            <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
           </div>
         </td>
         <td>{{review.time_posted}}</td>
-        <td style="vertical-align: middle">
-          <button
-            style="width: 100%"
-            type="submit"
-            formaction="{{ url_for('sellerReviews.update_review', id=review.id)}}"
-          >
-            Update
-          </button>
-          <button
-            style="width: 100%"
-            type="submit"
-            formaction="{{ url_for('sellerReviews.delete_review', id=review.id) }}"
-          >
-            Delete
-          </button>
-        </td>
-      </form>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-
 {% endif %}
-
 {% endblock %}

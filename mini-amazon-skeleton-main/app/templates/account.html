@@ -5,7 +5,7 @@
 <br><br>
 {% if current_user.is_authenticated %}
 <h4>Your account information:</h4>
-<h5>Account Number: {{current_user.id}}</h5>
+<h5>Account Number: {{current_user.id}}</h5><br>
 <h5>Current Balance: ${{current_user.balance}}</h5>
 <form action="{{ url_for('users.add_balance')}}" method = "POST">
   <label for="NewBalance">Add money: </label>
@@ -16,7 +16,13 @@
   <label for="Withdraw">Withdraw money: </label>
   <input type="number" min="0" max="{{current_user.balance}}" step="0.01" id="withdraw" name="withdraw">
   <!-- <input type="submit" value="Submit"> -->
-</form>
+</form><br>
+{% if not seller %}
+<h5>Want to start selling?</h5>
+<form action="{{ url_for('users.register_seller')}}" method = "POST">
+  <input type="submit" value="Register Here">
+</form><br>
+{% endif %}
 
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -39,7 +45,10 @@
         <form action="{{ url_for('users.update_email')}}" method = "POST">
           <label for="newEmail">New Email: </label>
           <input type="email" id="newEmail" name="newEmail"><br><br>
-          <input type="submit" value="Update Email">
+          <input type="submit" value="Update Email"><br>
+          {% for error in get_flashed_messages() %}
+          <span style="color: red;">{{ error }}</span>
+          {% endfor %}
         </form>
       </td>
       <td scope="row">
@@ -66,17 +75,7 @@
     </tr>
   </tbody>
 </table>
-<p>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <li>{{ message }}</li>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
-</p>
+
 <!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
 <!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
 <!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->
