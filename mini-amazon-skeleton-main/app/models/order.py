@@ -87,13 +87,14 @@ VALUES(:uid, :order_fulfilled)
         return rows if rows else None
     
     @staticmethod
-    def update_purchase_fulfillment(oid, pid, curr_status):
+    def update_purchase_fulfillment(oid, pid, new_status):
         rows = app.db.execute("""
 UPDATE Purchases
-SET purchase_fulfilled = NOT purchase_fulfilled
+SET purchase_fulfilled = :new_status
 WHERE oid = :oid
 AND pid = :pid
 """,
-                            uid=uid,
-                            order_fulfilled=False)
+                            oid=oid,
+                            pid=pid,
+                            new_status=new_status)
         return rows if rows else None
