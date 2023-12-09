@@ -111,9 +111,9 @@ class Product:
                 LEFT JOIN Reviews ON Reviews.pid = Products.id
                 GROUP BY Products.id)
                 
-            SELECT id, name, price, available, description, category, avgRating
-            FROM Products, ProdAvg
-            WHERE available = :available AND Products.id = ProdAvg.pid
+            SELECT Products.id, name, price, available, description, category, avgRating, '' quantity, sid, firstname, lastname
+            FROM Products, ProdAvg, Users
+            WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
 
         params = {"available": available}
@@ -232,12 +232,15 @@ class Product:
 
         rows = app.db.execute(str(query.compile()), id=uid, newInput=newInput)
 
+    @staticmethod
+    def get_by_sid(sid):
 
-
-
-    
-
-    
-
+        query = '''
+            SELECT id, name, price, available, description, category
+            FROM Products
+            WHERE sid = :sid
+        '''
+        rows = app.db.execute(query, sid=sid)
+        return [Product(*row) for row in rows] if rows is not None else None
 
     
