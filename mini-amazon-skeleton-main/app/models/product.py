@@ -51,7 +51,8 @@ class Product:
         self.category = category
         self.available = available
         self.avgRating = avgRating
-        self.image = imagePic(self.name, self.id)
+        #self.image = imagePic(self.name, self.id)
+        self.image = ""
         self.quantity = quantity
         self.sid = sid
         self.firstname = firstname

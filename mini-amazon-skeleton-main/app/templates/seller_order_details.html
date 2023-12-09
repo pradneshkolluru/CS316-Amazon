@@ -33,11 +33,27 @@
         <td style="color:#23A129;">Fulfilled</td>
         {% else %}
         <td>
-        <form action="{{url_for('order.change_purchase_fulfillment_status',sid=current_user.id, oid=oid, pid=item[0])}}"
+        <form id="fulfillmentForm"
+              action="{{url_for('order.change_purchase_fulfillment_status',sid=current_user.id, oid=oid, pid=item[0])}}"
               method="POST">
           <input name="fulfillment_status" value="Fulfilled" hidden="true">
-          <input type="submit" value="Click to fulfill">      
+          <input type="submit" value="Click to fulfill" onclick="recordClickTime()">
         </form>
+
+        <script>
+          function recordClickTime() {
+            var clickTime = new Date();
+            document.getElementById('fulfillmentForm').appendChild(createHiddenInput('click_time', clickTime.toISOString()));
+          }
+        
+          function createHiddenInput(name, value) {
+            var input = document.createElement('input');
+            input.type = 'hidden';
+            input.name = name;
+            input.value = value;
+            return input;
+          }
+        </script>
         </td>   
         {% endif %}
 
