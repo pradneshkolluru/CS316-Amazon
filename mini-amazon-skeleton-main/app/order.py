@@ -118,7 +118,6 @@ def seller_orders(sid):
         sliced_oids = oids[offset: offset + per_page]
 
         pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(oids), search=search, record_name='Order IDs')
-
     else:
         oids_list = None
         revenue = None,
@@ -161,8 +160,13 @@ def change_purchase_fulfillment_status(sid, oid, pid):
         new_status = False
         if curr_status == "Fulfilled":
             new_status = True
+        
+        click_time = request.form.get('click_time')  # Get the click time from the form data
+        print('PRINTING CLICK TIME....................')
+        print(click_time)
+        
         purchases = Order.update_purchase_fulfillment(oid, pid, new_status)
-
+        Order.update_purchase_fulfillment_time(oid, pid, click_time)
         # then trigger function to show change in status in buyer's view
         Order.check_and_update_order_fulfillment(oid)
     return redirect(url_for('order.seller_order_details', sid=sid, oid = oid))

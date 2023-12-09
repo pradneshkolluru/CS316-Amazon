@@ -132,6 +132,19 @@ AND pid = :pid
         return rows if rows else None
     
     @staticmethod
+    def update_purchase_fulfillment_time(oid, pid, click_time):
+        rows = app.db.execute("""
+UPDATE Purchases
+SET time_fulfilled = :click_time
+WHERE oid = :oid
+AND pid = :pid
+""",
+                            oid=oid,
+                            pid=pid,
+                            click_time=click_time)
+        return rows if rows else None
+    
+    @staticmethod
     def get_filtered(strMatch="", uid=-1, sellerMatch="", year=""):
         query = '''
 SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, O.total_price, O.time_purchased, P.purchase_fulfilled, P.time_fulfilled, O.order_fulfilled, U.firstname, U.lastname
