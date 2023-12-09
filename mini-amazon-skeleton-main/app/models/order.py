@@ -200,6 +200,7 @@ SELECT Date(Time_purchased), sum(unit_price)
 FROM Orders as O, Purchases as P
 WHERE O.uid = :uid and O.id = P.oid
 GROUP BY Date(Time_purchased)
+ORDER BY Date(Time_purchased)
 """,
                             uid=uid)
         dates = []
