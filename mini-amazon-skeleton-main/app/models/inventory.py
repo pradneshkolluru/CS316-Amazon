@@ -1,5 +1,8 @@
 from flask import current_app as app
 
+from .product import Product
+
+
 class InventoryItem:
     #def __init__(self, id, sid, pid, quantity, product_name, product_price):
     def __init__(self, id, sid, pid, quantity, product_name, product_price, **kwargs):
@@ -41,7 +44,7 @@ AND Inventory.pid = Products.id
 ''',
                               sid=sid)
         return rows if rows else None
-
+    
     @staticmethod
     def add_new_item(sid, pid, quantity):
         # adding new product id to inventory with an initial quantity
@@ -53,20 +56,6 @@ VALUES(:sid, :pid, :quantity)
                                   sid=sid,
                                   pid=pid,
                                   quantity = quantity)
-            return rows if rows else None
-        except Exception as e:
-            print(str(e))
-            return None
-        
-    @staticmethod
-    def get_pid(product_name):
-        try:
-            rows = app.db.execute("""
-SELECT id
-FROM Products
-WHERE name = :p_name
-""",
-                                  p_name = product_name.capitalize())
             return rows if rows else None
         except Exception as e:
             print(str(e))
@@ -124,25 +113,50 @@ AND pid = :pid
         
     @staticmethod
     def update_inventory(sid, quantity, pid=None, product_name=""): # quantity parameter is the number being added / deleted to existing quantity in inventory
-
         if pid == None: # user gave product_name instead of pid
-            if InventoryItem.get_pid(product_name) == None: # pid doesn't exist --> product name doesn't exist
+            if Product.get_product_info_from_name(product_name) == None: # product_name doesn't exist --> can't return pid
                 return "error" # do nothing; page just refreshes
-            pid = InventoryItem.get_pid(product_name)[0][0]
-            
-        # get quantity of existing product in seller's inventory
-        qty = InventoryItem.get_qty(sid, pid) # should be either 0 or 1 row
-        if qty == None: 
-            # pid not currently in sid's inventory (add new product to inventory)
-            # product_name is given by user to add new product
-            # input product_name has to be already existing (Products relation)
-            rows = InventoryItem.add_new_item(sid, pid, quantity)
-        elif (quantity + qty[0][0] <= 0):
-            # if quantity of product is decreased to 0 or below, then delete product from inventory
-            rows = InventoryItem.delete_item(sid, pid)
-        else: 
-            # update quantity of existing product (should work for incrementing and decrementing)
+            wholeThing = Product.get_product_info_from_name(product_name)[0]
+            pid, category, description, price, unique_id = wholeThing[0],wholeThing[1],wholeThing[2],wholeThing[3], wholeThing[4]
+        if product_name == "": # user gave pid instead of product_name
+            if Product.get_product_info_from_pid(pid) == None: # pid doesn't exist --> can't return product_name
+                return "error"
+            wholeThing = Product.get_product_info_from_pid(pid)[0]
+            product_name, category, description, price, unique_id = wholeThing[0],wholeThing[1],wholeThing[2],wholeThing[3], wholeThing[4]
+        
+        inventory_item = InventoryItem.get_inventory_item_by_pid(unique_id,sid)
+        # check that pid doesn't already exist in seller's inventory
+        if inventory_item==None: 
+            # add another seller's product (from Products) to this seller's Inventory and into Products with this sid
+            Product.addOtherSellersProduct(pid, sid, product_name, category, description, price, quantity)
+        if inventory_item!=None: 
+        #else: # pid does exist in seller's current inventory ==> update quantity of inventory item
+            # get quantity of existing product in seller's inventory
+            #qty = InventoryItem.get_qty(sid, pid) # should be either 0 or 1 row
+            qty = inventory_item[0][3]
 
-            new_quantity = quantity + qty[0][0]
-            rows = InventoryItem.update_quantity(sid, pid, new_quantity)
-        return rows if rows else None
+            if quantity + qty <= 0:
+            # if quantity of product is decreased to 0 or below, then delete product from inventory
+                rows = InventoryItem.update_quantity(sid, pid, 0)
+            else: 
+                # update quantity of existing product (should work for incrementing and decrementing)
+                new_quantity = quantity + qty
+                rows = InventoryItem.update_quantity(sid, pid, new_quantity)
+            return rows if rows else None
+        return
+    
+    @staticmethod
+    def get_inventory_item_by_pid(pid,sid):
+        try:
+            rows = app.db.execute("""
+SELECT *
+FROM Inventory
+WHERE pid = :pid
+AND sid=:sid
+""",
+                                  pid=pid,
+                                  sid=sid)
+            return rows if rows else None
+        except Exception as e:
+            print(str(e))
+            return None

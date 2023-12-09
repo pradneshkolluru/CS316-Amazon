@@ -74,7 +74,7 @@
 
         <td>
           <form action="{{ url_for('inventory.inventory_delete', product_id=item.pid) }}" method="POST">
-            <input type="submit" value="Remove from inventory" />
+            <input type="submit" value="Remove product" />
           </form>
         </td>
 
@@ -93,12 +93,12 @@
     <input name="price" placeholder="Price"/>
     <input name="quantity" placeholder="Quantity"/>
     <br>
-    <input name="category" type="radio" value="Toys"> Toy </input>
-    <input name="category" type="radio" value="Food"/> Food </input>
-    <input name="category" type="radio" value="Electronic"/> Electronic </input>
-    <input name="category" type="radio" value="Tools"/> Tools </input>
-    <input name="category" type="radio" value="Clothes"/> Clothes </input>
-    <input name="category" type="radio" value="Beauty"/> Beauty </input>
+    <input name="category" type="radio" value="toys"> Toy </input>
+    <input name="category" type="radio" value="food"/> Food </input>
+    <input name="category" type="radio" value="electronic"/> Electronic </input>
+    <input name="category" type="radio" value="tools"/> Tools </input>
+    <input name="category" type="radio" value="clothes"/> Clothes </input>
+    <input name="category" type="radio" value="beauty"/> Beauty </input>
     <br><br>
     <input type="submit" value="Add product" />
   </form>

@@ -136,8 +136,6 @@ class Product:
             query += " LIMIT :limitK"
             params["limitK"] = k
         
-        print('PRINTING........................')
-        print(query)
 
         rows = app.db.execute(query, **params)
 
@@ -218,6 +216,64 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
+        
+    @staticmethod
+    def addOtherSellersProduct(pid, sid, name, category, description, price, quantity):
+
+        addPatientQuery = '''
+        INSERT INTO Products(product_id, sid, name, category, description, price)
+        VALUES(:pid, :sid, :name, :cat, :des, :price)
+        RETURNING id    
+        '''
+
+        divyas_id = app.db.execute(addPatientQuery, pid = pid,
+                                                    sid = sid,
+                                                    name = name,
+                                                    cat = category, 
+                                                    des = description,
+                                                    price = price)[0][0]
+
+
+        insertIntoInventory = '''
+        INSERT INTO Inventory(sid, pid, quantity)
+        VALUES(:sid, :pid, :quantity)
+        RETURNING sid, pid    
+        '''
+
+        rows = app.db.execute(insertIntoInventory, sid = sid,
+                                                   pid = divyas_id,
+                                                   quantity = quantity)
+        
+
+    @staticmethod
+    def get_product_info_from_name(product_name):
+        try:
+            rows = app.db.execute("""
+SELECT product_id, category, description, price,id
+FROM Products
+WHERE LOWER(name) = :p_name
+LIMIT 1
+""",
+                                  p_name = product_name)
+            return rows if rows else None
+        except Exception as e:
+            print(str(e))
+            return None
+        
+    @staticmethod
+    def get_product_info_from_pid(pid):
+        try:
+            rows = app.db.execute("""
+SELECT name, category, description, price, id
+FROM Products
+WHERE product_id = :pid
+LIMIT 1
+""",
+                                  pid = pid)
+            return rows if rows else None
+        except Exception as e:
+            print(str(e))
+            return None
 
 
     

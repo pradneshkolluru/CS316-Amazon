@@ -37,13 +37,14 @@ def inventory_add():
         quantity_input = request.form.get('quantity')
 
         if quantity_input == "" or (pid_input == "" and product_name == ""): # invalid submission
+            # flash error message!!
             return redirect(url_for('inventory.inventory', sid=current_user.id))
         if pid_input == "": # used product_name
             product_name = request.form.get('product_name').lower()
             quantity = int(request.form.get('quantity'))
             item = InventoryItem.update_inventory(current_user.id, quantity, product_name=product_name)
         elif product_name == "": # used pid
-            pid = int(pid_input)
+            pid = int(pid_input) 
             quantity = int(request.form.get('quantity'))
             item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
     else:
@@ -54,7 +55,8 @@ def inventory_add():
 @bp.route('/inventory/delete/<int:product_id>', methods=['POST'])
 def inventory_delete(product_id):
     if current_user.is_authenticated:
-        item = InventoryItem.delete_item(current_user.id, product_id)
+        #item = InventoryItem.delete_item(current_user.id, product_id)
+        item = InventoryItem.update_quantity(current_user.id,product_id, 0)
     else:
         item = None
         return jsonify({}), 404
