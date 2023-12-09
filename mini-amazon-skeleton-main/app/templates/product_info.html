@@ -36,6 +36,7 @@
         /* overflow: hidden; */
         /* max-height: 100vh; */
         /* overflow: auto; */
+        overflow-x: hidden;
         @media only screen and (max-width: 990px) {
           max-width: fit-content;
         }
@@ -71,6 +72,7 @@
       }
       img {
         height: 550px;
+        max-width: 800px;
       }
       .reviewContainer {
         display: flex;
@@ -113,10 +115,7 @@
       {% for product in product_info%}
       <div class="productInfoContainer">
         <div class="leftContainer">
-          <img 
-            src="{{ product.image }}"
-            width="450"
-          />
+          <img src="{{ product.image }}" style="object-fit: cover" />
         </div>
         <div class="rightContainer">
           <div style="display: flex; flex-direction: column">
