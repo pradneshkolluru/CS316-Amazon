@@ -81,6 +81,10 @@
           gap: 0;
         }
       }
+      .sellerName{
+        text-decoration: none;
+        color: black;
+      }
       /* .reviewContainer > .inputReview {
         @media only screen and (max-width: 990px) {
           flex-direction: column;
@@ -123,7 +127,7 @@
               <h1 style="font-weight: 400">{{product.name}}</h1>
               <h1>${{product.price}}</h1>
             </div>
-            <a href="{{url_for('users.public_view', id = product.sid)}}">
+            <a href="{{url_for('users.public_view', id = product.sid)}}" class="sellerName">
               <h4>Seller: {{product.firstname}}</h4></a
             >
             <p>{{product.description}}</p>
