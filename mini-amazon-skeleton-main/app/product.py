@@ -97,3 +97,46 @@ def product_info(id):
                            review_info = review,
                            other_vendors = relatedProducts
                            )
+@bp.route('/products/cat/<category>', methods = ['POST', 'GET'])
+def cat_products(category):
+
+    stringMatch = ""
+    kMost = ""
+    catOpt = category
+    sortOpt = ""
+
+    print(sortOpt)
+
+    search = False
+    q = request.args.get('q')
+    if q:
+        search = True
+
+    # get all available products for sale:
+    products = Product.get_filtered2(True, strMatch = stringMatch, k = kMost, catMatch = catOpt, priceSort = sortOpt)
+
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    per_page = 12
+    offset = (page - 1) * per_page
+
+    sliced_products = products[offset: offset + per_page]
+
+    pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(products), search=search, record_name='Products')
+
+    # find the products current user has bought:
+    if current_user.is_authenticated:
+        purchases = Purchase.get_all_by_uid_since(
+            current_user.id, datetime.datetime(1980, 9, 14, 0, 0, 0))
+    else:
+        purchases = None
+    # render the page by adding information to the index.html file
+
+    # for i in sliced_products:
+
+    #     i.avgRating = round(i.avgRating, 2)
+        
+    return render_template('products.html',
+                           avail_products=sliced_products,
+                           purchase_history=purchases,
+                           pagination=pagination)
