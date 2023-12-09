@@ -110,9 +110,9 @@ class Product:
                 LEFT JOIN Reviews ON Reviews.pid = Products.id
                 GROUP BY Products.id)
                 
-            SELECT id, name, price, available, description, category, avgRating
-            FROM Products, ProdAvg
-            WHERE available = :available AND Products.id = ProdAvg.pid
+            SELECT Products.id, name, price, available, description, category, avgRating, '' quantity, sid, firstname, lastname
+            FROM Products, ProdAvg, Users
+            WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
 
         params = {"available": available}
