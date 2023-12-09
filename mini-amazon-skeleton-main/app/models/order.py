@@ -132,7 +132,7 @@ AND pid = :pid
         return rows if rows else None
     
     @staticmethod
-    def get_filtered( k=0, strMatch="", uid=-1, sellerMatch=""):
+    def get_filtered(strMatch="", uid=-1, sellerMatch="", year=""):
         query = '''
 SELECT O.id, O.uid, P.pid, P.sid, P.qty, Pr.name, P.unit_price, O.total_price, O.time_purchased, P.purchase_fulfilled, P.time_fulfilled, O.order_fulfilled, U.firstname, U.lastname
 FROM Orders O, Purchases P, Products Pr, Users U
@@ -148,13 +148,22 @@ WHERE O.id = P.oid
             query += " AND LOWER(name) LIKE :sMatch"
             params["sMatch"] = f'%{strMatch.lower()}%'
 
-        if k:
-            query += " ORDER BY unit_price ASC LIMIT :limitK"
-            params["limitK"] = k
-
         if sellerMatch:
             query += " AND LOWER(lastname) LIKE :sellerMatch"
             params["sellerMatch"] = f'%{sellerMatch.lower()}%'
+        if year:
+             query += " AND Extract('Year' FROM Time_purchased) = :year"
+             params["year"] = year
 
         rows = app.db.execute(query, **params)
         return [Order(*row) for row in rows]
+    
+    @staticmethod
+    def get_years(uid):
+        rows = app.db.execute("""
+SELECT DISTINCT EXTRACT ('Year' FROM Time_purchased)
+FROM Orders
+WHERE uid = :uid
+""",
+                            uid=uid)
+        return [int(*row) for row in rows] if rows else None

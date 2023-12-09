@@ -64,13 +64,13 @@
       }
       /* Style The Dropdown Button */
       /* .dropbtn {
-  background-color: #4CAF50;
-  color: white;
-  padding: 16px;
-  font-size: 16px;
-  border: none;
-  cursor: pointer;
-} */
+        background-color: #4CAF50;
+        color: white;
+        padding: 16px;
+        font-size: 16px;
+        border: none;
+        cursor: pointer;
+      } */
 
       /* The container <div> - needed to position the dropdown content */
       .dropdown {
@@ -118,19 +118,30 @@
         flex-direction: row;
       }
       /* .searchBar {
-        
-      } */
+
+            } */
       .searchBtn {
         border-radius: 0rem 0.25rem 0.25rem 0rem;
         min-width: 5%;
         border: none;
+      }
+      @media only screen and (max-width: 1575px) {
+        .hello {
+          display: none;
+        }
+      }
+      .logo:hover {
+        text-shadow: 1px 0 10px;
       }
     </style>
   </head>
   <body>
     <div class="sidenav">
       {% block msg %}
-      <h1 style="color: aliceblue">Bark Boutique</h1>
+
+      <a href="{{ '/' }}" style="text-decoration: none"
+        ><h1 class="logo" style="color: aliceblue">Bark Boutique</h1></a
+      >
       <!-- <form method="POST" action="{{ url_for('products.products')}}">
         <label for="stringMatch">Product Search by Name: </label>
         <input type="text" id="stringMatch" name="stringMatch" />
@@ -167,9 +178,8 @@
       </form>
       <div class="headerBtns" style="color: aliceblue; text-align: right">
         {% if current_user.is_authenticated %}
-        <h2>Hello {{current_user.firstname}}!</h2>
+        <h2 class="hello">Hello {{current_user.firstname}}!</h2>
         <br /><br />
-        <a href="{{ '/' }}" type="button" class="btn btn-light">Home Page</a>
         <!-- <a href="{{ '/purchases' }}" type="button" class="btn btn-light">Purchases</a> -->
         <a href="{{ '/products' }}" type="button" class="btn btn-light"
           >Products</a
