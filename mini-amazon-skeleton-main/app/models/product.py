@@ -159,11 +159,11 @@ class Product:
         query = '''
         WITH ProdAvg AS (
         SELECT 
-        Products.id AS pid, 
-        COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
-        FROM Products
-        LEFT JOIN Reviews ON Reviews.pid = Products.id
-        GROUP BY Products.id
+        Seller.uid AS sellerID, 
+        COALESCE(ROUND(AVG(SellerReviews.rating)::numeric, 2), 0.0) AS avgRating
+        FROM Seller
+        LEFT JOIN SellerReviews ON SellerReviews.sid = Seller.uid
+        GROUP BY Seller.uid
         ),
         getPid AS (
         SELECT Products.product_id AS boppid
@@ -174,7 +174,7 @@ class Product:
         FROM getPid
         INNER JOIN Products ON Products.product_id = getPid.boppid
         INNER JOIN Inventory ON Products.id = Inventory.pid
-        INNER JOIN ProdAvg ON ProdAvg.pid = Products.id
+        INNER JOIN ProdAvg ON ProdAvg.sellerID = Inventory.sid
         INNER JOIN Users ON Users.id = Inventory.sid
         WHERE Products.available = TRUE
         ORDER BY Products.price;
