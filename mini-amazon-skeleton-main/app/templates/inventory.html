@@ -82,6 +82,27 @@
     {% endfor %}
   </tbody>
 </table>
+
 {{ pagination.links }}
+<h2>Add New Product</h2>
+<td>
+  <form action="{{ url_for('inventory.add_new_product_route') }}" method="POST">
+    <h5>Add a new product to your inventory below:</h5>
+    <input name="product_name" placeholder="Product name" />
+    <input name="description" placeholder="Description" />
+    <input name="price" placeholder="Price"/>
+    <input name="quantity" placeholder="Quantity"/>
+    <br>
+    <input name="category" type="radio" value="Toys"> Toy </input>
+    <input name="category" type="radio" value="Food"/> Food </input>
+    <input name="category" type="radio" value="Electronic"/> Electronic </input>
+    <input name="category" type="radio" value="Tools"/> Tools </input>
+    <input name="category" type="radio" value="Clothes"/> Clothes </input>
+    <input name="category" type="radio" value="Beauty"/> Beauty </input>
+    <br><br>
+    <input type="submit" value="Add product" />
+  </form>
+</td>  
+
 {% endif %}
 {% endblock %}
