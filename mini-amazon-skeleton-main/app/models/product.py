@@ -108,9 +108,9 @@ class Product:
                 FROM Reviews, Products
                 WHERE Reviews.pid = products.id GROUP BY products.id
             )
-            SELECT id, name, price, available, description, category, avgRating
-            FROM Products, ProdAvg
-            WHERE available = :available AND Products.id = ProdAvg.pid
+            SELECT Products.id, name, price, available, description, category, avgRating, firstname, sid
+            FROM Products, ProdAvg, Users
+            WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
 
         params = {"available": available}
