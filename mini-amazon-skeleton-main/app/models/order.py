@@ -167,3 +167,15 @@ WHERE uid = :uid
 """,
                             uid=uid)
         return [int(*row) for row in rows] if rows else None
+    
+    @staticmethod
+    def filter_oid(sid, strMatch=""):
+        query = """
+SELECT P.oid, P.pid, P.qty, P.unit_price, P.purchase_fulfilled, O.time_purchased
+FROM Purchases P, Orders O
+WHERE P.sid = :sid
+"""     
+        if strMatch:
+            query += " AND P.oid = :strMatch"
+        rows = app.db.execute(query,sid=sid,strMatch=strMatch )
+        return rows if rows else None
