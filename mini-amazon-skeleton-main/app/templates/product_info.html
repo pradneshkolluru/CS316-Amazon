@@ -81,6 +81,10 @@
           gap: 0;
         }
       }
+      .sellerName{
+        text-decoration: none;
+        color: black;
+      }
       /* .reviewContainer > .inputReview {
         @media only screen and (max-width: 990px) {
           flex-direction: column;
@@ -111,7 +115,7 @@
           <img src="data:image/jpeg;base64,{{ product.image }}" />
         </div>
         <div class="rightContainer">
-          <div>
+          <div style="display: flex; flex-direction: column">
             <div
               style="
                 display: flex;
@@ -123,7 +127,10 @@
               <h1 style="font-weight: 400">{{product.name}}</h1>
               <h1>${{product.price}}</h1>
             </div>
-            {{product.description}}
+            <a href="{{url_for('users.public_view', id = product.sid)}}" class="sellerName">
+              <h4>Seller: {{product.firstname}}</h4></a
+            >
+            <p>{{product.description}}</p>
           </div>
           <div
             style="

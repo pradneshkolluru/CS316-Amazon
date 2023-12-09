@@ -51,7 +51,8 @@ class Product:
         self.category = category
         self.available = available
         self.avgRating = avgRating
-        self.image = imagePic(self.name, self.id)
+        #self.image = imagePic(self.name, self.id)
+        self.image = ""
         self.quantity = quantity
         self.sid = sid
         self.firstname = firstname
@@ -107,7 +108,7 @@ class Product:
                 FROM Reviews, Products
                 WHERE Reviews.pid = products.id GROUP BY products.id
             )
-            SELECT Products.id, name, price, available, description, category, avgRating, firstname, sid
+            SELECT Products.id, name, price, available, description, category, avgRating, ''quantity, sid, firstname
             FROM Products, ProdAvg, Users
             WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
