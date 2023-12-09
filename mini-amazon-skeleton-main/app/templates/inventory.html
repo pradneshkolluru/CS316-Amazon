@@ -1,4 +1,10 @@
 {% extends "base.html" %} {% block content %}
+{% if not seller %}
+<br><br>
+<h3>You are not currently a registered seller. Register in your
+  <a href="{{ url_for('users.show_info') }}" type="button">profile.</a>
+</h3>
+{% else %}
 <head>
   <style>
     .changeQuantity {
@@ -77,4 +83,5 @@
   </tbody>
 </table>
 {{ pagination.links }}
+{% endif %}
 {% endblock %}
