@@ -5,11 +5,11 @@ from faker import Faker
 import random
 from datetime import datetime
 
-num_users = 100
-num_sellers = 50
-num_products = 2000
+num_users = 10
+num_sellers = 5
+num_products = 20
 #num_purchases = 2500
-num_orders = 400
+num_orders = 40
 
 Faker.seed(0)
 fake = Faker()
@@ -24,6 +24,8 @@ def gen_users(num_users):
         writer = get_csv_writer(f)
         print('Users...', end=' ', flush=True)
         for uid in range(num_users):
+            if uid == 0:
+                writer.writerow(["0","icecream@tastes.good","pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb","Joey","Shmoey","420 Chapel Dr", "1000"])
             if uid % 10 == 0:
                 print(f'{uid}', end=' ', flush=True)
             profile = fake.profile()
