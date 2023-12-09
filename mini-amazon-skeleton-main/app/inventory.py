@@ -5,6 +5,7 @@ from flask import request
 from flask import redirect, url_for
 
 from .models.inventory import InventoryItem
+from .models.user import User
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -14,6 +15,7 @@ bp = Blueprint('inventory', __name__)
 @bp.route('/inventory/<int:sid>')
 def inventory(sid):
     # get products in inventory of one seller
+    seller = User.is_seller(sid)
     items = InventoryItem.get_all_by_sid(sid)
     page = request.args.get(get_page_parameter(), type=int, default=1)
     per_page = 10
@@ -23,7 +25,7 @@ def inventory(sid):
     return render_template('inventory.html',
                            items=sliced_items,
                            items_length=len(items),
-                           pagination=pagination)
+                           pagination=pagination, seller=seller)
 
 @bp.route('/inventory/add', methods=['POST'])
 def inventory_add():  

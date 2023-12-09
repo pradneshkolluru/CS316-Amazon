@@ -9,6 +9,7 @@ from .models.product import Product
 from .models.purchase import Purchase
 from .models.cart import Cart
 from .models.order import Order
+from .models.user import User
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -54,9 +55,10 @@ def get_order(oid):
                            humanize_time=humanize_time,
                            pagination=pagination)
 
-@bp.route('/order-seller/<int:sid>')
+@bp.route('/order-seller/<int:sid>', methods=['GET','POST'])
 def seller_orders(sid):
     if current_user.is_authenticated:
+        seller = User.is_seller(current_user.id)
         orders_list = Order.get_all_orders_for_seller(sid)
         if not orders_list:
             orders_list = []
@@ -95,6 +97,13 @@ def seller_orders(sid):
         
         oids = list(set(oids)) # only unique order ids
 
+        stringMatch = request.form.get('stringMatch')
+
+        search = False
+        q = request.args.get('q')
+        if q:
+            search = True
+        oids = list(set([x[0] for x in Order.filter_oid(sid, stringMatch)]))
         # sort oids by time_purchased (reverse chronological order)
         oid_time = []
         for oid in oids:
@@ -102,6 +111,13 @@ def seller_orders(sid):
         oid_time.sort(key = lambda x:x[1], reverse = True)
         oids = [o[0] for o in oid_time]
 
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        sliced_oids = oids[offset: offset + per_page]
+
+        pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(oids), search=search, record_name='Order IDs')
     else:
         oids_list = None
         revenue = None,
@@ -113,7 +129,9 @@ def seller_orders(sid):
                            revenue = order_revenue,
                            num_items = order_num_items,
                            fulfillment = order_fulfillment,
-                           purchase_date = order_purchase_date)
+                           purchase_date = order_purchase_date,
+                           seller=seller,
+                           pagination=pagination)
 
 @bp.route('/order-seller/<int:sid>/<int:oid>')
 def seller_order_details(sid, oid):
@@ -125,13 +143,15 @@ def seller_order_details(sid, oid):
         buyer_name = str(buyer_info[0]).capitalize() + " " + str(buyer_info[1]).capitalize()
         buyer_address = buyer_info[2]
         buyer_email = buyer_info[3]
-
+        seller = User.is_seller(current_user.id)
+    
     return render_template('seller_order_details.html',
                            purchase_items=purchase_items,
                            oid = oid,
                            name = buyer_name,
                            address = buyer_address,
-                           email = buyer_email)
+                           email = buyer_email, 
+                           seller=seller)
 
 @bp.route('/order-seller/<int:sid>/<int:oid>/<int:pid>',methods=['POST'])
 def change_purchase_fulfillment_status(sid, oid, pid):
@@ -140,7 +160,13 @@ def change_purchase_fulfillment_status(sid, oid, pid):
         new_status = False
         if curr_status == "Fulfilled":
             new_status = True
+        
+        click_time = request.form.get('click_time')  # Get the click time from the form data
+        print('PRINTING CLICK TIME....................')
+        print(click_time)
+        
         purchases = Order.update_purchase_fulfillment(oid, pid, new_status)
+        Order.update_purchase_fulfillment_time(oid, pid, click_time)
         # then trigger function to show change in status in buyer's view
         Order.check_and_update_order_fulfillment(oid)
     return redirect(url_for('order.seller_order_details', sid=sid, oid = oid))

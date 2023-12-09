@@ -43,7 +43,7 @@ def imagePic(name, pid):
 
 
 class Product:
-    def __init__(self, id, name, price, available, description, category, avgRating = 0):
+    def __init__(self, id, name, price, available, description, category, avgRating = 0, quantity = None, sid = None, firstname = '', lastname = ''):
         self.id = id
         self.name = name
         self.price = price
@@ -53,6 +53,10 @@ class Product:
         self.avgRating = avgRating
         #self.image = imagePic(self.name, self.id)
         self.image = ""
+        self.quantity = quantity
+        self.sid = sid
+        self.firstname = firstname
+        self.lastname = lastname
 
     @staticmethod
     def get(id):
@@ -67,8 +71,6 @@ class Product:
     
     @staticmethod
     def get_filtered(available=True, k=0, strMatch="", catMatch = "", priceSort = ""):
-
-        print(catMatch)
 
         query = '''
             SELECT id, name, price, available, description, category
@@ -93,16 +95,12 @@ class Product:
             query += " LIMIT :limitK"
             params["limitK"] = k
 
-        print(query)
-
         rows = app.db.execute(query, **params)
 
         return [Product(*row) for row in rows]
 
     @staticmethod
     def get_filtered2(available=True, k=0, strMatch="", catMatch = "", priceSort = "", id_spec = ""):
-
-        print(catMatch)
 
         query = '''
             WITH ProdAvg(pid, avgRating) AS (
@@ -136,25 +134,45 @@ class Product:
             query += " LIMIT :limitK"
             params["limitK"] = k
 
-        print(query)
 
         rows = app.db.execute(query, **params)
 
-        print(rows)
         return [Product(*row) for row in rows]
 
 
 
-    def get_product_info(product_id):
+    def get_product_info(id_specif):
 
 
-        rows = app.db.execute('''
-        SELECT id, name, price, available, description, category
-        FROM Products
-        WHERE id = :id ORDER BY price
-        ''', id = product_id)
-
-        rows = Product.get_filtered2(id_spec = product_id)
-
+        rows = Product.get_filtered2(id_spec = id_specif)
 
         return rows
+    
+
+    def getProductsFromOtherVenders(uId):
+
+        query = '''
+        WITH ProdAvg(uid, avgRating) AS (
+                SELECT products.id, ROUND(AVG(rating)::numeric, 2)
+                FROM Reviews, Products
+                WHERE Reviews.pid = products.id GROUP BY products.id
+            ),
+        getPid AS (
+        SELECT Products.product_id AS boppid
+        FROM Products
+        WHERE Products.id = :id
+        )
+        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Inventory.quantity, Products.sid, Users.firstname, Users.lastname
+        FROM getPid
+        INNER JOIN Products ON Products.product_id = getPid.boppid
+        INNER JOIN Inventory ON Products.id = Inventory.pid
+        INNER JOIN ProdAvg ON ProdAvg.uid = Products.id
+        INNER JOIN Users ON Users.id = Inventory.sid
+        WHERE Products.available = TRUE
+        ORDER BY Products.price;
+        '''
+
+
+        rows = app.db.execute(query, id = uId)
+
+        return [Product(*row) for row in rows]

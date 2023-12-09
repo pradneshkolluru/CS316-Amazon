@@ -185,6 +185,17 @@
           >Products</a
         >
         <a href="{{ '/cart' }}" type="button" class="btn btn-light">Cart</a>
+        <div class="dropdown">
+          <button class="btn btn-light">Seller Toolkit</button>
+          <div class="dropdown-content">
+            <a href="/order-seller/{{current_user.id}}" type="button"
+              >Seller Order History</a
+            >
+            <a href="/inventory/{{current_user.id}}" type="button"
+              >Seller Inventory</a
+            >
+          </div>
+        </div>
         <!-- <a href="{{ url_for('users.show_info') }}" type="button" class="btn btn-light">Account</a> -->
         <!-- <a href="{{ url_for('users.logout') }}" type="button" class="btn btn-light">Log out</a> -->
         <div class="dropdown">
@@ -192,12 +203,12 @@
           <div class="dropdown-content">
             <a href="{{ url_for('users.show_info') }}" type="button">Profile</a>
             <a href="{{ url_for('purchases.purchases') }}">Purchase History</a>
-            <a href="/order-seller/{{current_user.id}}" type="button"
+            <!-- <a href="/order-seller/{{current_user.id}}" type="button"
               >Seller Order History</a
             >
             <a href="/inventory/{{current_user.id}}" type="button"
               >Seller Inventory</a
-            >
+            > -->
             <a href="{{ url_for('sellerReviews.sellerReviews') }}"
               >Seller Reviews</a
             >
