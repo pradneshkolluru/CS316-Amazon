@@ -9,6 +9,7 @@ from io import BytesIO
 
 from .models.purchase import Purchase
 from .models.order import Order
+from .models.product import Product
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -22,7 +23,7 @@ def purchases():
         if not years:
             years = []
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
-        print(all_purchases)
+        
         query=[]
         stringMatch = request.form.get('stringMatch')
         if stringMatch:
@@ -37,6 +38,7 @@ def purchases():
         
         all_purchases = Order.get_filtered(strMatch = stringMatch, uid=current_user.id, sellerMatch=sellerMatch, year=year)
     
+        #Pagination
         search = False
         q = request.args.get('q')
         if q:
@@ -66,11 +68,20 @@ def purchases():
             data = base64.b64encode(buf.getbuffer()).decode("ascii")
         else:
             data = None
+        categories = []
+        recommendations = []
+        if Order.categories(current_user.id):
+            categories = Order.categories(current_user.id)
+            for category in categories:
+                recommendations += Product.get_filtered2(True, strMatch = stringMatch, catMatch = category)
+        if len(recommendations) >= 3:
+            recommendations = recommendations[:3]
     else:
         # purchases = None
         #all_purchases = None
         pagination= None
     return render_template('purchases.html',
                             # purchase_history=purchases,
-                            all_purchases=all_purchases,
-                            pagination=pagination, years=years, query=querystring, data =data)    
+                            all_purchases=sliced_products,
+                            pagination=pagination, years=years, query=querystring, 
+                            data =data, categories=categories, recs = recommendations)    

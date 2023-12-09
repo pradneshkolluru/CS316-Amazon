@@ -218,6 +218,16 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
+    @staticmethod
+    def recommendations(category):
+        rows = app.db.execute("""
+select 
+from products
+where category = :category
+limit 3
+""",
+                            category=category)
+        return [Product(*row) for row in rows]
 
 
     
