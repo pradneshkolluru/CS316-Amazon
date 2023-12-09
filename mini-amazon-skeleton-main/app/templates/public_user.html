@@ -52,6 +52,7 @@
         <h1 style="font-size: 10vh">
           {{user_info.firstname}} {{user_info.lastname}}'s Store Front
         </h1>
+        {% if not seller%}Account #:{{user_info.id}}{% endif %}
       </div>
       {% if seller %}
       <ul class="nav nav-tabs" id="myTab" role="tablist">
@@ -248,6 +249,7 @@
         >
           <div class="tabContent" style="width: max-content">
             <!-- <h1>Seller Info:</h1> -->
+            <h2>Account Number{{user_info.id}}</h2>
             <h2>Email: {{user_info.email}}</h2>
             <h2>Address: {{user_info.address}}</h2>
           </div>

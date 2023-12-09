@@ -155,6 +155,8 @@ def public_view(id):
         pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(products), record_name='Products')
 
     else:
+        sliced_products=''
+        pagination=''
         reviews = None
     return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews, avail_products=sliced_products, pagination=pagination)
 
