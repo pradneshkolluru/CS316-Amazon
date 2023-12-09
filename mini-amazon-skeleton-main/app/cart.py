@@ -67,15 +67,11 @@ def add_multiple_to_cart(product_id):
 
     qty = request.form.get('addQuant')
 
-    
-
     if qty:
         qty = int(qty)
     else:
         qty = 1
 
-    print(qty)
-    print("testing123")
     Cart.update_item_qty(current_user.id, product_id, qty)
     return redirect(url_for('cart.cart'))
 

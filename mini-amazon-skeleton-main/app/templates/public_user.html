@@ -1,48 +1,156 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
-
-<h1>User {{user_info.id}}</h1>
-<h2>{{user_info.firstname}} {{user_info.lastname}}</h2>
-
-{% if seller %}
-<br><br>
-<h1>Seller Info:</h1>
-<h2>Email: {{user_info.email}}</h2>
-<h2>Address: {{user_info.address}}</h2>
-<br>
-<h2>Recent Reviews:</h2>
-<table class="table table-hover table-bordered container">
-  <thead class="thead-dark">
-    <tr>
-      <!-- <th scope="col">Product ID</th> -->
-      <th scope="col">Seller</th>
-      <th width="50px" scope="col">Rating</th>
-      <th width="50%" scope="col">Review</th>
-      <th scope="col">Post Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for review in review_history%}
-    <tr>
-      <td>{{review.first_name}} {{review.last_name}}</td>
-        <td style="text-align: center">
-          {{review.rating}}
-        </td>
-        <td>
-          <div>
-            <body
-              style="width: 100%"
-              rows="3"
-            >
-{{review.review_text}}</body
-            >
+<!-- <h1>User {{user_info.id}}</h1> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <style>
+      .pageContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: scroll;
+        align-items: center;
+      }
+      .main {
+        padding: 0px 0px;
+      }
+      .storeFront {
+        height: 20vh;
+        background-color: #6d94a8;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- name and account number if they are not a seller -->
+    {% if seller %}
+    <div class="pageContainer">
+      <div class="storeFront">
+        <h1 style="font-size: 10vh">
+          {{user_info.firstname}} {{user_info.lastname}}'s Store Front
+        </h1>
+      </div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="home-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#home-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="home-tab-pane"
+            aria-selected="true"
+          >
+            Products
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="profile-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#profile-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="profile-tab-pane"
+            aria-selected="false"
+          >
+            Reviews
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="contact-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#contact-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="contact-tab-pane"
+            aria-selected="false"
+          >
+            Contact Information
+          </button>
+        </li>
+      </ul>
+      <div class="tab-content" id="myTabContent" style="width: 100%">
+        <div
+          class="tab-pane fade show active"
+          id="home-tab-pane"
+          role="tabpanel"
+          aria-labelledby="home-tab"
+          tabindex="0"
+        >
+          ...
+        </div>
+        <div
+          class="tab-pane fade"
+          id="profile-tab-pane"
+          role="tabpanel"
+          aria-labelledby="profile-tab"
+          tabindex="0"
+          style="margin: auto; width: 50%"
+        >
+          <h2 style="max-width: fit-content; margin: auto; width: 50%">
+            What Customers Say About {{user_info.firstname}}
+          </h2>
+          <div style="display: flex; flex-direction: column; width: 80%">
+            {% for review in review_history%}
+            <div>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  margin-bottom: 1em;
+                "
+              >
+                <h5 style="margin: 0%">{{review.first_name}}</h5>
+                <p style="margin: 0%">{{review.time_posted}}</p>
+                <p style="margin: 0%">{{review.rating}}/5 stars</p>
+              </div>
+              <p>{{review.review_text}}</p>
+              <hr style="background-color: #d3d3d3" />
+            </div>
+            {% endfor %}
           </div>
-        </td>
-        <td>{{review.time_posted}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-{% endblock %}
+        </div>
+        <div
+          class="tab-pane fade"
+          id="contact-tab-pane"
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          tabindex="0"
+        >
+          <div>
+            <h1>Seller Info:</h1>
+            <h2>Email: {{user_info.email}}</h2>
+            <h2>Address: {{user_info.address}}</h2>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+    {% endif %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  {% endblock %}
+</html>

@@ -49,6 +49,7 @@ WHERE O.id = P.oid
 SELECT P.oid, P.pid, P.qty, P.unit_price, P.purchase_fulfilled, O.time_purchased
 FROM Purchases P, Orders O
 WHERE P.sid = :sid
+AND P.oid = O.id
 ''',
                               sid=sid)
         return rows if rows else None
@@ -128,6 +129,19 @@ AND pid = :pid
                             oid=oid,
                             pid=pid,
                             new_status=new_status)
+        return rows if rows else None
+    
+    @staticmethod
+    def update_purchase_fulfillment_time(oid, pid, click_time):
+        rows = app.db.execute("""
+UPDATE Purchases
+SET time_fulfilled = :click_time
+WHERE oid = :oid
+AND pid = :pid
+""",
+                            oid=oid,
+                            pid=pid,
+                            click_time=click_time)
         return rows if rows else None
     
     @staticmethod
