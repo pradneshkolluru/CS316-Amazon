@@ -58,7 +58,24 @@ def cart():
 
 
 @bp.route('/cart/add/<int:product_id>', methods=['POST'])
-def add_to_cart(product_id, qty=1):
+def add_to_cart(product_id):
+    Cart.update_item_qty(current_user.id, product_id, 1)
+    return redirect(url_for('cart.cart'))
+
+@bp.route('/cart/add_multiple/<int:product_id>', methods=['POST', 'GET'])
+def add_multiple_to_cart(product_id):
+
+    qty = request.form.get('addQuant')
+
+    
+
+    if qty:
+        qty = int(qty)
+    else:
+        qty = 1
+
+    print(qty)
+    print("testing123")
     Cart.update_item_qty(current_user.id, product_id, qty)
     return redirect(url_for('cart.cart'))
 
