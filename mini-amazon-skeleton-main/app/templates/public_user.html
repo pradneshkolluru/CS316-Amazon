@@ -130,19 +130,26 @@
                 /></a>
                 <div class="card-body">
                   <!-- <p style="text-overflow: ellipsis"> -->
-                  <a
-                    style="
-                      color: black;
-                      width: 100%;
-                      display: block;
-                      white-space: nowrap;
-                      text-overflow: ellipsis;
-                      overflow: hidden;
-                      padding-bottom: 10px;
-                    "
-                    href="{{ url_for('products.product_info', id=product.id) }}"
-                    >{{product.name}}</a
-                  >
+                  <div class="padding-bottom: 10px;">
+                    <a
+                      style="
+                        color: black;
+                        width: 100%;
+                        display: block;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        padding-bottom: 0px;
+                      "
+                      href="{{ url_for('products.product_info', id=product.id) }}"
+                      >{{product.name}}</a
+                    >
+                    <small
+                      class="text-body-secondary"
+                      style="text-transform: capitalize"
+                      >{{product.category}}</small
+                    >
+                  </div>
                   <!-- </p> -->
                   <div
                     class="d-flex justify-content-between align-items-center"
