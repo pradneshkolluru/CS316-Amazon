@@ -168,7 +168,10 @@
         </div>
       </div>
       <div class="reviewContainer">
-        <div class="inputReview">
+        <div class="inputReview" style="display: flex; flex-direction: column">
+          {% for error in get_flashed_messages() %}
+          <span style="color: red">{{ error }}</span>
+          {% endfor %}
           <button class="addBtn" id="showFormButton" onclick="toggleForm()">
             Add Review
           </button>
@@ -222,11 +225,12 @@
                 required
               ></textarea>
               <div class="invalid-feedback">Please provide a valid city.</div> -->
+
               <input type="submit" value="Submit" />
             </div>
           </form>
         </div>
-        <div style="display: flex; flex-direction: column">
+        <div style="display: flex; flex-direction: column; width: 100%">
           {% for review in review_info%}
           <div style="margin-left: 1em">
             <div
