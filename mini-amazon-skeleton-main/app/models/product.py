@@ -179,6 +179,9 @@ class Product:
 
         print(query)
 
+
         rows = app.db.execute(query, id = uId)
+
+        print(len(rows))
 
         return [Product(*row) for row in rows]
