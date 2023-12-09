@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
+from sqlalchemy import text
 matplotlib.use('Agg')
 
 
@@ -218,6 +219,19 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
+
+    
+    @staticmethod
+    def updateProduct(uid, changeField, newInput):
+
+        query = text(f'''
+        UPDATE Products
+        SET {changeField} = :newInput
+        WHERE id = :id
+        ''')
+
+        rows = app.db.execute(str(query.compile()), id=uid, newInput=newInput)
+
     @staticmethod
     def get_by_sid(sid):
 
