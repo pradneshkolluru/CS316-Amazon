@@ -135,9 +135,6 @@ class Product:
         if k:
             query += " LIMIT :limitK"
             params["limitK"] = k
-        
-        print('PRINTING........................')
-        print(query)
 
         rows = app.db.execute(query, **params)
 
@@ -169,7 +166,7 @@ class Product:
         FROM Products
         WHERE Products.id = :id
         )
-        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Inventory.quantity, Products.sid, Users.firstname, Users.lastname
+        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Products.image_path, Inventory.quantity, Products.sid, Users.firstname, Users.lastname
         FROM getPid
         INNER JOIN Products ON Products.product_id = getPid.boppid
         INNER JOIN Inventory ON Products.id = Inventory.pid
@@ -236,9 +233,15 @@ class Product:
     def get_by_sid(sid):
 
         query = '''
-            SELECT id, name, price, available, description, category
-            FROM Products
-            WHERE sid = :sid
+            WITH ProdAvg AS (
+                SELECT Products.id AS pid, 
+                COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
+                FROM Products
+                LEFT JOIN Reviews ON Reviews.pid = Products.id
+                GROUP BY Products.id)
+            SELECT id, name, price, available, description, category, avgRating, image_path
+            FROM Products, ProdAvg
+            WHERE sid = :sid AND Products.id = ProdAvg.pid
         '''
         rows = app.db.execute(query, sid=sid)
         return [Product(*row) for row in rows] if rows is not None else None

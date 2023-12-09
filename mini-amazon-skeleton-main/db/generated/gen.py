@@ -58,7 +58,7 @@ def gen_sellers(num_sellers):
     with open('db/generated/Sellers.csv', 'w') as f:
         writer = get_csv_writer(f)
         print('Sellers...', end=' ', flush=True)
-        for uid in fake.random_elements(list(range(num_users)), length=num_sellers, unique=True):
+        for uid in fake.random_elements(list(range(1, num_users)), length=num_sellers, unique=True):
             if uid % 10 == 0:
                 print(f'{uid}', end=' ', flush=True)
             sellers.append(uid)
