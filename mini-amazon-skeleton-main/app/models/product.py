@@ -218,6 +218,9 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
+    
+
+    
 
 
     

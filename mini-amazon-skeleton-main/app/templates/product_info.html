@@ -302,7 +302,6 @@
               <label for="addQuant">Quantity: </label>
               <input type="number" id="addQuant" name="addQuant" max="{{ product.quantity }}" oninput="this.value = Math.min(this.value, this.max)" /><br /><br />
               <input type="submit" value="Add to Cart" /><br /><br />
-
             </form>
             {% else %}
             <form method="GET" action="{{ url_for('users.login')}}">

@@ -42,6 +42,7 @@
       <!--th scope="col">#</th-->
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Product Description</th>
       <th scope="col">Current Selling Price</th>
       <th scope="col">Available Quantity</th>
       <th scope="col">Remove Product</th>
@@ -54,9 +55,33 @@
 
         <th scope="row">{{item.pid}}</th>
 
-        <td>{{item.product_name}}</td>
+        <td>{{item.product_name}}
+          <form method="POST" action="">
+            <label for="newName"></label>
+            <input type="text" id="newName" name="newName">
+            <input type="submit" value="Update Name" /><br /><br />
+          </form>
+        </td>
+      
+        <td>{{item.product_name}}
 
-        <td>${{item.product_price}}</td>
+            <form method="POST" action="">
+              <label for="newDes"></label>
+              <input type="text" id="newDes" name="newDes">
+              <input type="submit" value="Update Description" /><br /><br />
+            </form>
+            
+        </td>
+
+        <td>${{item.product_price}}
+
+          <form method="POST" action="">
+            <label for="newPrice"></label>
+            <input type="text" id="newPrice" name="newPrice">
+            <input type="submit" value="Update Price" /><br /><br />
+          </form>
+          
+        </td>
 
         <td class="changeQuantity">
           <form action="{{ url_for('inventory.inventory_update_quantity') }}" method="POST">
