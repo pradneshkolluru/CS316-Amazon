@@ -132,7 +132,9 @@
               href="{{ url_for('users.public_view', id=product.sid) }}"
               class="sellerName"
             >
-              <h4>Seller: {{product.firstname}}</h4></a
+              <h5 style="text-decoration: none">
+                Visit {{product.firstname}}'s Store
+              </h5></a
             >
             <p>{{product.description}}</p>
           </div>
@@ -248,20 +250,31 @@
           </form>
         </div>
         {% endif %}
-        <div style="display: flex; flex-direction: column; width: 100%">
-          {% for review in review_info%}
-          <div style="margin-left: 1em">
-            <div
-              style="display: flex; flex-direction: column; margin-bottom: 1em"
-            >
-              <h5 style="margin: 0%">{{review.firstname}}</h5>
-              <p style="margin: 0%">{{review.time_posted}}</p>
-              <p style="margin: 0%">{{review.rating}}/5 stars</p>
+        <div>
+          <!-- <div style="padding-bottom: 2em">{{ pagination.info }}</div> -->
+          <h3>What Customers Say About <strong>{{product.name}}</strong></h3>
+          <div style="display: flex; flex-direction: column; width: 100%">
+            {% for review in review_info%}
+            <div style="margin-left: 1em">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  margin-bottom: 1em;
+                "
+              >
+                <h5 style="margin: 0%">{{review.firstname}}</h5>
+                <p style="margin: 0%">{{review.time_posted}}</p>
+                <p style="margin: 0%">{{review.rating}}/5 stars</p>
+              </div>
+              <p>{{review.review_text}}</p>
+              <hr style="background-color: #d3d3d3" />
             </div>
-            <p>{{review.review_text}}</p>
-            <hr style="background-color: #d3d3d3" />
+            {% endfor %}
           </div>
-          {% endfor %}
+          <div style="margin: auto; width: fit-content; padding: 10px">
+            {{ pagination.links }}
+          </div>
         </div>
       </div>
     </div>

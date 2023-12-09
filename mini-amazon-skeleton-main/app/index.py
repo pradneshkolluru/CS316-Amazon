@@ -1,3 +1,4 @@
+import random
 from flask import render_template
 from flask_login import current_user
 import datetime
@@ -13,6 +14,10 @@ bp = Blueprint('index', __name__)
 def index():
     # get all available products for sale:
     products = Product.get_filtered2(True)
+
+    random.shuffle(products)
+    selected_items = products[0:4]
+
     # find the products current user has bought:
     if current_user.is_authenticated:
         purchases = Purchase.get_all_by_uid_since(
@@ -22,4 +27,5 @@ def index():
     # render the page by adding information to the index.html file
     return render_template('index.html',
                            avail_products=products,
-                           purchase_history=purchases)
+                           purchase_history=purchases,
+                           randomProd=selected_items)
