@@ -191,5 +191,5 @@ WHERE P.sid = :sid
 """     
         if strMatch:
             query += " AND P.oid = :strMatch"
-        rows = app.db.execute(query,sid=sid,strMatch=strMatch )
+        rows = app.db.execute(query,sid=sid,strMatch=strMatch)
         return rows if rows else None

@@ -64,6 +64,7 @@ def seller_orders(sid):
         orders_list = Order.get_all_orders_for_seller(sid)
         if orders_list:
             orders = orders_list
+
         oids = []
         # list of dictionaries with key: oid
         order_revenue = {}
@@ -97,18 +98,27 @@ def seller_orders(sid):
             if not oid in order_purchase_date:
                 order_purchase_date[oid] = time_purchased
         
-        oids = list(set(oids)) # only unique order ids; oids is empty if no orders
+        #oids = list(set(oids)) # only unique order ids; oids = [] if no orders
 
+        # search for order id
         stringMatch = request.form.get('stringMatch')
-
         search = False
         q = request.args.get('q')
         if q:
             search = True
         
-        if len(oids) != 0:
-            oids = list(set([x[0] for x in Order.filter_oid(sid, stringMatch)]))
+        result = Order.filter_oid(sid, strMatch=stringMatch) # returns all order arrays that match string
 
+        if result == None:
+            oids = [] # search/filter returned no orders
+        if len(oids) != 0:
+            fulfillment_dict = seller_order_fulfillment(result) # returns search oids filtered as fulfilled vs unfulfilled
+            if request.form.get('options') == "Fulfilled":
+                oids = fulfillment_dict['Fulfilled']
+            if request.form.get('options') == "Not fulfilled":
+                oids = fulfillment_dict['Not fulfilled']
+                #oids = list(set([x[0] for x in result]))
+        
         # sort oids by time_purchased (reverse chronological order)
         oid_time = []
         for oid in oids:
@@ -137,6 +147,40 @@ def seller_orders(sid):
                            purchase_date = order_purchase_date,
                            seller=seller,
                            pagination=pagination)
+
+def seller_order_fulfillment(filtered_orders):
+    orders_list = filtered_orders
+    orders = [] # if no orders for seller, orders is empty list
+    if orders_list:
+            orders = orders_list
+    order_fulfillment = {}
+    oids = []
+    for purchase in orders:
+        oid = purchase[0]
+        oids.append(oid)
+        purchase_fulfilled = purchase[4]
+        if oid in order_fulfillment:
+            if order_fulfillment[oid]:
+                if not purchase_fulfilled:
+                    order_fulfillment[oid] = "Not fulfilled"
+        else:
+            if purchase_fulfilled:
+                order_fulfillment[oid] = "Fulfilled"
+            else:
+                order_fulfillment[oid] = "Not fulfilled"
+
+    fulfillment_dict = {}
+    fulfillment_dict["Fulfilled"] = []
+    fulfillment_dict["Not fulfilled"] = []
+    
+    for oid in order_fulfillment:
+        if order_fulfillment[oid] == "Fulfilled":
+            fulfillment_dict['Fulfilled'].append(oid)
+        else:
+            fulfillment_dict['Not fulfilled'].append(oid)
+    return fulfillment_dict
+
+
 
 @bp.route('/order-seller/<int:sid>/<int:oid>')
 def seller_order_details(sid, oid):
@@ -167,8 +211,8 @@ def change_purchase_fulfillment_status(sid, oid, pid):
             new_status = True
         
         click_time = request.form.get('click_time')  # Get the click time from the form data
-        print('PRINTING CLICK TIME....................')
-        print(click_time)
+        #print('PRINTING CLICK TIME....................')
+        #print(click_time)
         
         purchases = Order.update_purchase_fulfillment(oid, pid, new_status)
         Order.update_purchase_fulfillment_time(oid, pid, click_time)

@@ -6,10 +6,10 @@ import random
 from datetime import datetime
 
 num_users = 100
-num_sellers = 50
-num_products = 20
+num_sellers = 20
+num_products = 500
 #num_purchases = 2500
-num_orders = 40
+num_orders = 500
 
 Faker.seed(0)
 fake = Faker()
@@ -203,7 +203,7 @@ def get_seller_to_pid(available_pids, sellers): #### use all pids, not just avai
     seller_pid = {} # dictionary with key:pid and value:list of sids that sell pid
     for pid in available_pids:
         seller_pid[pid] = [] # all sellers who have this pid in inventory
-        num_sellers = random.randint(1,9)  # number of sellers who have this same pid in inventory
+        num_sellers = random.randint(1,4)  # number of sellers who have this same pid in inventory
         #seller_pid = [] # all sellers who have this pid in inventory
         for i in range(num_sellers):
             sid = random.choice(sellers)
