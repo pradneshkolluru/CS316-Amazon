@@ -107,7 +107,7 @@ class Product:
                 FROM Reviews, Products
                 WHERE Reviews.pid = products.id GROUP BY products.id
             )
-            SELECT Products.id, name, price, available, description, category, avgRating, firstname, sid
+            SELECT Products.id, name, price, available, description, category, avgRating, ''quantity, sid, firstname
             FROM Products, ProdAvg, Users
             WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
