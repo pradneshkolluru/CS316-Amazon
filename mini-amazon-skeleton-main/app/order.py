@@ -9,6 +9,7 @@ from .models.product import Product
 from .models.purchase import Purchase
 from .models.cart import Cart
 from .models.order import Order
+from .models.user import User
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -57,6 +58,7 @@ def get_order(oid):
 @bp.route('/order-seller/<int:sid>')
 def seller_orders(sid):
     if current_user.is_authenticated:
+        seller = User.is_seller(current_user.id)
         orders_list = Order.get_all_orders_for_seller(sid)
         if not orders_list:
             orders_list = []
@@ -113,7 +115,8 @@ def seller_orders(sid):
                            revenue = order_revenue,
                            num_items = order_num_items,
                            fulfillment = order_fulfillment,
-                           purchase_date = order_purchase_date)
+                           purchase_date = order_purchase_date,
+                           seller=seller)
 
 @bp.route('/order-seller/<int:sid>/<int:oid>')
 def seller_order_details(sid, oid):
@@ -125,13 +128,15 @@ def seller_order_details(sid, oid):
         buyer_name = str(buyer_info[0]).capitalize() + " " + str(buyer_info[1]).capitalize()
         buyer_address = buyer_info[2]
         buyer_email = buyer_info[3]
+        seller = User.is_seller(current_user.id)
 
     return render_template('seller_order_details.html',
                            purchase_items=purchase_items,
                            oid = oid,
                            name = buyer_name,
                            address = buyer_address,
-                           email = buyer_email)
+                           email = buyer_email, 
+                           seller=seller)
 
 @bp.route('/order-seller/<int:sid>/<int:oid>/<int:pid>',methods=['POST'])
 def change_purchase_fulfillment_status(sid, oid, pid):
