@@ -233,7 +233,7 @@
             </div>
           </form>
         </div>
-        <div style="display: flex; flex-direction: column; width: 100%">
+        <div style="display: flex; flex-direction: column; width: 100%;">
           {% for review in review_info%}
           <div style="margin-left: 1em">
             <div
@@ -250,7 +250,51 @@
         </div>
       </div>
     </div>
-    {% endfor %}
+    {% endfor %} 
+    <h2>Similar Products for sale:</h2>
+    <table class="table table-hover table-bordered container">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Product Name</th>
+          <th scope="col">Price</th>
+          <th scope="col">Quantity</th>
+          <th scope="col">Seller Name</th>
+          <th scope="col">Seller Rating</th>
+          <th scope="col">Add to Cart</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for product in other_vendors%}
+        <tr>
+          <td>
+            <a
+              style="color: black"
+              href="{{ url_for('products.product_info', id=product.id) }}"
+              >{{product.name}}</a
+            >
+          </td>
+          <td>{{product.price}}</td>
+          <td>{{product.quantity}}</td>
+          <td>{{product.firstname}} {{product.lastname}}</td>
+          <td>
+            <br>{{Test}}</br>
+          </td>
+          <td>
+            <form method="POST" action="{{ url_for('cart.add_multiple_to_cart', product_id=product.id)}}">
+              <label for="addQuant">Quantity: </label>
+              <input type="number" id="addQuant" name="addQuant" max="{{ product.quantity }}" oninput="this.value = Math.min(this.value, this.max)" /><br /><br />
+              <input type="submit" value="Add to Cart" /><br /><br />
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
     <script>
       function toggleForm() {
         var form = document.getElementById("reviewForm");
@@ -262,5 +306,17 @@
       }
     </script>
   </body>
-</html>
-{% endblock %}
+</html>    
+    <script>
+      function toggleForm() {
+        var form = document.getElementById("reviewForm");
+        if (form.style.display === "none") {
+          form.style.display = "block"; // Show the form
+        } else {
+          form.style.display = "none"; // Hide the form
+        }
+      }
+    </script>
+  </body>
+  </html>
+  {% endblock %}

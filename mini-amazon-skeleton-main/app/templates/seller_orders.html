@@ -4,7 +4,20 @@
 
 <br><br>
 {% if current_user.is_authenticated %}
+{% if not seller %}
+<h3>You are not currently a registered seller. Register in your
+  <a href="{{ url_for('users.show_info') }}" type="button">profile.</a>
+</h3>
+{% endif %}
+{% if seller %}
 <h2>Your Seller Order History</h2>
+
+<br>
+<form action="{{ url_for('order.seller_orders', sid = current_user.id)}}" method="POST">
+  <label for="stringMatch">Search by Order ID:</label>
+  <input type="text" id="stringMatch" name="stringMatch" /><br /><br />
+</form>
+
 <h5>Click on a specific order ID to view an order summary and edit its fulfillment status.</h5>
 <table class='table table-hover table-bordered container'>
   <thead class="thead-dark">
@@ -34,6 +47,7 @@
     {% endfor %}
   </tbody>
 </table>
+{% endif %}
 {% endif %}
 
 {% endblock %}

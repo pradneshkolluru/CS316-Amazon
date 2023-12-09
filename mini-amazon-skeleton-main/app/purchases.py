@@ -14,6 +14,8 @@ bp = Blueprint('purchases', __name__)
 def purchases():
     if current_user.is_authenticated:
         years = Order.get_years(current_user.id)
+        if not years:
+            years = []
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
         print(all_purchases)
         query=[]

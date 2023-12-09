@@ -50,8 +50,19 @@
         <td>{{item.product_name}}</td>
         <td>{{item.qty}}</td>
         <td>{{item.unit_price}}</td>
-        <td>{{item.purchase_fulfilled}}</td>
-        <td>{{item.order_fulfilled}}</td>
+
+        {% if item.purchase_fulfilled %}
+        <td style="color:#23A129; text-align:center">&#x2713;</td>
+        {% else %}
+        <td style="color:#FF0000; text-align:center">&#10007;</td>
+        {% endif %}
+
+        {% if item.order_fulfilled %}
+        <td style="color:#23A129; text-align:center">&#x2713; </td>
+        {% else %}
+        <td style="color:#FF0000; text-align:center">&#10007;</td>
+        {% endif %}
+
         <td>{{item.time_purchased}}</td>
         <td>{{item.sellerfirst}} {{item.sellerlast}}</td>
         <td>
