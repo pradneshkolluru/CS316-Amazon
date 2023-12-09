@@ -26,18 +26,19 @@ def gen_users(num_users):
         for uid in range(num_users):
             if uid == 0:
                 writer.writerow(["0","icecream@tastes.good","pbkdf2:sha256:260000$1GvmeoAkcWb89TyU$5f711eafb243c1c1a884715dd9bd6d185f29ccd3dab59ad19cc201a7260091cb","Joey","Shmoey","420 Chapel Dr", "1000"])
-            if uid % 10 == 0:
-                print(f'{uid}', end=' ', flush=True)
-            profile = fake.profile()
-            email = profile['mail']
-            plain_password = f'pass{uid}'
-            password = generate_password_hash(plain_password)
-            name_components = profile['name'].split(' ')
-            firstname = name_components[0]
-            lastname = name_components[-1]
-            address = profile['residence']
-            balance = fake.random_int(min=0)
-            writer.writerow([uid, email, password, firstname, lastname, address, balance])
+            else:
+                if uid % 10 == 0:
+                    print(f'{uid}', end=' ', flush=True)
+                profile = fake.profile()
+                email = profile['mail']
+                plain_password = f'pass{uid}'
+                password = generate_password_hash(plain_password)
+                name_components = profile['name'].split(' ')
+                firstname = name_components[0]
+                lastname = name_components[-1]
+                address = profile['residence']
+                balance = fake.random_int(min=0)
+                writer.writerow([uid, email, password, firstname, lastname, address, balance])
         print(f'{num_users} generated')
     return
 
