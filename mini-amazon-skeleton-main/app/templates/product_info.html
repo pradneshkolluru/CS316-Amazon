@@ -112,7 +112,10 @@
       {% for product in product_info%}
       <div class="productInfoContainer">
         <div class="leftContainer">
-          <img src="data:image/jpeg;base64,{{ product.image }}" />
+          <img 
+            src="{{ product.image }}"
+            width="450"
+          />
         </div>
         <div class="rightContainer">
           <div style="display: flex; flex-direction: column">

@@ -43,7 +43,8 @@ def imagePic(name, pid):
 
 
 class Product:
-    def __init__(self, id, name, price, available, description, category, avgRating = 0, quantity = None, sid = None, firstname = '', lastname = ''):
+    def __init__(self, id, name, price, available, description, category, avgRating = 0, 
+                 image = "/static/images/gargi.jpeg", quantity = None, sid = None, firstname = '', lastname = ''):
         self.id = id
         self.name = name
         self.price = price
@@ -51,8 +52,7 @@ class Product:
         self.category = category
         self.available = available
         self.avgRating = avgRating
-        #self.image = imagePic(self.name, self.id)
-        self.image = ""
+        self.image = image
         self.quantity = quantity
         self.sid = sid
         self.firstname = firstname
@@ -103,12 +103,13 @@ class Product:
     def get_filtered2(available=True, k=0, strMatch="", catMatch = "", priceSort = "", id_spec = ""):
 
         query = '''
-            WITH ProdAvg(pid, avgRating) AS (
-                SELECT products.id, ROUND(AVG(rating)::numeric, 2)
-                FROM Reviews, Products
-                WHERE Reviews.pid = products.id GROUP BY products.id
-            )
-            SELECT Products.id, name, price, available, description, category, avgRating, ''quantity, sid, firstname
+            WITH ProdAvg AS (
+                SELECT Products.id AS pid, 
+                COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
+                FROM Products
+                LEFT JOIN Reviews ON Reviews.pid = Products.id
+                GROUP BY Products.id)
+            SELECT Products.id, name, price, available, description, category, avgRating, image_path, '' quantity, sid, firstname, lastname
             FROM Products, ProdAvg, Users
             WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
@@ -176,3 +177,62 @@ class Product:
         rows = app.db.execute(query, id = uId)
 
         return [Product(*row) for row in rows]
+
+    @staticmethod
+    def addNewProduct(sid, name, category, description, price, quantity):
+
+        getMaxPidQuery = '''
+        SELECT MAX(product_id)
+        FROM Products
+        '''
+
+        pid = app.db.execute(getMaxPidQuery)[0][0] + 1
+        
+
+        addPatientQuery = '''
+        INSERT INTO Products(product_id, sid, name, category, description, price, image_path)
+        VALUES(:pid, :sid, :name, :cat, :des, :price, :image_path)
+        RETURNING id    
+        '''
+
+        divyas_id = app.db.execute(addPatientQuery, pid = pid,
+                                                    sid = sid,
+                                                    name = name,
+                                                    cat = category, 
+                                                    des = description,
+                                                    price = price,
+                                                    image_path = f'/static/images/{category}/1.jpeg')[0][0]
+
+
+        insertIntoInventory = '''
+        INSERT INTO Inventory(sid, pid, quantity)
+        VALUES(:sid, :pid, :quantity)
+        RETURNING sid, pid    
+        '''
+
+        rows = app.db.execute(insertIntoInventory, sid = sid,
+                                                   pid = divyas_id,
+                                                   quantity = quantity)
+
+    
+    @staticmethod
+    def updateProduct(uid, changeField, newInput):
+
+        query = text(f'''
+        UPDATE Products
+        SET {changeField} = :newInput
+        WHERE id = :id
+        ''')
+
+        rows = app.db.execute(str(query.compile()), id=uid, newInput=newInput)
+
+    @staticmethod
+    def get_by_sid(sid):
+
+        query = '''
+            SELECT id, name, price, available, description, category
+            FROM Products
+            WHERE sid = :sid
+        '''
+        rows = app.db.execute(query, sid=sid)
+        return [Product(*row) for row in rows] if rows is not None else None

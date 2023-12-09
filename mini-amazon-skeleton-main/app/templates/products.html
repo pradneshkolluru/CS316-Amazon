@@ -70,12 +70,12 @@
               <label for="option4">Tools</label>
             </div>
             <div>
-              <input type="radio" id="option4" name="options" value="food" />
-              <label for="option4">Food</label>
+              <input type="radio" id="option5" name="options" value="food" />
+              <label for="option5">Food</label>
             </div>
             <div>
-              <input type="radio" id="option4" name="options" value="beauty" />
-              <label for="option4">Beauty</label>
+              <input type="radio" id="option6" name="options" value="beauty" />
+              <label for="option6">Beauty</label>
             </div>
 
             <br /><br />
@@ -112,9 +112,9 @@
                 <a href="{{ url_for('products.product_info', id=product.id) }}">
                   <img
                     class="bd-placeholder-img card-img-top"
-                    src="data:image/jpeg;base64,{{ product.image }}"
-                    width="100%"
-                    height="100%"
+                    src="{{ product.image }}"
+                    width="400"
+                    height="200"
                     xmlns="http://www.w3.org/2000/svg"
                     role="img"
                     aria-label="product image"
