@@ -134,6 +134,7 @@
               margin-top: 30px;
             "
           >
+          {% if current_user.is_authenticated %}
             <form
               action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
               method="POST"
@@ -146,6 +147,20 @@
             >
               <input class="addBtn" type="submit" value="Add to Wishlist" />
             </form>
+            {% else %}
+            <form
+              action="{{ url_for('users.login')}}"
+              method="GET"
+            >
+              <input class="addBtn" type="submit" value="Add to Cart" />
+            </form>
+            <form
+            action="{{ url_for('users.login')}}"
+            method="GET"
+            >
+              <input class="addBtn" type="submit" value="Add to Wishlist" />
+            </form>
+            {% endif %}
           </div>
         </div>
       </div>
@@ -168,6 +183,7 @@
         </div>
       </div>
       <div class="reviewContainer">
+        {% if current_user.is_authenticated %}
         <div class="inputReview">
           <button class="addBtn" id="showFormButton" onclick="toggleForm()">
             Add Review
@@ -226,6 +242,7 @@
             </div>
           </form>
         </div>
+        {% endif %}
         <div style="display: flex; flex-direction: column; width: 100%;">
           {% for review in review_info%}
           <div style="margin-left: 1em">
@@ -269,20 +286,38 @@
           <td>{{product.price}}</td>
           <td>{{product.quantity}}</td>
           <td>
+            {% if current_user.is_authenticated %}
             <form
               action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
               method="POST"
             >
               <input type="submit" value="Add to Wishlist" />
             </form>
+            {% else %}
+            <form
+            action="{{ url_for('users.login')}}"
+            method="GET"
+            >
+              <input type="submit" value="Add to Wishlist" />
+            </form>
+            {% endif %}
           </td>
           <td>
+            {% if current_user.is_authenticated %}
             <form
               action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
               method="POST"
             >
               <input type="submit" value="Add to Cart" />
             </form>
+            {% else %}
+            <form
+            action="{{ url_for('users.login')}}"
+            method="GET"
+            >
+              <input type="submit" value="Add to Cart" />
+            </form>
+            {% endif %}
           </td>
           <td>
             <form method="POST" action="{{ url_for('products.products')}}">

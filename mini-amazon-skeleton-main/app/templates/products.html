@@ -161,6 +161,7 @@
                       </div>
                     </div>
                     <div style="position: relative">
+                      {% if current_user.is_authenticated %}
                       <form
                         style="width: auto"
                         action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
@@ -174,6 +175,7 @@
                       >
                         <input type="submit" value="Add to Cart" />
                       </form>
+                      {% endif %}
                     </div>
                   </div>
                 </div>
