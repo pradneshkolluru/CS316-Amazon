@@ -59,16 +59,18 @@ def get_order(oid):
 def seller_orders(sid):
     if current_user.is_authenticated:
         seller = User.is_seller(current_user.id)
+        print(seller)
+        orders = [] # seller hasn't sold any orders
         orders_list = Order.get_all_orders_for_seller(sid)
-        if not orders_list:
-            orders_list = []
+        if orders_list:
+            orders = orders_list
         oids = []
         # list of dictionaries with key: oid
         order_revenue = {}
         order_num_items = {}
         order_fulfillment = {}
         order_purchase_date = {} #default value
-        for purchase in orders_list:
+        for purchase in orders:
             oid = purchase[0]
             qty = purchase[2]
             unit_price = purchase[3]
@@ -95,7 +97,7 @@ def seller_orders(sid):
             if not oid in order_purchase_date:
                 order_purchase_date[oid] = time_purchased
         
-        oids = list(set(oids)) # only unique order ids
+        oids = list(set(oids)) # only unique order ids; oids is empty if no orders
 
         stringMatch = request.form.get('stringMatch')
 
@@ -103,7 +105,9 @@ def seller_orders(sid):
         q = request.args.get('q')
         if q:
             search = True
-        oids = list(set([x[0] for x in Order.filter_oid(sid, stringMatch)]))
+        
+        if len(oids) != 0:
+            oids = list(set([x[0] for x in Order.filter_oid(sid, stringMatch)]))
         # sort oids by time_purchased (reverse chronological order)
         oid_time = []
         for oid in oids:
