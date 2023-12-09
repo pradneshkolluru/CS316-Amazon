@@ -43,7 +43,7 @@ def imagePic(name, pid):
 
 
 class Product:
-    def __init__(self, id, name, price, available, description, category, avgRating = 0):
+    def __init__(self, id, name, price, available, description, category, avgRating = 0, firstname = None, sid=None):
         self.id = id
         self.name = name
         self.price = price
@@ -52,6 +52,8 @@ class Product:
         self.available = available
         self.avgRating = avgRating
         self.image = imagePic(self.name, self.id)
+        self.firstname = firstname
+        self.sid = sid
 
     @staticmethod
     def get(id):
@@ -109,9 +111,9 @@ class Product:
                 FROM Reviews, Products
                 WHERE Reviews.pid = products.id GROUP BY products.id
             )
-            SELECT id, name, price, available, description, category, avgRating
-            FROM Products, ProdAvg
-            WHERE available = :available AND Products.id = ProdAvg.pid
+            SELECT Products.id, name, price, available, description, category, avgRating, firstname, sid
+            FROM Products, ProdAvg, Users
+            WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
 
         params = {"available": available}
@@ -147,11 +149,16 @@ class Product:
     def get_product_info(product_id):
 
 
-        rows = app.db.execute('''
-        SELECT id, name, price, available, description, category
-        FROM Products
-        WHERE id = :id ORDER BY price
-        ''', id = product_id)
+        # rows = app.db.execute('''
+        # SELECT Products.id, name, price, available, description, category, ''rating, Users.firstname
+        # FROM Products, Users, Seller
+        # WHERE Products.id = :id 
+        #                       AND Products.sid=Seller.uid 
+        #                       AND Users.id = Seller.uid
+        #                       ORDER BY price
+        # ''', id = product_id)
+
+
 
         rows = Product.get_filtered2(id_spec = product_id)
 
