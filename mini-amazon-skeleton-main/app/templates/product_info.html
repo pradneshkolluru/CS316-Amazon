@@ -226,7 +226,7 @@
             </div>
           </form>
         </div>
-        <div style="display: flex; flex-direction: column">
+        <div style="display: flex; flex-direction: column; width: 100%;">
           {% for review in review_info%}
           <div style="margin-left: 1em">
             <div
@@ -291,6 +291,7 @@
             </form>
           </td>
         </tr>
+        {% endfor %}
       </tbody>
     </table>
     <script
@@ -298,7 +299,6 @@
       integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
       crossorigin="anonymous"
     ></script>
-    {% endfor %}
     <script>
       function toggleForm() {
         var form = document.getElementById("reviewForm");
