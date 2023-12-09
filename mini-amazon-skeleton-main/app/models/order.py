@@ -1,6 +1,5 @@
 from flask import current_app as app
 
-
 class Order:
     def __init__(self, oid, uid, pid, sid, qty, product_name, unit_price, total_order_price, time_purchased, purchase_fulfilled, time_fulfilled, order_fulfilled, sellerfirst, sellerlast):
         self.oid = oid
@@ -50,6 +49,7 @@ WHERE O.id = P.oid
 SELECT P.oid, P.pid, P.qty, P.unit_price, P.purchase_fulfilled, O.time_purchased
 FROM Purchases P, Orders O
 WHERE P.sid = :sid
+AND P.oid = O.id
 ''',
                               sid=sid)
         return rows if rows else None
@@ -192,3 +192,24 @@ WHERE P.sid = :sid
             query += " AND P.oid = :strMatch"
         rows = app.db.execute(query,sid=sid,strMatch=strMatch )
         return rows if rows else None
+    
+    @staticmethod
+    def amount_spent(uid):
+        rows = app.db.execute("""
+SELECT Date(Time_purchased), sum(unit_price)
+FROM Orders as O, Purchases as P
+WHERE O.uid = :uid and O.id = P.oid
+GROUP BY Date(Time_purchased)
+ORDER BY Date(Time_purchased)
+""",
+                            uid=uid)
+        dates = []
+        amounts = []
+        if rows:
+            for row in rows:
+                print(row[1])
+                dates.append(row[0])
+                amounts.append(row[1])
+            return dates, amounts
+        return None
+        

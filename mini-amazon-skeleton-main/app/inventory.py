@@ -6,6 +6,8 @@ from flask import redirect, url_for
 
 from .models.inventory import InventoryItem
 from .models.user import User
+from .models.product import Product
+
 
 from flask import Blueprint
 from flask_paginate import Pagination, get_page_parameter
@@ -68,3 +70,43 @@ def inventory_update_quantity():
         item = None
         return jsonify({}), 404
     return redirect(url_for('inventory.inventory', sid=current_user.id))
+
+@bp.route('/inventory/newProduct', methods=['POST', 'GET'])
+def add_new_product_route():
+
+
+    name = request.form.get('product_name')
+    print(name)
+    description = request.form.get('description')
+    category = request.form.get('category')
+    price = request.form.get('price')
+    quantity = request.form.get('quantity')
+
+
+    pid = Product.addNewProduct(current_user.id, name, category, description, price, quantity)
+
+
+    return redirect(url_for('inventory.inventory', sid=current_user.id))
+
+
+@bp.route('/inventory/product_update/<int:id>/<string:field>', methods=['POST', 'GET'])
+def update_product_info(id, field):
+
+    print("test")
+
+    changeVal = request.form.get("changeVal")
+
+    print(changeVal)
+
+    Product.updateProduct(id, field, changeVal)
+
+    return redirect(url_for('inventory.inventory', sid=current_user.id, newInput = changeVal))
+
+
+
+    
+
+
+
+
+

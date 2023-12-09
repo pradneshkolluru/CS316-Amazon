@@ -1,48 +1,275 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
 
-{% block content %}
+<!-- <h1>User {{user_info.id}}</h1> -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <style>
+      .pageContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: scroll;
+        align-items: center;
+      }
+      .main {
+        padding: 0px 0px;
+      }
+      .storeFront {
+        height: 20vh;
+        background-color: #bdcfd9;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .tabContainer {
+        margin: auto;
+        width: 50%;
+      }
+      .tabContent {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- name and account number if they are not a seller -->
 
-<h1>User {{user_info.id}}</h1>
-<h2>{{user_info.firstname}} {{user_info.lastname}}</h2>
-
-{% if seller %}
-<br><br>
-<h1>Seller Info:</h1>
-<h2>Email: {{user_info.email}}</h2>
-<h2>Address: {{user_info.address}}</h2>
-<br>
-<h2>Recent Reviews:</h2>
-<table class="table table-hover table-bordered container">
-  <thead class="thead-dark">
-    <tr>
-      <!-- <th scope="col">Product ID</th> -->
-      <th scope="col">Seller</th>
-      <th width="50px" scope="col">Rating</th>
-      <th width="50%" scope="col">Review</th>
-      <th scope="col">Post Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for review in review_history%}
-    <tr>
-      <td>{{review.first_name}} {{review.last_name}}</td>
-        <td style="text-align: center">
-          {{review.rating}}
-        </td>
-        <td>
-          <div>
-            <body
-              style="width: 100%"
-              rows="3"
-            >
-{{review.review_text}}</body
-            >
+    <div class="pageContainer">
+      <div class="storeFront">
+        <h1 style="font-size: 10vh">
+          {{user_info.firstname}} {{user_info.lastname}}'s Store Front
+        </h1>
+        {% if not seller%}Account #:{{user_info.id}}{% endif %}
+      </div>
+      {% if seller %}
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="home-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#home-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="home-tab-pane"
+            aria-selected="true"
+          >
+            Products
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="profile-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#profile-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="profile-tab-pane"
+            aria-selected="false"
+          >
+            Reviews
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="contact-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#contact-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="contact-tab-pane"
+            aria-selected="false"
+          >
+            Contact Information
+          </button>
+        </li>
+      </ul>
+      <br />
+      <div class="tab-content" id="myTabContent" style="width: 100%">
+        <div
+          class="tab-pane fade show active tabContainer"
+          id="home-tab-pane"
+          role="tabpanel"
+          aria-labelledby="home-tab"
+          tabindex="0"
+        >
+          <!-- {% for product in avail_products%}{{product.name}}{% endfor %} -->
+          <div style="padding-bottom: 2em">{{ pagination.info }}</div>
+          <div
+            class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2"
+          >
+            {% for product in avail_products%}
+            <div class="col" style="height: 100%">
+              <div class="card shadow-sm">
+                <a href="{{ url_for('products.product_info', id=product.id) }}">
+                  <img
+                    class="bd-placeholder-img card-img-top"
+                    src="data:image/jpeg;base64,{{ product.image }}"
+                    width="100%"
+                    height="100%"
+                    xmlns="http://www.w3.org/2000/svg"
+                    role="img"
+                    aria-label="product image"
+                    preserveAspectRatio="xMidYMid slice"
+                    focusable="false"
+                /></a>
+                <div class="card-body">
+                  <!-- <p style="text-overflow: ellipsis"> -->
+                  <div class="padding-bottom: 10px;">
+                    <a
+                      style="
+                        color: black;
+                        width: 100%;
+                        display: block;
+                        white-space: nowrap;
+                        text-overflow: ellipsis;
+                        overflow: hidden;
+                        padding-bottom: 0px;
+                      "
+                      href="{{ url_for('products.product_info', id=product.id) }}"
+                      >{{product.name}}</a
+                    >
+                    <small
+                      class="text-body-secondary"
+                      style="text-transform: capitalize"
+                      >{{product.category}}</small
+                    >
+                  </div>
+                  <!-- </p> -->
+                  <div
+                    class="d-flex justify-content-between align-items-center"
+                  >
+                    <div style="display: flex; flex-direction: column">
+                      <small class="text-body-secondary"
+                        >${{product.price}}</small
+                      >
+                      <div
+                        style="
+                          display: flex;
+                          flex-direction: row;
+                          align-items: center;
+                          gap: 2px;
+                        "
+                      >
+                        <small class="text-body-secondary"
+                          >{{product.avgRating}}</small
+                        ><svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          fill="#ffd500"
+                          class="bi bi-star-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+                          />
+                        </svg>
+                      </div>
+                    </div>
+                    <div style="position: relative">
+                      {% if current_user.is_authenticated %}
+                      <form
+                        style="width: auto"
+                        action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+                        method="POST"
+                      >
+                        <input type="submit" value="Add to Wishlist" />
+                      </form>
+                      <form
+                        action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+                        method="POST"
+                      >
+                        <input type="submit" value="Add to Cart" />
+                      </form>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
           </div>
-        </td>
-        <td>{{review.time_posted}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
-{% endif %}
-{% endblock %}
+          <div style="margin: auto; width: fit-content; padding: 10px">
+            {{ pagination.links }}
+          </div>
+        </div>
+        <div
+          class="tab-pane fade tabContainer"
+          id="profile-tab-pane"
+          role="tabpanel"
+          aria-labelledby="profile-tab"
+          tabindex="0"
+        >
+          <h2
+            style="
+              max-width: fit-content;
+              margin: auto;
+              width: 50%;
+              text-align: center;
+            "
+          >
+            What Customers Say About {{user_info.firstname}}
+          </h2>
+          <div class="tabContent">
+            {% for review in review_history%}
+            <div>
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  margin-bottom: 1em;
+                "
+              >
+                <h5 style="margin: 0%">{{review.first_name}}</h5>
+                <p style="margin: 0%">{{review.time_posted}}</p>
+                <p style="margin: 0%">{{review.rating}}/5 stars</p>
+              </div>
+              <p>{{review.review_text}}</p>
+              <hr style="background-color: #d3d3d3" />
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div
+          class="tab-pane fade tabContainer"
+          id="contact-tab-pane"
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          tabindex="0"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <div class="tabContent" style="width: max-content">
+            <!-- <h1>Seller Info:</h1> -->
+            <h2>Account Number: {{user_info.id}}</h2>
+            <h2>Email: {{user_info.email}}</h2>
+            <h2>Address: {{user_info.address}}</h2>
+          </div>
+        </div>
+      </div>
+      <br />
+    </div>
+    {% endif %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  {% endblock %}
+</html>

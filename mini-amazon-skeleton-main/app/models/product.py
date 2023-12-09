@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
+from sqlalchemy import text
 matplotlib.use('Agg')
 
 
@@ -134,7 +135,9 @@ class Product:
         if k:
             query += " LIMIT :limitK"
             params["limitK"] = k
-
+        
+        print('PRINTING........................')
+        print(query)
 
         rows = app.db.execute(query, **params)
 
@@ -153,11 +156,14 @@ class Product:
     def getProductsFromOtherVenders(uId):
 
         query = '''
-        WITH ProdAvg(uid, avgRating) AS (
-                SELECT products.id, ROUND(AVG(rating)::numeric, 2)
-                FROM Reviews, Products
-                WHERE Reviews.pid = products.id GROUP BY products.id
-            ),
+        WITH ProdAvg AS (
+        SELECT 
+        Products.id AS pid, 
+        COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
+        FROM Products
+        LEFT JOIN Reviews ON Reviews.pid = Products.id
+        GROUP BY Products.id
+        ),
         getPid AS (
         SELECT Products.product_id AS boppid
         FROM Products
@@ -167,7 +173,7 @@ class Product:
         FROM getPid
         INNER JOIN Products ON Products.product_id = getPid.boppid
         INNER JOIN Inventory ON Products.id = Inventory.pid
-        INNER JOIN ProdAvg ON ProdAvg.uid = Products.id
+        INNER JOIN ProdAvg ON ProdAvg.pid = Products.id
         INNER JOIN Users ON Users.id = Inventory.sid
         WHERE Products.available = TRUE
         ORDER BY Products.price;
@@ -236,3 +242,4 @@ class Product:
         '''
         rows = app.db.execute(query, sid=sid)
         return [Product(*row) for row in rows] if rows is not None else None
+

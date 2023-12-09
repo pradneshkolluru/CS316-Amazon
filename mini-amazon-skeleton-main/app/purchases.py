@@ -1,6 +1,11 @@
 from flask import render_template, request
 from flask_login import current_user
+import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+import numpy as np
 import datetime
+import base64
+from io import BytesIO
 
 from .models.purchase import Purchase
 from .models.order import Order
@@ -44,7 +49,23 @@ def purchases():
         sliced_products = all_purchases[offset: offset + per_page]
 
         pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(all_purchases), search=search, record_name='Purchases')
-    
+        if Order.amount_spent(current_user.id):
+            dates, amounts = Order.amount_spent(current_user.id)
+            fig = Figure(figsize=(9, 4))
+            ax = fig.subplots()
+            ax.plot(dates, amounts)
+            ax.set_xlabel("Date of Purchase")
+            ax.set_ylabel("Amount Spent")
+            ax.scatter(dates, amounts)
+            
+            for (i, j) in zip(dates, amounts):
+                ax.text(i, j, "$" + str(j), fontsize=8, ha='center', va="bottom")
+
+            buf = BytesIO()
+            fig.savefig(buf, format="png")
+            data = base64.b64encode(buf.getbuffer()).decode("ascii")
+        else:
+            data = None
     else:
         # purchases = None
         #all_purchases = None
@@ -52,4 +73,4 @@ def purchases():
     return render_template('purchases.html',
                             # purchase_history=purchases,
                             all_purchases=all_purchases,
-                            pagination=pagination, years=years, query=querystring)    
+                            pagination=pagination, years=years, query=querystring, data =data)    
