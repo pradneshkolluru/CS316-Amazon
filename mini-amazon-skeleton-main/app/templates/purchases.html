@@ -4,6 +4,14 @@
 
 <br><br>
 {% if current_user.is_authenticated %}
+{% if data %}
+<h2>Your Purchasing History:</h2>
+<img src='data:image/png;base64,{{data}}'/>
+{% else %}
+<h3>You haven't made any purchases yet.
+  <a href="{{ url_for('products.products')}}">Browse products here.</a>
+   </h3>
+{%endif%}
 <h2>Your Purchases:</h2>
 <form action="{{ url_for('purchases.purchases')}}" method="POST">
   <label for="stringMatch">Product Name: </label>
@@ -50,7 +58,6 @@
         <td>{{item.product_name}}</td>
         <td>{{item.qty}}</td>
         <td>{{item.unit_price}}</td>
-
         {% if item.purchase_fulfilled %}
         <td style="color:#23A129; text-align:center">&#x2713;</td>
         {% else %}
