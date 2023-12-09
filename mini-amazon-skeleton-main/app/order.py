@@ -112,12 +112,12 @@ def seller_orders(sid):
         if result == None:
             oids = [] # search/filter returned no orders
         if len(oids) != 0:
+            oids = list(set([x[0] for x in result]))
             fulfillment_dict = seller_order_fulfillment(result) # returns search oids filtered as fulfilled vs unfulfilled
             if request.form.get('options') == "Fulfilled":
                 oids = fulfillment_dict['Fulfilled']
             if request.form.get('options') == "Not fulfilled":
                 oids = fulfillment_dict['Not fulfilled']
-                #oids = list(set([x[0] for x in result]))
         
         # sort oids by time_purchased (reverse chronological order)
         oid_time = []
