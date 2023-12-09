@@ -108,6 +108,7 @@ def seller_orders(sid):
         
         if len(oids) != 0:
             oids = list(set([x[0] for x in Order.filter_oid(sid, stringMatch)]))
+
         # sort oids by time_purchased (reverse chronological order)
         oid_time = []
         for oid in oids:
@@ -129,7 +130,7 @@ def seller_orders(sid):
         fulfillment = None,
         purchase_date = None
     return render_template('seller_orders.html',
-                           oids_list = oids,
+                           oids_list = sliced_oids,
                            revenue = order_revenue,
                            num_items = order_num_items,
                            fulfillment = order_fulfillment,

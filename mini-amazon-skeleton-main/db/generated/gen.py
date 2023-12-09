@@ -5,8 +5,8 @@ from faker import Faker
 import random
 from datetime import datetime
 
-num_users = 10
-num_sellers = 5
+num_users = 100
+num_sellers = 50
 num_products = 20
 #num_purchases = 2500
 num_orders = 40
