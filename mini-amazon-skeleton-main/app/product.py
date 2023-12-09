@@ -37,14 +37,20 @@ bp = Blueprint('products', __name__)
 
 @bp.route('/products', methods = ['POST', 'GET'])
 def products():
-
+    queryString = ""
+    query = []
     stringMatch = request.form.get('stringMatch')
     kMost = request.form.get('topK')
     catOpt = request.form.get('options')
     sortOpt = request.form.get('priceSort')
 
-    print(sortOpt)
-
+    if stringMatch:
+        query.append(stringMatch)
+    if kMost: 
+        query.append(kMost)
+    if catOpt:
+        query.append(catOpt)
+    queryString = (", ").join(query)
     search = False
     q = request.args.get('q')
     if q:
@@ -77,7 +83,7 @@ def products():
     return render_template('products.html',
                            avail_products=sliced_products,
                            purchase_history=purchases,
-                           pagination=pagination)
+                           pagination=pagination, query=queryString)
 
 
 @bp.route('/products/<id>', methods = ['POST', 'GET'])

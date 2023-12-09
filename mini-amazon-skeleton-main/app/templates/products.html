@@ -94,6 +94,10 @@
       <div class="album py-5 bg-body-tertiary prodGrid">
         <div class="container">
           <h2>Products for sale:</h2>
+          {%if query%}
+          <h4>Currently showing: {{query}}</h4>
+          {%endif%}
+          
           <div style="padding-bottom: 2em">{{ pagination.info }}</div>
           <div
             class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2"
