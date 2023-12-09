@@ -58,6 +58,8 @@ def get_order(oid):
 def seller_orders(sid):
     if current_user.is_authenticated:
         orders_list = Order.get_all_orders_for_seller(sid)
+        if not orders_list:
+            orders_list = []
         oids = []
         # list of dictionaries with key: oid
         order_revenue = {}
