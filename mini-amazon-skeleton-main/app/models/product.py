@@ -218,9 +218,15 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
-    
+    @staticmethod
+    def get_by_sid(sid):
 
-    
-
+        query = '''
+            SELECT id, name, price, available, description, category
+            FROM Products
+            WHERE sid = :sid
+        '''
+        rows = app.db.execute(query, sid=sid)
+        return [Product(*row) for row in rows] if rows is not None else None
 
     
