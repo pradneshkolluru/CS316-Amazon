@@ -90,6 +90,22 @@ def add_new_product_route():
 
     return redirect(url_for('inventory.inventory', sid=current_user.id))
 
+
+@bp.route('/inventory/product_update/<int:id>/<string:field>', methods=['POST', 'GET'])
+def update_product_info(id, field):
+
+    print("test")
+
+    changeVal = request.form.get("changeVal")
+
+    print(changeVal)
+
+    Product.updateProduct(id, field, changeVal)
+
+    return redirect(url_for('inventory.inventory', sid=current_user.id, newInput = changeVal))
+
+
+
     
 
 

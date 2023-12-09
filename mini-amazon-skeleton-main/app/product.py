@@ -1,3 +1,4 @@
+import random
 from flask import render_template,request
 from flask_login import current_user
 import datetime
@@ -82,6 +83,17 @@ def products():
 
 @bp.route('/products/<id>', methods = ['POST', 'GET'])
 def product_info(id):
+    # pagination stuff
+    reviews = Review.get_all_by_pid(pid=id)
+
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+
+    per_page = 4
+    offset = (page - 1) * per_page
+
+    sliced_reviews = reviews[offset: offset + per_page]
+
+    pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(reviews), record_name='Products')
 
     # get specified product:
 
@@ -94,8 +106,8 @@ def product_info(id):
     # render the page by adding information to the products_indiv.html file
     return render_template('product_info.html',
                            product_info = product, 
-                           review_info = review,
-                           other_vendors = relatedProducts
+                           review_info = sliced_reviews,
+                           other_vendors = relatedProducts, pagination=pagination
                            )
 @bp.route('/products/cat/<category>', methods = ['POST', 'GET'])
 def cat_products(category):
@@ -140,3 +152,20 @@ def cat_products(category):
                            avail_products=sliced_products,
                            purchase_history=purchases,
                            pagination=pagination)
+
+@bp.route('/', methods = ['POST'])
+def random_products():
+    stringMatch = ""
+    kMost = ""
+    catOpt = ""
+    sortOpt = ""
+    
+    
+    products = Product.get_filtered2(True, strMatch = stringMatch, k = kMost, catMatch = catOpt, priceSort = sortOpt)
+
+    random.shuffle(products)
+
+    selected_items = products[0:4]
+        
+    return render_template('index.html',
+                           avail_products=selected_items)

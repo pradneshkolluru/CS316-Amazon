@@ -5,13 +5,14 @@ from .product import Product
 
 class InventoryItem:
     #def __init__(self, id, sid, pid, quantity, product_name, product_price):
-    def __init__(self, id, sid, pid, quantity, product_name, product_price, **kwargs):
+    def __init__(self, id, sid, pid, quantity, product_name, product_price, description, **kwargs):
         self.id = id
         self.sid = sid
         self.pid = pid
         self.quantity = quantity
         self.product_name = product_name
         self.product_price = product_price
+        self.description = description
 
 #     @staticmethod
 #     def get(id):
@@ -26,7 +27,7 @@ class InventoryItem:
     @staticmethod
     def get_all_by_sid(sid):
         rows = app.db.execute('''
-SELECT Inventory.id, Inventory.sid, pid, quantity, Products.name, Products.price
+SELECT Inventory.id, Inventory.sid, pid, quantity, Products.name, Products.price, Products.description
 FROM Inventory, Products
 WHERE Inventory.sid = :sid 
 AND Inventory.pid = Products.id

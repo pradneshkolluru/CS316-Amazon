@@ -5,6 +5,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import numpy as np
+from sqlalchemy import text
 matplotlib.use('Agg')
 
 
@@ -43,7 +44,8 @@ def imagePic(name, pid):
 
 
 class Product:
-    def __init__(self, id, name, price, available, description, category, avgRating = 0, quantity = None, sid = None, firstname = '', lastname = ''):
+    def __init__(self, id, name, price, available, description, category, avgRating = 0, 
+                 image = "/static/images/gargi.jpeg", quantity = None, sid = None, firstname = '', lastname = ''):
         self.id = id
         self.name = name
         self.price = price
@@ -51,8 +53,7 @@ class Product:
         self.category = category
         self.available = available
         self.avgRating = avgRating
-        #self.image = imagePic(self.name, self.id)
-        self.image = ""
+        self.image = image
         self.quantity = quantity
         self.sid = sid
         self.firstname = firstname
@@ -109,10 +110,9 @@ class Product:
                 FROM Products
                 LEFT JOIN Reviews ON Reviews.pid = Products.id
                 GROUP BY Products.id)
-                
-            SELECT id, name, price, available, description, category, avgRating
-            FROM Products, ProdAvg
-            WHERE available = :available AND Products.id = ProdAvg.pid
+            SELECT Products.id, name, price, available, description, category, avgRating, image_path, '' quantity, sid, firstname, lastname
+            FROM Products, ProdAvg, Users
+            WHERE available = :available AND Products.id = ProdAvg.pid AND Products.sid = Users.id
         '''
 
         params = {"available": available}
@@ -135,7 +135,6 @@ class Product:
         if k:
             query += " LIMIT :limitK"
             params["limitK"] = k
-        
 
         rows = app.db.execute(query, **params)
 
@@ -156,22 +155,22 @@ class Product:
         query = '''
         WITH ProdAvg AS (
         SELECT 
-        Products.id AS pid, 
-        COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
-        FROM Products
-        LEFT JOIN Reviews ON Reviews.pid = Products.id
-        GROUP BY Products.id
+        Seller.uid AS sellerID, 
+        COALESCE(ROUND(AVG(SellerReviews.rating)::numeric, 2), 0.0) AS avgRating
+        FROM Seller
+        LEFT JOIN SellerReviews ON SellerReviews.sid = Seller.uid
+        GROUP BY Seller.uid
         ),
         getPid AS (
         SELECT Products.product_id AS boppid
         FROM Products
         WHERE Products.id = :id
         )
-        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Inventory.quantity, Products.sid, Users.firstname, Users.lastname
+        SELECT Products.id, Products.name, Products.price, Products.available, Products.description, Products.category, avgRating, Products.image_path, Inventory.quantity, Products.sid, Users.firstname, Users.lastname
         FROM getPid
         INNER JOIN Products ON Products.product_id = getPid.boppid
         INNER JOIN Inventory ON Products.id = Inventory.pid
-        INNER JOIN ProdAvg ON ProdAvg.pid = Products.id
+        INNER JOIN ProdAvg ON ProdAvg.sellerID = Inventory.sid
         INNER JOIN Users ON Users.id = Inventory.sid
         WHERE Products.available = TRUE
         ORDER BY Products.price;
@@ -194,8 +193,8 @@ class Product:
         
 
         addPatientQuery = '''
-        INSERT INTO Products(product_id, sid, name, category, description, price)
-        VALUES(:pid, :sid, :name, :cat, :des, :price)
+        INSERT INTO Products(product_id, sid, name, category, description, price, image_path)
+        VALUES(:pid, :sid, :name, :cat, :des, :price, :image_path)
         RETURNING id    
         '''
 
@@ -204,7 +203,8 @@ class Product:
                                                     name = name,
                                                     cat = category, 
                                                     des = description,
-                                                    price = price)[0][0]
+                                                    price = price,
+                                                    image_path = f'/static/images/{category}/1.jpeg')[0][0]
 
 
         insertIntoInventory = '''
@@ -221,8 +221,8 @@ class Product:
     def addOtherSellersProduct(pid, sid, name, category, description, price, quantity):
 
         addPatientQuery = '''
-        INSERT INTO Products(product_id, sid, name, category, description, price)
-        VALUES(:pid, :sid, :name, :cat, :des, :price)
+        INSERT INTO Products(product_id, sid, name, category, description, price, image_path)
+        VALUES(:pid, :sid, :name, :cat, :des, :price, :image_path)
         RETURNING id    
         '''
 
@@ -231,7 +231,8 @@ class Product:
                                                     name = name,
                                                     cat = category, 
                                                     des = description,
-                                                    price = price)[0][0]
+                                                    price = price,
+                                                    image_path = f'/static/images/{category}/1.jpeg')[0][0]
 
 
         insertIntoInventory = '''
@@ -275,5 +276,32 @@ LIMIT 1
             print(str(e))
             return None
 
-
     
+    @staticmethod
+    def updateProduct(uid, changeField, newInput):
+
+        query = text(f'''
+        UPDATE Products
+        SET {changeField} = :newInput
+        WHERE id = :id
+        ''')
+
+        rows = app.db.execute(str(query.compile()), id=uid, newInput=newInput)
+
+    @staticmethod
+    def get_by_sid(sid):
+
+        query = '''
+            WITH ProdAvg AS (
+                SELECT Products.id AS pid, 
+                COALESCE(ROUND(AVG(Reviews.rating)::numeric, 2), 0.0) AS avgRating
+                FROM Products
+                LEFT JOIN Reviews ON Reviews.pid = Products.id
+                GROUP BY Products.id)
+            SELECT id, name, price, available, description, category, avgRating, image_path
+            FROM Products, ProdAvg
+            WHERE sid = :sid AND Products.id = ProdAvg.pid
+        '''
+        rows = app.db.execute(query, sid=sid)
+        return [Product(*row) for row in rows] if rows is not None else None
+
