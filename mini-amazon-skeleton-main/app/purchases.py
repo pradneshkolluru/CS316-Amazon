@@ -13,31 +13,43 @@ bp = Blueprint('purchases', __name__)
 @bp.route('/purchases', methods = ['POST', 'GET'])
 def purchases():
     if current_user.is_authenticated:
+        years = Order.get_years(current_user.id)
+        if not years:
+            years = []
         all_purchases = Order.get_all_purchases_in_orders(current_user.id)
-        # purchases = Purchase.get_all(
-        #     current_user.id)
+        print(all_purchases)
+        query=[]
         stringMatch = request.form.get('stringMatch')
-        kMost = request.form.get('topK')
+        if stringMatch:
+            query.append(stringMatch)
         sellerMatch = request.form.get('sellerMatch')
-        print(sellerMatch)
-        all_purchases = Order.get_filtered(strMatch = stringMatch, k = kMost, uid=current_user.id, sellerMatch=sellerMatch)
+        if sellerMatch:
+            query.append(sellerMatch)
+        year = request.form.get('years')
+        if year:
+            query.append(year)
+        querystring=", ".join(query)
+        
+        all_purchases = Order.get_filtered(strMatch = stringMatch, uid=current_user.id, sellerMatch=sellerMatch, year=year)
+    
+        search = False
+        q = request.args.get('q')
+        if q:
+            search = True
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 10
+        offset = (page - 1) * per_page
+
+        # sliced_products = purchases[offset: offset + per_page]
+        sliced_products = all_purchases[offset: offset + per_page]
+
+        pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(all_purchases), search=search, record_name='Purchases')
+    
     else:
         # purchases = None
-        all_purchases
-
-    search = False
-    q = request.args.get('q')
-    if q:
-        search = True
-    page = request.args.get(get_page_parameter(), type=int, default=1)
-    per_page = 10
-    offset = (page - 1) * per_page
-
-    # sliced_products = purchases[offset: offset + per_page]
-    sliced_products = all_purchases[offset: offset + per_page]
-
-    pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(all_purchases), search=search, record_name='Purchases')
+        #all_purchases = None
+        pagination= None
     return render_template('purchases.html',
                             # purchase_history=purchases,
                             all_purchases=all_purchases,
-                            pagination=pagination)    
+                            pagination=pagination, years=years, query=querystring)    

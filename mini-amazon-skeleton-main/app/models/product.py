@@ -66,7 +66,7 @@ class Product:
         rows = app.db.execute(query, id=id)
         return Product(*(rows[0])) if rows is not None else None
     
-
+    @staticmethod
     def get_filtered(available=True, k=0, strMatch="", catMatch = "", priceSort = ""):
 
         print(catMatch)
@@ -100,8 +100,8 @@ class Product:
 
         return [Product(*row) for row in rows]
 
-    
-    def get_filtered2(available=True, k=0, strMatch="", catMatch = "", priceSort = ""):
+    @staticmethod
+    def get_filtered2(available=True, k=0, strMatch="", catMatch = "", priceSort = "", id_spec = ""):
 
         print(catMatch)
 
@@ -117,6 +117,10 @@ class Product:
         '''
 
         params = {"available": available}
+
+        if id_spec:
+            query += " AND Products.id = :sMatch"
+            params["sMatch"] = id_spec
 
         if strMatch:
             query += " AND LOWER(name) LIKE :sMatch"
@@ -142,17 +146,12 @@ class Product:
 
 
 
-    def get_product_info(id_spec):
+    def get_product_info(id_specif):
 
 
-        rows = app.db.execute('''
-        SELECT id, name, price, available, description, category
-        FROM Products
-        WHERE id = :id ORDER BY price
-        ''', id = id_spec)
+        rows = Product.get_filtered2(id_spec = id_specif)
 
-
-        return [Product(*row) for row in rows]
+        return rows
     
 
     def getProductsFromOtherVenders(uId):
