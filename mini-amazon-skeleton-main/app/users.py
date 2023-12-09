@@ -5,10 +5,11 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField, SubmitField, RadioField
 from wtforms.validators import ValidationError, DataRequired, Email, EqualTo
 from decimal import Decimal
+from flask_paginate import Pagination, get_page_parameter
 
 from .models.user import User
 from .models.sellerReview import SellerReview
-
+from .models.product import Product
 
 from flask import Blueprint
 bp = Blueprint('users', __name__)
@@ -144,9 +145,20 @@ def public_view(id):
     seller = User.is_seller(id)
     if seller: 
         reviews = SellerReview.get_all(id)
+        products = Product.get_by_sid(id)
+
+        page = request.args.get(get_page_parameter(), type=int, default=1)
+        per_page = 12
+        offset = (page - 1) * per_page
+        
+        sliced_products = products[offset: offset + per_page]
+        pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(products), record_name='Products')
+
     else:
+        sliced_products=''
+        pagination=''
         reviews = None
-    return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews)
+    return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews, avail_products=sliced_products, pagination=pagination)
 
 @bp.route('/logout')
 def logout():

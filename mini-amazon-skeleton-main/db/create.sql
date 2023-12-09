@@ -23,7 +23,8 @@ CREATE TABLE Products (
     category VARCHAR(255) NOT NULL,
     description VARCHAR(1020) NOT NULL, 
     price DECIMAL(12,2) NOT NULL,
-    available BOOLEAN DEFAULT TRUE
+    available BOOLEAN DEFAULT TRUE,
+    image_path VARCHAR(255)
 );
 
 CREATE TABLE Orders (
