@@ -3,6 +3,7 @@ from werkzeug.security import generate_password_hash
 import csv
 from faker import Faker
 import random
+from datetime import datetime
 
 num_users = 100
 num_sellers = 50
@@ -117,11 +118,11 @@ def gen_orders(num_orders, num_users, unique_pid_available):
         purchases = []
         purchase_id = 0
         available_unique_pids = list(unique_pid_available.keys())
-        time_fulfilled = ''
+        time_fulfilled = datetime.min 
         for oid in range(num_orders):
             if oid % 100 == 0:
                     print(f'{oid}', end=' ', flush=True)
-            order_price = 0
+            order_price = 0.0
             uid = random.choice(list(range(num_users)))
             order_fulfilled = 'false'
             num_purchases_per_order = random.randint(1, 10)
@@ -139,6 +140,7 @@ def gen_orders(num_orders, num_users, unique_pid_available):
                 purchases.append([purchase_id, uid, unique_pid, oid, qty, purchase_fulfilled, time_fulfilled, sid, unit_price])
                 order_price += float(unit_price) * qty
                 purchase_id += 1
+            order_price = "{:.2f}".format(order_price)
             writer.writerow([oid, uid, order_fulfilled, time_purchased, order_price])
     return purchases
 
@@ -161,7 +163,7 @@ def gen_reviews(num_products, unique_pid_available, num_purchases):
     unique_available_pids = list(unique_pid_available.keys())
     with open('db/generated/Reviews.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Reviews...', end=' ', flush=True)
+        print('Product Reviews...', end=' ', flush=True)
         for id in range(num_purchases):
             if id % 100 == 0:
                 print(f'{id}', end=' ', flush=True)
@@ -174,16 +176,18 @@ def gen_reviews(num_products, unique_pid_available, num_purchases):
         # print(f'{num_products} generated; {len(unique_available_pids)} available')
     return
 
-def gen_sellerReviews(num_users):
+def gen_sellerReviews(num_users, sellers):
     # available_pids = []
     with open('db/generated/SellerReviews.csv', 'w') as f:
         writer = get_csv_writer(f)
-        print('Reviews...', end=' ', flush=True)
+        print('Seller Reviews...', end=' ', flush=True)
         for id in range(num_users):
             if id % 100 == 0:
                 print(f'{id}', end=' ', flush=True)
             uid = fake.random_int(min=0, max=num_users-1)
-            sid = fake.random_int(min=0, max=num_users-1)
+            sid = fake.random_element(elements=sellers)
+            while sid == uid:
+                uid = fake.random_int(min=0, max=num_users-1)
             review_text = fake.sentence(nb_words=15)[:-1]
             time_posted = fake.date_time()
             rating = fake.random_int(min=1,max=5)
@@ -212,13 +216,13 @@ def gen_inventory(unique_pid_available, unique_pid_unavailable):
         writer = get_csv_writer(f)
         print('Inventory...', end=' ', flush=True) 
         id = 0
-        for unique_pid in unique_pid_available:
+        for unique_pid in unique_pid_available.keys():
             sid = unique_pid_available[unique_pid][1]
             qty = random.choice([1,1,1,10,10,10,20,20,30,50,70,100]) + random.randint(1,9)
             writer.writerow([id, sid, unique_pid, qty])
             id += 1
                 
-        for unique_pid in unique_pid_unavailable:
+        for unique_pid in unique_pid_unavailable.keys():
             sid = unique_pid_unavailable[unique_pid][1]
             qty = 0
             writer.writerow([id, sid, unique_pid, qty])
@@ -239,4 +243,6 @@ gen_purchases(purchases)
 
 gen_cart(unique_pid_available)
 gen_reviews(num_products, unique_pid_available, num_purchases)
-gen_sellerReviews(num_users)
+gen_sellerReviews(num_users, sellers)
+
+print('DONE!!!')

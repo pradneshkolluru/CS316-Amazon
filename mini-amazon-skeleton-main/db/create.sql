@@ -41,7 +41,7 @@ CREATE TABLE Purchases (
     oid INT NOT NULL REFERENCES Orders(id),
     qty INT NOT NULL,
     purchase_fulfilled BOOLEAN NOT NULL,
-    time_fulfilled timestamp without time zone,
+    time_fulfilled timestamp without time zone NULL,
     sid INT NOT NULL REFERENCES Seller(uid),
     unit_price DECIMAL(12,2) NOT NULL
 );
