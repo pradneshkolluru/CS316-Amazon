@@ -103,14 +103,16 @@
           {% if not categories %}
           <h2 style="max-width: fit-content; margin: auto; width: 50%">
             You haven't made any purchases yet! Once you get shopping, we'll
-            recommend you things we think you'll like. Until then, view some of
-            our top items:
+            recommend you things we think you'll like. 
+            <a href="{{ url_for('products.products')}}">Browse products here.</a>
           </h2>
-          {%else %}
+            </div>
+          </div>
+        {% else %}
           <div>
             <h2 style="text-align: center">
               We've noticed that you like shopping for {% for category in
-              categories %} {{category}} {% endfor %} {% endif %}
+              categories %} {{category}} {% endfor %} 
             </h2>
             <h2 style="text-align: center">We think you might like these:</h2>
             <div class="album py-5 bg-body-tertiary">
@@ -206,7 +208,8 @@
             </div>
           </div>
         </div>
-
+      {% endif %}
+  
         <div
           class="tab-pane fade show active"
           id="home-tab-pane"
@@ -218,6 +221,12 @@
           <div
             style="display: flex; flex-direction: column; width: fit-content"
           >
+          {% if not data %}
+          <h3>
+            You haven't made any purchases yet.
+            <a href="{{ url_for('products.products')}}">Browse products here.</a>
+          </h3>
+          {%endif%}
             <br />
             <h2>Your Purchases:</h2>
             <form action="{{ url_for('purchases.purchases')}}" method="POST">
@@ -230,7 +239,7 @@
               <!-- </form>
 <form action="{{ url_for('purchases.purchases')}}" method="POST"> -->
               <label for="years">Items purchased in </label>
-              <input type="radio" id="all" value="All Years" name="years" />
+              <input type="radio" id="all" value="" name="years" />
               <label for="all">All Years</label>
               {% for year in years %}
               <input type="radio" id="{{year}}" value="{{year}}" name="years" />
@@ -323,7 +332,7 @@
         {%endif%}
       </div>
     </div>
-
+    
     {% else %}
     <p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>
     {% endif %}

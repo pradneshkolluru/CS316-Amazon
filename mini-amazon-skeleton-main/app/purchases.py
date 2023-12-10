@@ -68,18 +68,24 @@ def purchases():
             data = base64.b64encode(buf.getbuffer()).decode("ascii")
         else:
             data = None
-        categories = []
+        # categories = []
         recommendations = []
+        categories = Order.categories(current_user.id)
         if Order.categories(current_user.id):
             categories = Order.categories(current_user.id)
             for category in categories:
                 recommendations += Product.get_filtered2(True, strMatch = stringMatch, catMatch = category)
         if len(recommendations) >= 3:
             recommendations = recommendations[:3]
+        # if len(recommendations) ==0:
+        #     recommendations = None
+        #     categories = None
+
     else:
         # purchases = None
         #all_purchases = None
         pagination= None
+        categories = None
     return render_template('purchases.html',
                             # purchase_history=purchases,
                             all_purchases=sliced_products,
