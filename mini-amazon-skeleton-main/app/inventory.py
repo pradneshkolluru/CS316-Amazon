@@ -55,8 +55,8 @@ def inventory_add():
 @bp.route('/inventory/delete/<int:product_id>', methods=['POST'])
 def inventory_delete(product_id):
     if current_user.is_authenticated:
-        #item = InventoryItem.delete_item(current_user.id, product_id)
-        item = InventoryItem.update_quantity(current_user.id,product_id, 0)
+        item = InventoryItem.delete_item(current_user.id, product_id)
+        #item = InventoryItem.update_quantity(current_user.id,product_id, 0)
     else:
         item = None
         return jsonify({}), 404
@@ -67,7 +67,10 @@ def inventory_update_quantity():
     if current_user.is_authenticated:
         pid = int(request.form.get('pid'))
         quantity = int(request.form.get('quantity'))
+        print('PRINTING QUANTITY IN FOR PLUS SIGN............')
+        print(quantity)
         item = InventoryItem.update_inventory(current_user.id, quantity, pid=pid)
+        print(item)
     else:
         item = None
         return jsonify({}), 404
