@@ -40,7 +40,6 @@ bp = Blueprint('products', __name__)
 def products():
 
     stringMatch = request.form.get('stringMatch')
-    kMost = request.form.get('topK')
     catOpt = request.form.get('options')
     sortOpt = request.form.get('priceSort')
 
@@ -52,7 +51,7 @@ def products():
         search = True
 
     # get all available products for sale:
-    products = Product.get_filtered2(True, strMatch = stringMatch, k = kMost, catMatch = catOpt, priceSort = sortOpt)
+    products = Product.get_filtered2(True, strMatch = stringMatch, catMatch = catOpt, priceSort = sortOpt)
 
     page = request.args.get(get_page_parameter(), type=int, default=1)
 
