@@ -20,6 +20,11 @@ def sellerReviews():
     else:
         reviews = None
     # render the page by adding information to the index.html file
+
+    for i in reviews:
+        print(reviews.id)
+        print(reviews.first_name)
+
     return render_template('sellerReviews.html',
                            review_history=reviews)
 @bp.route('/updateSellerReview/<id>', methods = ['POST', 'GET'])
