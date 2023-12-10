@@ -45,7 +45,7 @@ def imagePic(name, pid):
 
 class Product:
     def __init__(self, id, name, price, available, description, category, avgRating = 0, 
-                 image = "/static/images/gargi.jpeg", quantity = None, sid = None, firstname = '', lastname = ''):
+                 image = "/static/images/gargi.jpeg", quantity = None, sid = None, firstname = '', lastname = '', reviewCount = 0):
         self.id = id
         self.name = name
         self.price = price
@@ -58,6 +58,7 @@ class Product:
         self.sid = sid
         self.firstname = firstname
         self.lastname = lastname
+        self.reviewCount = reviewCount
 
     @staticmethod
     def get(id):
@@ -319,3 +320,22 @@ limit 3
         '''
         rows = app.db.execute(query, sid=sid)
         return [Product(*row) for row in rows] if rows is not None else None
+
+    
+    @staticmethod
+    def getTotalNumProdReviews(uid):
+
+        query = '''
+        SELECT COALESCE(COUNT(Reviews.id), 0)
+        FROM Products
+        LEFT JOIN Reviews ON Reviews.pid = Products.id
+        WHERE Products.id = :id
+        '''
+
+        return app.db.execute(query, id=uid)[0][0]
+
+
+
+
+
+

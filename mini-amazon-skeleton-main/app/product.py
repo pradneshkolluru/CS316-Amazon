@@ -99,12 +99,13 @@ def product_info(id):
     product = Product.get_product_info(id)
     review = Review.get_all_by_pid(id)
     relatedProducts = Product.getProductsFromOtherVenders(id)
+    numReviews = Product.getTotalNumProdReviews(id)
 
-    print(relatedProducts)
 
     # render the page by adding information to the products_indiv.html file
     return render_template('product_info.html',
-                           product_info = product, 
+                           product_info = product,
+                           numReviews = numReviews, 
                            review_info = sliced_reviews,
                            other_vendors = relatedProducts, pagination=pagination
                            )

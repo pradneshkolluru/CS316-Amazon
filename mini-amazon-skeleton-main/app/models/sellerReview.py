@@ -89,3 +89,15 @@ WHERE uid = :uid AND sid =:sid
 """,
                               uid=uid, sid=sid)
         return len(rows) > 0
+
+
+    @staticmethod
+    def getReviewMetrics(id):
+
+        query = '''
+        SELECT COALESCE(COUNT(*), 0), COALESCE(ROUND(AVG(SellerReviews.rating)::numeric, 2), 0.0)
+        FROM SellerReviews
+        WHERE sid = :id
+        '''
+
+        return app.db.execute(query, id = id)[0]
