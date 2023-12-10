@@ -66,7 +66,7 @@ ORDER BY time_posted DESC
         print("test")
         rows = app.db.execute(query2, sid = uid)
 
-        return rows
+        return [SellerReview(*row) for row in rows]
     
     
     @staticmethod
