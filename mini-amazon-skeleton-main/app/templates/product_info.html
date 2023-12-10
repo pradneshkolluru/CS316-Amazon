@@ -36,6 +36,7 @@
         /* overflow: hidden; */
         /* max-height: 100vh; */
         /* overflow: auto; */
+        overflow-x: hidden;
         @media only screen and (max-width: 990px) {
           max-width: fit-content;
         }
@@ -45,6 +46,7 @@
         flex-direction: column;
         justify-content: space-between;
         overflow-y: scroll;
+        width: max-content;
       }
       .addBtn {
         background-color: #ff9900;
@@ -70,6 +72,7 @@
       }
       img {
         height: 550px;
+        max-width: 800px;
       }
       .reviewContainer {
         display: flex;
@@ -81,7 +84,7 @@
           gap: 0;
         }
       }
-      .sellerName{
+      .sellerName {
         text-decoration: none;
         color: black;
       }
@@ -112,7 +115,7 @@
       {% for product in product_info%}
       <div class="productInfoContainer">
         <div class="leftContainer">
-          <img src="data:image/jpeg;base64,{{ product.image }}" />
+          <img src="{{ product.image }}" style="object-fit: cover" />
         </div>
         <div class="rightContainer">
           <div style="display: flex; flex-direction: column">
@@ -127,9 +130,14 @@
               <h1 style="font-weight: 400">{{product.name}}</h1>
               <h1>${{product.price}}</h1>
             </div>
-            <!-- <a href="{{ url_for('users.public_view', id = 0) }}" class="sellerName">
-              <h4>Seller: {{product.firstname}}</h4></a
-            > -->
+            <a
+              href="{{ url_for('users.public_view', id=product.sid) }}"
+              class="sellerName"
+            >
+              <h5 style="text-decoration: none">
+                Visit {{product.firstname}}'s Store
+              </h5></a
+            >
             <p>{{product.description}}</p>
           </div>
           <div
@@ -141,7 +149,7 @@
               margin-top: 30px;
             "
           >
-          {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
             <form
               action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
               method="POST"
@@ -155,16 +163,10 @@
               <input class="addBtn" type="submit" value="Add to Wishlist" />
             </form>
             {% else %}
-            <form
-              action="{{ url_for('users.login')}}"
-              method="GET"
-            >
+            <form action="{{ url_for('users.login')}}" method="GET">
               <input class="addBtn" type="submit" value="Add to Cart" />
             </form>
-            <form
-            action="{{ url_for('users.login')}}"
-            method="GET"
-            >
+            <form action="{{ url_for('users.login')}}" method="GET">
               <input class="addBtn" type="submit" value="Add to Wishlist" />
             </form>
             {% endif %}
@@ -250,24 +252,35 @@
           </form>
         </div>
         {% endif %}
-        <div style="display: flex; flex-direction: column; width: 100%;">
-          {% for review in review_info%}
-          <div style="margin-left: 1em">
-            <div
-              style="display: flex; flex-direction: column; margin-bottom: 1em"
-            >
-              <h5 style="margin: 0%">{{review.firstname}}</h5>
-              <p style="margin: 0%">{{review.time_posted}}</p>
-              <p style="margin: 0%">{{review.rating}}/5 stars</p>
+        <div>
+          <!-- <div style="padding-bottom: 2em">{{ pagination.info }}</div> -->
+          <h3>What Customers Say About <strong>{{product.name}}</strong></h3>
+          <div style="display: flex; flex-direction: column; width: 100%">
+            {% for review in review_info%}
+            <div style="margin-left: 1em">
+              <div
+                style="
+                  display: flex;
+                  flex-direction: column;
+                  margin-bottom: 1em;
+                "
+              >
+                <h5 style="margin: 0%">{{review.firstname}}</h5>
+                <p style="margin: 0%">{{review.time_posted}}</p>
+                <p style="margin: 0%">{{review.rating}}/5 stars</p>
+              </div>
+              <p>{{review.review_text}}</p>
+              <hr style="background-color: #d3d3d3" />
             </div>
-            <p>{{review.review_text}}</p>
-            <hr style="background-color: #d3d3d3" />
+            {% endfor %}
           </div>
-          {% endfor %}
+          <div style="margin: auto; width: fit-content; padding: 10px">
+            {{ pagination.links }}
+          </div>
         </div>
       </div>
     </div>
-    {% endfor %} 
+    {% endfor %}
     <h2>Similar Products for sale:</h2>
     <table class="table table-hover table-bordered container">
       <thead class="thead-dark">
@@ -290,24 +303,38 @@
               >{{product.name}}</a
             >
           </td>
-          <td>{{product.price}}</td>
+          <td>${{product.price}}</td>
           <td>{{product.quantity}}</td>
           <td>{{product.firstname}} {{product.lastname}}</td>
           <td>
-            <br>{{Test}}</br>
+            <p>{{product.avgRating}}</p>
           </td>
           <td>
             {% if current_user.is_authenticated %}
-            <form method="POST" action="{{ url_for('cart.add_multiple_to_cart', product_id=product.id)}}">
+            <form
+              method="POST"
+              action="{{ url_for('cart.add_multiple_to_cart', product_id=product.id)}}"
+            >
               <label for="addQuant">Quantity: </label>
-              <input type="number" id="addQuant" name="addQuant" max="{{ product.quantity }}" oninput="this.value = Math.min(this.value, this.max)" /><br /><br />
+              <input
+                type="number"
+                id="addQuant"
+                name="addQuant"
+                max="{{ product.quantity }}"
+                oninput="this.value = Math.min(this.value, this.max)"
+              /><br /><br />
               <input type="submit" value="Add to Cart" /><br /><br />
-
             </form>
             {% else %}
             <form method="GET" action="{{ url_for('users.login')}}">
               <label for="addQuant">Quantity: </label>
-              <input type="number" id="addQuant" name="addQuant" max="{{ product.quantity }}" oninput="this.value = Math.min(this.value, this.max)" /><br /><br />
+              <input
+                type="number"
+                id="addQuant"
+                name="addQuant"
+                max="{{ product.quantity }}"
+                oninput="this.value = Math.min(this.value, this.max)"
+              /><br /><br />
               <input type="submit" value="Add to Cart" /><br /><br />
             </form>
             {% endif %}
@@ -331,8 +358,6 @@
         }
       }
     </script>
-  </body>
-</html>    
     <script>
       function toggleForm() {
         var form = document.getElementById("reviewForm");
@@ -344,5 +369,5 @@
       }
     </script>
   </body>
-  </html>
-  {% endblock %}
+</html>
+{% endblock %}

@@ -1,7 +1,7 @@
 from flask import current_app as app
 
 class Review:
-    def __init__(self, id, uid, pid, time_posted, rating, review_text, name, firstname):
+    def __init__(self, id, uid, pid, time_posted, rating, review_text, name, firstname, image="/static/images/gargi.jpeg"):
         self.id = id
         self.uid = uid
         self.pid = pid
@@ -12,6 +12,7 @@ class Review:
         self.review_text = review_text
         self.name = name
         self.firstname = firstname
+        self.image = image
 
     @staticmethod
     def get(id):
@@ -40,13 +41,14 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
         rows = app.db.execute('''
-SELECT Reviews.id, uid, pid, time_posted, rating, review_text, name, '' firstname
+SELECT Reviews.id, uid, pid, time_posted, rating, review_text, name, '' firstname, Products.image_path
 FROM Reviews
 JOIN Products ON Products.id = Reviews.pid
 WHERE uid = :uid
 ORDER BY time_posted DESC
 ''', uid = uid)
         return [Review(*row) for row in rows]
+    
     @staticmethod
     def update_review(id, newInput, newInputRating):
         rows = app.db.execute("""

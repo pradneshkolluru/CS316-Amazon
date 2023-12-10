@@ -42,6 +42,7 @@
       <!--th scope="col">#</th-->
       <th scope="col">Product ID</th>
       <th scope="col">Product Name</th>
+      <th scope="col">Product Description</th>
       <th scope="col">Current Selling Price</th>
       <th scope="col">Available Quantity</th>
       <th scope="col">Remove Product</th>
@@ -54,9 +55,30 @@
 
         <th scope="row">{{item.pid}}</th>
 
-        <td>{{item.product_name}}</td>
+        <td>{{item.product_name}}
+          <form method="POST" action="{{ url_for('inventory.update_product_info', id=item.pid, field='name') }}">
+            <input id="new_name" name="changeVal">
+            <input type="submit" value="Update Name" /><br /><br />
+          </form>
+        </td>
+      
+        <td>{{item.description}}
 
-        <td>${{item.product_price}}</td>
+          <form method="POST" action="{{ url_for('inventory.update_product_info', id=item.pid, field='description') }}">
+            <input id="new_description" name="changeVal">
+            <input type="submit" value="Update Description" /><br /><br />
+          </form>
+
+        </td>
+
+        <td>${{item.product_price}}
+
+          <form method="POST" action="{{ url_for('inventory.update_product_info', id=item.pid, field='price') }}">
+            <input type="number" id="new_price" name="changeVal">
+            <input type="submit" value="Update Price" /><br /><br />
+          </form>
+          
+        </td>
 
         <td class="changeQuantity">
           <form action="{{ url_for('inventory.inventory_update_quantity') }}" method="POST">
