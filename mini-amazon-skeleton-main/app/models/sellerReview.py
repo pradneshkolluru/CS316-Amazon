@@ -39,14 +39,18 @@ WHERE id = :id
 
     @staticmethod 
     def get_all(uid):
+
+        print("test")
         rows = app.db.execute('''
-SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
-FROM SellerReviews
-JOIN Users ON Users.id = SellerReviews.sid
-WHERE uid = :uid
-ORDER BY time_posted DESC
-''', uid = uid)
+        SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
+        FROM SellerReviews, Users
+        WHERE Users.id = SellerReviews.sid AND sid = :uid
+        ORDER BY time_posted DESC
+        ''', uid = uid)
+
         return [SellerReview(*row) for row in rows]
+    
+    
     @staticmethod
     def update_review(id, newInput, newInputRating):
         rows = app.db.execute("""
