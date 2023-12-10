@@ -145,7 +145,7 @@ def public_view(id):
     seller = User.is_seller(id)
 
     if seller: 
-        reviews = SellerReview.get_all(id)
+        reviews = SellerReview.get_all2(id)
         products = Product.get_by_sid(id)
 
         page = request.args.get(get_page_parameter(), type=int, default=1)

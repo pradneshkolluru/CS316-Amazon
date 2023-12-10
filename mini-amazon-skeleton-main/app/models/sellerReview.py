@@ -39,13 +39,20 @@ WHERE id = :id
 
     @staticmethod 
     def get_all(uid):
+        rows = app.db.execute('''
+SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
+FROM SellerReviews
+JOIN Users ON Users.id = SellerReviews.sid
+WHERE uid = :uid
+ORDER BY time_posted DESC
+''', uid = uid)
 
-        query1 = '''
-        SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
-        FROM SellerReviews, Users
-        WHERE Users.id = SellerReviews.sid AND sid = :uid
-        ORDER BY time_posted DESC
-        '''
+
+        return [SellerReview(*row) for row in rows]
+
+    
+    @staticmethod
+    def get_all2(uid):
 
         query2 = '''
         SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Customers.firstname, Customers.lastname
@@ -59,8 +66,7 @@ ORDER BY time_posted DESC
         print("test")
         rows = app.db.execute(query2, sid = uid)
 
-
-        return [SellerReview(*row) for row in rows]
+        return rows
     
     
     @staticmethod

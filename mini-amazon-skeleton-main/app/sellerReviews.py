@@ -15,6 +15,8 @@ def sellerReviews():
     if current_user.is_authenticated:
         reviews = SellerReview.get_all(
             current_user.id)
+        
+        print(reviews)
     else:
         reviews = None
     # render the page by adding information to the index.html file
