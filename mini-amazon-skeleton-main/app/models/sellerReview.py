@@ -40,13 +40,25 @@ WHERE id = :id
     @staticmethod 
     def get_all(uid):
 
-        print("test")
-        rows = app.db.execute('''
+        query1 = '''
         SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
         FROM SellerReviews, Users
         WHERE Users.id = SellerReviews.sid AND sid = :uid
         ORDER BY time_posted DESC
-        ''', uid = uid)
+        '''
+
+        query2 = '''
+        SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Customers.firstname, Customers.lastname
+FROM SellerReviews
+JOIN Users AS Sellers ON Sellers.id = SellerReviews.sid
+JOIN Users AS Customers ON Customers.id = SellerReviews.uid
+WHERE sid = :sid
+ORDER BY time_posted DESC
+        '''
+
+        print("test")
+        rows = app.db.execute(query2, sid = uid)
+
 
         return [SellerReview(*row) for row in rows]
     
