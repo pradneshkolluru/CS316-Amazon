@@ -39,298 +39,300 @@
     </style>
   </head>
 
-<body>
-{% if current_user.is_authenticated %}
-<div class="pageContainer">
-  <div class="storeFront">
-    <h1 style="font-size: 10vh">
-      {{current_user.firstname}} {{current_user.lastname}}
-    </h1>
-  </div>
-  <ul class="nav nav-tabs" id="myTab" role="tablist">
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link active"
-        id="home-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#home-tab-pane"
-        type="button"
-        role="tab"
-        aria-controls="home-tab-pane"
-        aria-selected="true"
-      >
-        Purchases
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="purchase-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#purchase-tab-pane"
-        type="button"
-        role="tab"
-        aria-controls="purchase-tab-pane"
-        aria-selected="false"
-      >
-        Products
-      </button>
-    </li>
-    <li class="nav-item" role="presentation">
-      <button
-        class="nav-link"
-        id="spending-tab"
-        data-bs-toggle="tab"
-        data-bs-target="#spending-tab-pane"
-        type="button"
-        role="tab"
-        aria-controls="spending-tab-pane"
-        aria-selected="false"
-      >
-        Spending
-      </button>
-    </li>
-  </ul>
+  <body>
+    {% if current_user.is_authenticated %}
+    <div class="pageContainer">
+      <div class="storeFront">
+        <h1 style="font-size: 10vh">
+          {{current_user.firstname}} {{current_user.lastname}}
+        </h1>
+      </div>
+      <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link active"
+            id="home-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#home-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="home-tab-pane"
+            aria-selected="true"
+          >
+            Purchases
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="purchase-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#purchase-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="purchase-tab-pane"
+            aria-selected="false"
+          >
+            Products
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button
+            class="nav-link"
+            id="spending-tab"
+            data-bs-toggle="tab"
+            data-bs-target="#spending-tab-pane"
+            type="button"
+            role="tab"
+            aria-controls="spending-tab-pane"
+            aria-selected="false"
+          >
+            Spending
+          </button>
+        </li>
+      </ul>
 
-  <div class="tab-content" id="myTabContent" style="width: 100%">
-    <div
-    class="tab-pane fade"
-    id="purchase-tab-pane"
-    role="tabpanel"
-    aria-labelledby="purchase-tab"
-    tabindex="0"
-    >
-  
-    {% if not categories %}
-    <h2 style="max-width: fit-content; margin: auto; width: 50%">
-      You haven't made any purchases yet! Once you get shopping, we'll recommend you things we think you'll like. Until then, view some of our top items:
-      </h2>
-    {%else %}
-
-  <div class="album py-5 bg-body-tertiary prodGrid">
-    <div class="container">
-      <h2>
-        We've noticed that you like shopping for
-        {% for category in categories %}
-        {{category}}
-        {% endfor %}
-        {% endif %}
-        </h2>
-      <h2>We think you might like these:</h2>
-      <div
-        class="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-2"
-      >
-    {% for product in recs%}
-          <div class="col" style="height: 100%">
-            <div class="card shadow-sm">
-              <a href="{{ url_for('products.product_info', id=product.id) }}">
-                <img
-                  class="bd-placeholder-img card-img-top"
-                  src="{{ product.image }}"
-                  width="100%"
-                  height="100%"
-                  xmlns="http://www.w3.org/2000/svg"
-                  role="img"
-                  aria-label="product image"
-                  preserveAspectRatio="xMidYMid slice"
-                  focusable="false"
-              /></a>
-              <div class="card-body">
-                <!-- <p style="text-overflow: ellipsis"> -->
-                <a
-                  style="
-                    color: black;
-                    width: 100%;
-                    display: block;
-                    white-space: nowrap;
-                    text-overflow: ellipsis;
-                    overflow: hidden;
-                    padding-bottom: 10px;
-                  "
-                  href="{{ url_for('products.product_info', id=product.id) }}"
-                  >{{product.name}}</a
-                >
-                <!-- </p> -->
-                <div
-                  class="d-flex justify-content-between align-items-center"
-                >
-                  <div style="display: flex; flex-direction: column">
-                    <small class="text-body-secondary"
-                      >${{product.price}}</small
-                    >
-                    <div
-                      style="
-                        display: flex;
-                        flex-direction: row;
-                        align-items: center;
-                        gap: 2px;
-                      "
-                    >
-                      <small class="text-body-secondary"
-                        >{{product.avgRating}}</small
-                      ><svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="16"
-                        height="16"
-                        fill="#ffd500"
-                        class="bi bi-star-fill"
-                        viewBox="0 0 16 16"
+      <div class="tab-content" id="myTabContent" style="width: max-content">
+        <div
+          class="tab-pane fade"
+          id="purchase-tab-pane"
+          role="tabpanel"
+          aria-labelledby="purchase-tab"
+          tabindex="0"
+        >
+          {% if not categories %}
+          <h2 style="max-width: fit-content; margin: auto; width: 50%">
+            You haven't made any purchases yet! Once you get shopping, we'll
+            recommend you things we think you'll like. Until then, view some of
+            our top items:
+          </h2>
+          {%else %}
+          <div>
+            <h2 style="text-align: center">
+              We've noticed that you like shopping for {% for category in
+              categories %} {{category}} {% endfor %} {% endif %}
+            </h2>
+            <h2 style="text-align: center">We think you might like these:</h2>
+            <div class="album py-5 bg-body-tertiary">
+              <div class="container">
+                <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">
+                  {% for product in recs%}
+                  <div class="col" style="height: 100%">
+                    <div class="card shadow-sm">
+                      <a
+                        href="{{ url_for('products.product_info', id=product.id) }}"
                       >
-                        <path
-                          d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
-                        />
-                      </svg>
+                        <img
+                          class="bd-placeholder-img card-img-top"
+                          src="{{ product.image }}"
+                          width="100%"
+                          height="100%"
+                          xmlns="http://www.w3.org/2000/svg"
+                          role="img"
+                          aria-label="product image"
+                          preserveAspectRatio="xMidYMid slice"
+                          focusable="false"
+                      /></a>
+                      <div class="card-body">
+                        <!-- <p style="text-overflow: ellipsis"> -->
+                        <a
+                          style="
+                            color: black;
+                            width: 100%;
+                            display: block;
+                            white-space: nowrap;
+                            text-overflow: ellipsis;
+                            overflow: hidden;
+                            padding-bottom: 10px;
+                          "
+                          href="{{ url_for('products.product_info', id=product.id) }}"
+                          >{{product.name}}</a
+                        >
+                        <!-- </p> -->
+                        <div
+                          class="d-flex justify-content-between align-items-center"
+                        >
+                          <div style="display: flex; flex-direction: column">
+                            <small class="text-body-secondary"
+                              >${{product.price}}</small
+                            >
+                            <div
+                              style="
+                                display: flex;
+                                flex-direction: row;
+                                align-items: center;
+                                gap: 2px;
+                              "
+                            >
+                              <small class="text-body-secondary"
+                                >{{product.avgRating}}</small
+                              ><svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                width="16"
+                                height="16"
+                                fill="#ffd500"
+                                class="bi bi-star-fill"
+                                viewBox="0 0 16 16"
+                              >
+                                <path
+                                  d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+                                />
+                              </svg>
+                            </div>
+                          </div>
+                          <div style="position: relative">
+                            {% if current_user.is_authenticated %}
+                            <form
+                              style="width: auto"
+                              action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
+                              method="POST"
+                            >
+                              <input type="submit" value="Add to Wishlist" />
+                            </form>
+                            <form
+                              action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
+                              method="POST"
+                            >
+                              <input type="submit" value="Add to Cart" />
+                            </form>
+                            {% endif %}
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div style="position: relative">
-                    {% if current_user.is_authenticated %}
-                    <form
-                      style="width: auto"
-                      action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
-                      method="POST"
-                    >
-                      <input type="submit" value="Add to Wishlist" />
-                    </form>
-                    <form
-                      action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
-                      method="POST"
-                    >
-                      <input type="submit" value="Add to Cart" />
-                    </form>
-                    {% endif %}
-                  </div>
+                  {% endfor %}
                 </div>
               </div>
             </div>
           </div>
-          {% endfor %}
+        </div>
+
+        <div
+          class="tab-pane fade show active"
+          id="home-tab-pane"
+          role="tabpanel"
+          aria-labelledby="home-tab"
+          tabindex="0"
+          style="margin: auto; width: 100%"
+        >
+          <div
+            style="display: flex; flex-direction: column; width: fit-content"
+          >
+            <br />
+            <h2>Your Purchases:</h2>
+            <form action="{{ url_for('purchases.purchases')}}" method="POST">
+              <label for="stringMatch">Product Name: </label>
+              <input type="text" id="stringMatch" name="stringMatch" />
+              <!-- </form>
+<form action="{{ url_for('purchases.purchases')}}" method="POST"> -->
+              <label for="sellerMatch">Seller Last Name: </label>
+              <input type="text" id="sellerMatch" name="sellerMatch" />
+              <!-- </form>
+<form action="{{ url_for('purchases.purchases')}}" method="POST"> -->
+              <label for="years">Items purchased in </label>
+              <input type="radio" id="all" value="All Years" name="years" />
+              <label for="all">All Years</label>
+              {% for year in years %}
+              <input type="radio" id="{{year}}" value="{{year}}" name="years" />
+              <label for="{{year}}">{{year}}</label>
+              {% endfor %}
+              <input type="submit" />
+            </form>
+            <form
+              style="width: auto"
+              action="{{ url_for('purchases.purchases')}}"
+              method="POST"
+            >
+              <input type="submit" value="Reset Filter" />
+            </form>
+            <br />
+            {% if query!="" %}
+            <h5>Current Search: {{query}}</h5>
+            {%endif%}
+            <div style="padding-bottom: 2em">{{ pagination.info }}</div>
+            <table class="table table-hover table-bordered container">
+              <thead class="thead-dark">
+                <tr>
+                  <th scope="col">Order ID</th>
+                  <th scope="col">Product Name</th>
+                  <th scope="col">Quantity</th>
+                  <th scope="col">Unit Price</th>
+                  <th scope="col">Purchase Fulfilled?</th>
+                  <th scope="col">Order Fulfilled?</th>
+                  <th scope="col">Date Purchased</th>
+                  <th scope="col">Seller Name</th>
+                  <th scope="col">Buy Again</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in all_purchases%}
+                <tr>
+                  <th scope="row">
+                    <a href="{{ url_for('order.get_order', oid=item.oid) }}">
+                      {{item.oid}}
+                    </a>
+                  </th>
+                  <td>{{item.product_name}}</td>
+                  <td>{{item.qty}}</td>
+                  <td>{{item.unit_price}}</td>
+                  {% if item.purchase_fulfilled %}
+                  <td style="color: #23a129; text-align: center">&#x2713;</td>
+                  {% else %}
+                  <td style="color: #ff0000; text-align: center">&#10007;</td>
+                  {% endif %} {% if item.order_fulfilled %}
+                  <td style="color: #23a129; text-align: center">&#x2713;</td>
+                  {% else %}
+                  <td style="color: #ff0000; text-align: center">&#10007;</td>
+                  {% endif %}
+
+                  <td>{{item.time_purchased}}</td>
+                  <td>{{item.sellerfirst}} {{item.sellerlast}}</td>
+                  <td>
+                    <form
+                      action="{{ url_for('cart.add_to_cart', product_id=item.pid) }}"
+                      method="POST"
+                    >
+                      <input type="submit" value="Add to Cart" />
+                    </form>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            <div style="margin: auto; width: fit-content; padding: 10px">
+              {{ pagination.links }}
+            </div>
+          </div>
         </div>
       </div>
+      <div
+        class="tab-pane fade"
+        id="spending-tab-pane"
+        role="tabpanel"
+        aria-labelledby="spending-tab"
+        tabindex="0"
+      >
+        {% if data %}
+        <h2>Your Purchases Overtime:</h2>
+        <img src="data:image/png;base64,{{data}}" />
+        {% else %}
+        <h3>
+          You haven't made any purchases yet.
+          <a href="{{ url_for('products.products')}}">Browse products here.</a>
+        </h3>
+        {%endif%}
       </div>
     </div>
-  
 
-
-
-  
-    <div
-      class="tab-pane fade show active"
-      id="home-tab-pane"
-      role="tabpanel"
-      aria-labelledby="home-tab"
-      tabindex="0"
-      style="margin: auto; width: 100%"
-    >
-  <h2>Your Purchases:</h2>
-  <form action="{{ url_for('purchases.purchases')}}" method="POST">
-  <label for="stringMatch">Product Name: </label>
-  <input type="text" id="stringMatch" name="stringMatch" />
-<!-- </form>
-<form action="{{ url_for('purchases.purchases')}}" method="POST"> -->
-  <label for="sellerMatch">Seller Last Name: </label>
-  <input type="text" id="sellerMatch" name="sellerMatch" />
-<!-- </form>
-<form action="{{ url_for('purchases.purchases')}}" method="POST"> -->
-  <label for="years">Items purchased in </label>
-  <input type="radio" id="all" value="All Years" name="years">
-  <label for="all">All Years</label>
-  {% for year in years %}
-  <input type="radio" id="{{year}}"value="{{year}}" name="years">
-  <label for="{{year}}">{{year}}</label>
-  {% endfor %}
-  <input type="submit">
-</form>
-<form style="width: auto" action="{{ url_for('purchases.purchases')}}" method="POST">
-  <input type="submit" value="Reset Filter" />
-</form><br>
-{% if query!="" %}
-<h5>Current Search: {{query}}</h5>
-{%endif%}
-<div style="padding-bottom: 2em">{{ pagination.info }}</div>
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Order ID</th>
-      <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Unit Price</th>
-      <th scope="col">Purchase Fulfilled?</th>
-      <th scope="col">Order Fulfilled?</th>
-      <th scope="col">Date Purchased</th>
-      <th scope="col">Seller Name</th>
-      <th scope="col">Buy Again</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for item in all_purchases%}
-      <tr>
-        <th scope="row">
-          <a href="{{ url_for('order.get_order', oid=item.oid) }}"> {{item.oid}} </a>
-        </th> 
-        <td>{{item.product_name}}</td>
-        <td>{{item.qty}}</td>
-        <td>{{item.unit_price}}</td>
-        {% if item.purchase_fulfilled %}
-        <td style="color:#23A129; text-align:center">&#x2713;</td>
-        {% else %}
-        <td style="color:#FF0000; text-align:center">&#10007;</td>
-        {% endif %}
-
-        {% if item.order_fulfilled %}
-        <td style="color:#23A129; text-align:center">&#x2713; </td>
-        {% else %}
-        <td style="color:#FF0000; text-align:center">&#10007;</td>
-        {% endif %}
-
-        <td>{{item.time_purchased}}</td>
-        <td>{{item.sellerfirst}} {{item.sellerlast}}</td>
-        <td>
-          <form
-          action="{{ url_for('cart.add_to_cart', product_id=item.pid) }}"
-          method="POST"
-        >
-          <input type="submit" value="Add to Cart" />
-        </form>
-        </td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-</div>
-
-
-
-
-<div style="margin: auto; width: fit-content; padding: 10px">
-  {{ pagination.links }}
-</div>
-</div>
-<div
-          class="tab-pane fade"
-          id="spending-tab-pane"
-          role="tabpanel"
-          aria-labelledby="spending-tab"
-          tabindex="0"
-        >
-  {% if data %}
-  <h2>Your Purchases Overtime:</h2>
-  <img src='data:image/png;base64,{{data}}'/>
-  {% else %}
-  <h3>You haven't made any purchases yet.
-    <a href="{{ url_for('products.products')}}">Browse products here.</a>
-    </h3>
-  {%endif%}
-</div>
-
-
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>
-{% endif %}
-<script
-src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-crossorigin="anonymous"
-></script>
-</body>
-{% endblock %}
+    {% else %}
+    <p><a href="{{ url_for('users.login') }}">Log in</a> to see your orders!</p>
+    {% endif %}
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+  {% endblock %}
 </html>
