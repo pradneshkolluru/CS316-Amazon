@@ -51,4 +51,4 @@ def add_review(id):
         rating = request.form.get("newRating")
         review_text = request.form.get("newReview")
         Review.add_review(uid=uid, pid=id, time_posted=time_posted,rating=rating, review_text=review_text)
-        return redirect(url_for('reviews.reviews'))
+        return redirect(url_for('products.product_info', id=id))
