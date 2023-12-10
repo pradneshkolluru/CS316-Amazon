@@ -43,8 +43,8 @@
       <div class="sidebar">
         <br />
         <form method="POST" action="{{ url_for('products.products')}}">
-
-          <strong><label>Product Category:</label></strong><br />
+          <strong><label>Product Category:</label></strong
+          ><br />
           <div class="prodCat">
             <div>
               <input type="radio" id="option1" name="options" value="toys" />
@@ -78,7 +78,8 @@
 
             <br /><br />
           </div>
-          <label><strong>Price Sort:</strong></label><br />
+          <label><strong>Price Sort:</strong></label
+          ><br />
 
           <input type="radio" id="option7" name="priceSort" value="ASC" />
           <label for="option7">Low &rarr; High</label>
@@ -176,7 +177,7 @@
                         </svg>
                       </div>
                     </div>
-                    <div style="position: relative">
+                    <div style="position: relative; width: max-content">
                       {% if current_user.is_authenticated %}
                       <form
                         style="width: auto"
@@ -188,8 +189,13 @@
                       <form
                         action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
                         method="POST"
+                        style="width: 100%"
                       >
-                        <input type="submit" value="Add to Cart" />
+                        <input
+                          type="submit"
+                          value="Add to Cart"
+                          style="width: 100%"
+                        />
                       </form>
                       {% endif %}
                     </div>
