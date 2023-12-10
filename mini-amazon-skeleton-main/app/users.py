@@ -166,8 +166,6 @@ def public_view(id):
         reviews = None
         reviewMetrics = None
     
-    for i in reviews:
-        print(i.first_name)
     return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews, avail_products=sliced_products, reviewMetrics = reviewMetrics, pagination=pagination)
 
 @bp.route('/logout')
