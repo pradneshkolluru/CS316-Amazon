@@ -157,6 +157,9 @@ def public_view(id):
 
         reviewMetrics = SellerReview.getReviewMetrics(id)
 
+        print("testing................")
+        print(len(reviews))
+
     else:
         sliced_products=''
         pagination=''
