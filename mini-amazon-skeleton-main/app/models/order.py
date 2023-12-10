@@ -212,4 +212,29 @@ ORDER BY Date(Time_purchased)
                 amounts.append(row[1])
             return dates, amounts
         return None
+    @staticmethod
+    def categories(uid):
+        rows = app.db.execute("""
+select category
+from purchases as P, products as Pr
+where uid = 0 and p.pid = pr.id
+group by category
+Having count(category) >= ALL (
+select count(category)
+from products as Pr, purchases
+where uid = 0 and pid=Pr.id
+group by category);
+""",
+                            uid=uid)
+        categories = []
+        
+        if rows: 
+            for row in rows:
+                categories.append(row[0])
+        return categories if rows else None
+
+
+
+
+    
         

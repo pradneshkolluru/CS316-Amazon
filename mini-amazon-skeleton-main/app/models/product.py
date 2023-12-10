@@ -273,6 +273,16 @@ LIMIT 1
         except Exception as e:
             print(str(e))
             return None
+    @staticmethod
+    def recommendations(category):
+        rows = app.db.execute("""
+select 
+from products
+where category = :category
+limit 3
+""",
+                            category=category)
+        return [Product(*row) for row in rows]
 
     
     @staticmethod
