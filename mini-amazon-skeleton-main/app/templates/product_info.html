@@ -192,19 +192,23 @@
         </div>
       </div>
       <div class="reviewContainer">
-        {% if current_user.is_authenticated %}
-        <div class="inputReview">
-          <button class="addBtn" id="showFormButton" onclick="toggleForm()">
-            Add Review
-          </button>
-          <form
-            action="{{ url_for('reviews.add_review', id=product.id) }}"
-            method="POST"
-            id="reviewForm"
-            style="display: none"
-          >
-            <div class="form-group">
-              <!-- <label for="exampleFormControlTextarea1">Example textarea</label>
+        <div style="display: flex; flex-direction: column">
+          {% if current_user.is_authenticated %} {% for error in
+          get_flashed_messages() %}
+          <span style="color: red">{{ error }}</span>
+          {% endfor %}
+          <div class="inputReview">
+            <button class="addBtn" id="showFormButton" onclick="toggleForm()">
+              Add Review
+            </button>
+            <form
+              action="{{ url_for('reviews.add_review', id=product.id) }}"
+              method="POST"
+              id="reviewForm"
+              style="display: none"
+            >
+              <div class="form-group">
+                <!-- <label for="exampleFormControlTextarea1">Example textarea</label>
               <select id="newRating" name="newRating">
                 <option>1</option>
                 <option>2</option>
@@ -212,32 +216,34 @@
                 <option>4</option>
                 <option>5</option>
               </select> -->
-              <label for="validationDefault04" class="form-label">Rating</label>
-              <select
-                class="form-select"
-                id="newRating"
-                name="newRating"
-                required
-                style="width: fit-content"
-              >
-                <option selected disabled value="">select</option>
-                <option>1</option>
-                <option>2</option>
-                <option>3</option>
-                <option>4</option>
-                <option>5</option>
-              </select>
-              <div class="invalid-tooltip">
-                Please choose a unique and valid username.
-              </div>
-              <label for="newReview" class="form-label">Review</label>
-              <textarea
-                class="form-control"
-                id="newReview"
-                name="newReview"
-                rows="3"
-              ></textarea>
-              <!-- <label for="validationCustom03" class="form-label">Review</label>
+                <label for="validationDefault04" class="form-label"
+                  >Rating</label
+                >
+                <select
+                  class="form-select"
+                  id="newRating"
+                  name="newRating"
+                  required
+                  style="width: fit-content"
+                >
+                  <option selected disabled value="">select</option>
+                  <option>1</option>
+                  <option>2</option>
+                  <option>3</option>
+                  <option>4</option>
+                  <option>5</option>
+                </select>
+                <div class="invalid-tooltip">
+                  Please choose a unique and valid username.
+                </div>
+                <label for="newReview" class="form-label">Review</label>
+                <textarea
+                  class="form-control"
+                  id="newReview"
+                  name="newReview"
+                  rows="3"
+                ></textarea>
+                <!-- <label for="validationCustom03" class="form-label">Review</label>
               <textarea
                 class="form-control"
                 id="newReview"
@@ -247,11 +253,12 @@
                 required
               ></textarea>
               <div class="invalid-feedback">Please provide a valid city.</div> -->
-              <input type="submit" value="Submit" />
-            </div>
-          </form>
+                <input type="submit" value="Submit" />
+              </div>
+            </form>
+          </div>
+          {% endif %}
         </div>
-        {% endif %}
         <div>
           <!-- <div style="padding-bottom: 2em">{{ pagination.info }}</div> -->
           <h3>What Customers Say About <strong>{{product.name}}</strong></h3>

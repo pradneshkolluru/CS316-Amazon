@@ -42,7 +42,9 @@ def delete_review(id):
 @bp.route('/reviews/add/<id>', methods=['POST', 'GET'])
 def add_review(id):
     if Review.review_exists(current_user.id, id):
-        return "You have already reviewed this product"
+            flash('You have already reviewed this product')
+            return redirect(url_for('products.product_info', id=id))
+
     else:
         uid=current_user.id
         time_posted = datetime.now()
