@@ -25,7 +25,7 @@
         padding: 0px 0px;
       }
       .storeFront {
-        height: 20vh;
+        min-height: 20vh;
         background-color: #bdcfd9;
         width: 100%;
         display: flex;
@@ -64,8 +64,18 @@
         margin: 4px 2px;
         cursor: pointer;
       }
+      .reviewStars {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 2px;
+      }
+      /* button {
+        font-size: large;
+      } */
     </style>
   </head>
+
   <body>
     <!-- name and account number if they are not a seller -->
 
@@ -76,6 +86,7 @@
         </h1>
         {% if not seller%}Account #:{{user_info.id}}{% endif %}
       </div>
+      <br />
       {% if seller %}
       <ul class="nav nav-tabs" id="myTab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -88,6 +99,7 @@
             role="tab"
             aria-controls="home-tab-pane"
             aria-selected="true"
+            style="font-size: large"
           >
             Products
           </button>
@@ -102,6 +114,7 @@
             role="tab"
             aria-controls="profile-tab-pane"
             aria-selected="false"
+            style="font-size: large"
           >
             Reviews
           </button>
@@ -116,6 +129,7 @@
             role="tab"
             aria-controls="contact-tab-pane"
             aria-selected="false"
+            style="font-size: large"
           >
             Contact Information
           </button>
@@ -215,8 +229,13 @@
                       <form
                         action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
                         method="POST"
+                        style="width: 100%"
                       >
-                        <input type="submit" value="Add to Cart" />
+                        <input
+                          type="submit"
+                          value="Add to Cart"
+                          style="width: 100%"
+                        />
                       </form>
                       {% endif %}
                     </div>
@@ -251,8 +270,30 @@
               What Customers Say About {{user_info.firstname}}
             </h2>
             <br />
+            <div class="reviewStars">
+              <h3 style="margin-bottom: 0">{{ reviewMetrics[1] }}</h3>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="25"
+                height="25"
+                fill="#ffd500"
+                class="bi bi-star-fill"
+                viewBox="0 0 16 16"
+              >
+                <path
+                  d="M3.612 15.443c-.386.198-.824-.149-.746-.592l.83-4.73L.173 6.765c-.329-.314-.158-.888.283-.95l4.898-.696L7.538.792c.197-.39.73-.39.927 0l2.184 4.327 4.898.696c.441.062.612.636.282.95l-3.522 3.356.83 4.73c.078.443-.36.79-.746.592L8 13.187l-4.389 2.256z"
+                />
+              </svg>
+              <h4 style="margin-bottom: 0">({{ reviewMetrics[0] }})</h4>
+            </div>
+            <br />
             {% if current_user.is_authenticated %}
             <div class="inputReview">
+              <div style="display: flex; flex-direction: column">
+                {% for error in get_flashed_messages() %}
+                <span style="color: red">{{ error }}</span>
+                {% endfor %}
+              </div>
               <button class="addBtn" id="showFormButton" onclick="toggleForm()">
                 Add Review
               </button>
@@ -337,20 +378,20 @@
               {% endfor %}
             </div>
           </div>
-          <div
-            class="tab-pane fade tabContainer"
-            id="contact-tab-pane"
-            role="tabpanel"
-            aria-labelledby="contact-tab"
-            tabindex="0"
-            style="display: flex; flex-direction: column; align-items: center"
-          >
-            <div class="tabContent" style="width: max-content">
-              <!-- <h1>Seller Info:</h1> -->
-              <h2>Account Number: {{user_info.id}}</h2>
-              <h2>Email: {{user_info.email}}</h2>
-              <h2>Address: {{user_info.address}}</h2>
-            </div>
+        </div>
+        <div
+          class="tab-pane fade tabContainer"
+          id="contact-tab-pane"
+          role="tabpanel"
+          aria-labelledby="contact-tab"
+          tabindex="0"
+          style="display: flex; flex-direction: column; align-items: center"
+        >
+          <div class="tabContent" style="width: max-content">
+            <!-- <h1>Seller Info:</h1> -->
+            <h2>Account Number: {{user_info.id}}</h2>
+            <h2>Email: {{user_info.email}}</h2>
+            <h2>Address: {{user_info.address}}</h2>
           </div>
         </div>
       </div>

@@ -217,12 +217,12 @@ ORDER BY Date(Time_purchased)
         rows = app.db.execute("""
 select category
 from purchases as P, products as Pr
-where uid = 0 and p.pid = pr.id
+where uid = :uid and p.pid = pr.id
 group by category
 Having count(category) >= ALL (
 select count(category)
 from products as Pr, purchases
-where uid = 0 and pid=Pr.id
+where uid = :uid and pid=Pr.id
 group by category);
 """,
                             uid=uid)

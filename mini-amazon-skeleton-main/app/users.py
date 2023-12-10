@@ -143,6 +143,7 @@ def withdraw():
 def public_view(id):
     user_info = User.get(id)
     seller = User.is_seller(id)
+
     if seller: 
         reviews = SellerReview.get_all(id)
         products = Product.get_by_sid(id)
@@ -154,11 +155,17 @@ def public_view(id):
         sliced_products = products[offset: offset + per_page]
         pagination = Pagination(page=page, per_page = per_page, offset = offset, total= len(products), record_name='Products')
 
+        reviewMetrics = SellerReview.getReviewMetrics(id)
+
+        print("testing................")
+        print(len(reviews))
+
     else:
         sliced_products=''
         pagination=''
         reviews = None
-    return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews, avail_products=sliced_products, pagination=pagination)
+        reviewMetrics = None
+    return render_template('public_user.html', user_info=user_info, seller=seller, review_history=reviews, avail_products=sliced_products, reviewMetrics = reviewMetrics, pagination=pagination)
 
 @bp.route('/logout')
 def logout():

@@ -39,14 +39,30 @@ WHERE id = :id
 
     @staticmethod 
     def get_all(uid):
-        rows = app.db.execute('''
-SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
+
+        query1 = '''
+        SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Users.firstname, Users.lastname
+        FROM SellerReviews, Users
+        WHERE Users.id = SellerReviews.sid AND sid = :uid
+        ORDER BY time_posted DESC
+        '''
+
+        query2 = '''
+        SELECT SellerReviews.id, uid, sid, time_posted, rating, review_text, Customers.firstname, Customers.lastname
 FROM SellerReviews
-JOIN Users ON Users.id = SellerReviews.sid
-WHERE uid = :uid
+JOIN Users AS Sellers ON Sellers.id = SellerReviews.sid
+JOIN Users AS Customers ON Customers.id = SellerReviews.uid
+WHERE sid = :sid
 ORDER BY time_posted DESC
-''', uid = uid)
+        '''
+
+        print("test")
+        rows = app.db.execute(query2, sid = uid)
+
+
         return [SellerReview(*row) for row in rows]
+    
+    
     @staticmethod
     def update_review(id, newInput, newInputRating):
         rows = app.db.execute("""
@@ -89,3 +105,15 @@ WHERE uid = :uid AND sid =:sid
 """,
                               uid=uid, sid=sid)
         return len(rows) > 0
+
+
+    @staticmethod
+    def getReviewMetrics(id):
+
+        query = '''
+        SELECT COALESCE(COUNT(*), 0), COALESCE(ROUND(AVG(SellerReviews.rating)::numeric, 2), 0.0)
+        FROM SellerReviews
+        WHERE sid = :id
+        '''
+
+        return app.db.execute(query, id = id)[0]

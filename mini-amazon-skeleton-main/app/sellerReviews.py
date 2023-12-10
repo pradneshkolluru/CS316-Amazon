@@ -1,4 +1,4 @@
-from flask import redirect, render_template, request, url_for
+from flask import flash, redirect, render_template, request, url_for
 from flask_login import current_user
 from datetime import datetime
 
@@ -34,7 +34,8 @@ def delete_review(id):
 @bp.route('/sellerReviews/add/<id>', methods=['POST', 'GET'])
 def add_review(id):
     if SellerReview.review_exists(current_user.id, id):
-        return "You have already reviewed this seller"
+        flash('You have already reviewed this product')
+        return redirect(url_for('users.public_view', id=id))
     else:
         uid=current_user.id
         time_posted = datetime.now()
