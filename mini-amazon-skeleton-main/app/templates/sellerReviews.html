@@ -23,7 +23,11 @@
     {% for review in review_history%}
     <tr>
       <!-- <td>{{review.pid}}</td> -->
-      <td>{{review.first_name}} {{review.last_name}}</td>
+      <td>
+        <a href="{{ url_for('users.public_view', id=review.sid) }}"
+          >{{review.first_name}} {{review.last_name}}</a
+        >
+      </td>
       <form
         id="updateReview"
         action="{{ url_for('sellerReviews.update_review', id=review.id)}}"
