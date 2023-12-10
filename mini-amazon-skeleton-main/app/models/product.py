@@ -294,6 +294,10 @@ limit 3
         if changeField not in valid_fields:
 
             return "Invalid field name"
+        
+        if not newInput:
+
+            return "Please Provide Updated Value"
 
         query = text(f'''
         UPDATE Products
