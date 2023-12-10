@@ -26,4 +26,4 @@ now, you can type `exit` to get out of the `poetry` environment and
 get back to the normal container shell
 
 ## Video Demo Link
-https://www.youtube.com/watch?v=vGZGohBaRAY
+https://duke.box.com/s/3y39fixi2prauhi9dux7mcvuhn47sqja
