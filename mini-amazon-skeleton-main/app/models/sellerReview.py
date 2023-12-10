@@ -63,3 +63,21 @@ WHERE id = :id
 """,
                             id=id)
         return rows 
+    @staticmethod
+    def add_review(uid, sid, time_posted, rating, review_text):
+        
+        # try:
+            rows = app.db.execute("""
+INSERT INTO SellerReviews(uid, sid, time_posted, rating, review_text)
+VALUES(:uid, :sid, :time_posted, :rating, :review_text)                      
+""",
+                                  uid=uid,
+                                  sid=sid,
+                                  time_posted=time_posted, rating=rating, review_text=review_text)
+            # id = rows[0][0]
+            return rows if rows else None
+        # except Exception as e:
+        #     # likely email already in use; better error checking and reporting needed;
+        #     # the following simply prints the error to the console:
+        #     print(str(e))
+        #     return None

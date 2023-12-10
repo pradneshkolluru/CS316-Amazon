@@ -31,3 +31,14 @@ def update_review(id):
 def delete_review(id):
     SellerReview.delete_review(id=id)
     return redirect(url_for('sellerReviews.sellerReviews'))   
+@bp.route('/sellerReviews/add/<id>', methods=['POST', 'GET'])
+def add_review(id):
+    if SellerReview.review_exists(current_user.id, id):
+        return "You have already reviewed this seller"
+    else:
+        uid=current_user.id
+        time_posted = datetime.now()
+        rating = request.form.get("newRating")
+        review_text = request.form.get("newReview")
+        SellerReview.add_review(uid=uid, sid=id, time_posted=time_posted,rating=rating, review_text=review_text)
+        return redirect(url_for('sellerReviews.sellerReviews'))
