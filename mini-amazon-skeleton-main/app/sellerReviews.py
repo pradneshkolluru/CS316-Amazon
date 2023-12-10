@@ -42,4 +42,4 @@ def add_review(id):
         rating = request.form.get("newRating")
         review_text = request.form.get("newReview")
         SellerReview.add_review(uid=uid, sid=id, time_posted=time_posted,rating=rating, review_text=review_text)
-        return redirect(url_for('sellerReviews.sellerReviews'))
+        return redirect(url_for('users.public_view', id=id))
