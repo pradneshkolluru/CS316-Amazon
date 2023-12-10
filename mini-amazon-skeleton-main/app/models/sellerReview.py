@@ -81,3 +81,11 @@ VALUES(:uid, :sid, :time_posted, :rating, :review_text)
         #     # the following simply prints the error to the console:
         #     print(str(e))
         #     return None
+    def review_exists(uid, sid):
+        rows = app.db.execute("""
+SELECT *
+FROM SellerReviews
+WHERE uid = :uid AND sid =:sid
+""",
+                              uid=uid, sid=sid)
+        return len(rows) > 0

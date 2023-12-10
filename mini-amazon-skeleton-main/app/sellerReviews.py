@@ -1,6 +1,6 @@
 from flask import redirect, render_template, request, url_for
 from flask_login import current_user
-import datetime
+from datetime import datetime
 
 
 from .models.sellerReview import SellerReview
