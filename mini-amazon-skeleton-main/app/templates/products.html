@@ -43,10 +43,8 @@
       <div class="sidebar">
         <br />
         <form method="POST" action="{{ url_for('products.products')}}">
-          <label for="topK">K Most Items: </label>
-          <input type="number" id="topK" name="topK" /><br /><br />
 
-          <label>Product Category:</label><br />
+          <strong><label>Product Category:</label></strong><br />
           <div class="prodCat">
             <div>
               <input type="radio" id="option1" name="options" value="toys" />
@@ -80,7 +78,7 @@
 
             <br /><br />
           </div>
-          <label>Price Sort:</label><br />
+          <label><strong>Price Sort:</strong></label><br />
 
           <input type="radio" id="option7" name="priceSort" value="ASC" />
           <label for="option7">Low &rarr; High</label>
