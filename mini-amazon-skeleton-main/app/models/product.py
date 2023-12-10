@@ -219,19 +219,19 @@ class Product:
     @staticmethod
     def addOtherSellersProduct(pid, sid, name, category, description, price, quantity):
 
-        addPatientQuery = '''
+        addProductQuery = '''
         INSERT INTO Products(product_id, sid, name, category, description, price, image_path)
         VALUES(:pid, :sid, :name, :cat, :des, :price, :image_path)
         RETURNING id    
         '''
 
-        divyas_id = app.db.execute(addPatientQuery, pid = pid,
-                                                    sid = sid,
-                                                    name = name,
-                                                    cat = category, 
-                                                    des = description,
-                                                    price = price,
-                                                    image_path = f'/static/images/{category}/1.jpeg')[0][0]
+        uProduct_id = app.db.execute(addProductQuery, pid = pid,
+                                                      sid = sid,
+                                                      name = name,
+                                                      cat = category, 
+                                                      des = description,
+                                                      price = price,
+                                                      image_path = f'/static/images/{category}/1.jpeg')[0][0]
 
 
         insertIntoInventory = '''
@@ -241,7 +241,7 @@ class Product:
         '''
 
         rows = app.db.execute(insertIntoInventory, sid = sid,
-                                                   pid = divyas_id,
+                                                   pid = uProduct_id,
                                                    quantity = quantity)
 
     @staticmethod
@@ -288,6 +288,12 @@ limit 3
     @staticmethod
     def updateProduct(uid, changeField, newInput):
 
+        valid_fields = ['name', 'description', 'price']
+
+        if changeField not in valid_fields:
+
+            return "Invalid field name"
+
         query = text(f'''
         UPDATE Products
         SET {changeField} = :newInput
@@ -298,6 +304,7 @@ limit 3
 
     @staticmethod
     def get_by_sid(sid):
+
 
         query = '''
             WITH ProdAvg AS (
