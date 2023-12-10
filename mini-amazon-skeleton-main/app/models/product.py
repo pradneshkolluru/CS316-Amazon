@@ -216,7 +216,6 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
-        
     @staticmethod
     def addOtherSellersProduct(pid, sid, name, category, description, price, quantity):
 
@@ -244,7 +243,6 @@ class Product:
         rows = app.db.execute(insertIntoInventory, sid = sid,
                                                    pid = divyas_id,
                                                    quantity = quantity)
-        
 
     @staticmethod
     def get_product_info_from_name(product_name):
@@ -304,4 +302,3 @@ LIMIT 1
         '''
         rows = app.db.execute(query, sid=sid)
         return [Product(*row) for row in rows] if rows is not None else None
-
