@@ -42,6 +42,22 @@
         text-decoration: none;
         color: white;
       }
+      .addBtn {
+        background-color: #ffb84d;
+      }
+      .addBtn:hover {
+        background-color: #ff9900;
+      }
+      .btns {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+      .addBtn {
+        border-radius: 0.25rem;
+        border: none;
+      }
     </style>
   </head>
   <body>
@@ -197,20 +213,30 @@
                       </svg>
                     </div>
                   </div>
-                  <div style="position: relative">
+                  <div class="btns">
                     {% if current_user.is_authenticated %}
                     <form
                       style="width: auto"
                       action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
                       method="POST"
                     >
-                      <input type="submit" value="Add to Wishlist" />
+                      <input
+                        class="addBtn"
+                        type="submit"
+                        value="Add to Wishlist"
+                      />
                     </form>
                     <form
                       action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
                       method="POST"
+                      style="width: 100%"
                     >
-                      <input type="submit" value="Add to Cart" />
+                      <input
+                        class="addBtn"
+                        type="submit"
+                        value="Add to Cart"
+                        style="width: 100%"
+                      />
                     </form>
                     {% endif %}
                   </div>
