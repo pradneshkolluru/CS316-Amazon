@@ -37,7 +37,10 @@
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 50%;
+        width: 30%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
       }
 
       /* The Close Button */
@@ -96,13 +99,18 @@
         align-items: center;
       }
       .moneyContainer {
-        border-left: #000 solid;
-        border-width: 2px;
         /* width: 10vw; */
-        padding-left: 10%;
+        padding-left: 5%;
         display: flex;
         flex-direction: column;
         align-items: center;
+        gap: 40px;
+        height: fit-content;
+        padding-bottom: 15%;
+        padding-right: 5%;
+        border-bottom: 2px solid #000;
+        text-align: center;
+        width: 50vh;
       }
       .b1 {
         border: none;
@@ -137,7 +145,17 @@
     </div>
     <br /><br />
     <div class="contentContainer">
-      <div style="display: flex; flex-direction: column; width: 45vw">
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          width: 65vw;
+          border-right: #000 solid;
+          border-width: 2px;
+          padding-right: 5%;
+          padding-left: 5%;
+        "
+      >
         <h2><strong>Account Information</strong></h2>
         <br />
         <h4>Account Number: {{current_user.id}}</h4>
@@ -331,41 +349,82 @@
         </div>
         <hr />
       </div>
-      <div class="moneyContainer">
-        <h2><strong>Current Balance: ${{current_user.balance}}</strong></h2>
-        <!-- Trigger/Open The Modal -->
-        <button id="myBtn" class="addBtn">Transfer</button>
+      <div
+        style="
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          gap: 10%;
+        "
+      >
+        <div class="moneyContainer">
+          <h2><strong>Current Balance: ${{current_user.balance}}</strong></h2>
+          <!-- Trigger/Open The Modal -->
+          <button id="myBtn" class="addBtn">Transfer In</button>
 
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
-          <!-- Modal content -->
-          <div class="modal-content">
-            <span class="close">&times;</span>
-            <h5>Current Balance: ${{current_user.balance}}</h5>
-            <form action="{{ url_for('users.add_balance')}}" method="POST">
-              <label for="NewBalance">Add money: </label>
-              <input
-                type="number"
-                min="0"
-                step="0.01"
-                id="newBalance"
-                name="newBalance"
-              />
-              <input type="submit" value="Submit" />
-            </form>
-            <form action="{{ url_for('users.withdraw')}}" method="POST">
-              <label for="Withdraw">Withdraw money: </label>
-              <input
-                type="number"
-                min="0"
-                max="{{current_user.balance}}"
-                step="0.01"
-                id="withdraw"
-                name="withdraw"
-              />
-              <!-- <input type="submit" value="Submit"> -->
-            </form>
+          <!-- The Modal -->
+          <div id="myModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close" style="width: fit-content">&times;</span>
+              <div style="width: 100%">
+                <h5>Current Balance: ${{current_user.balance}}</h5>
+                <form
+                  action="{{ url_for('users.add_balance')}}"
+                  method="POST"
+                  style="width: 100%"
+                >
+                  <label for="NewBalance">Add money: </label>
+                  <input
+                    type="number"
+                    min="0"
+                    step="0.01"
+                    id="newBalance"
+                    name="newBalance"
+                  />
+                  <input type="submit" value="Submit" />
+                </form>
+              </div>
+            </div>
           </div>
+          <button id="outBtn" class="addBtn">Withdraw</button>
+
+          <!-- The Modal -->
+          <div id="outModal" class="modal">
+            <!-- Modal content -->
+            <div class="modal-content">
+              <span class="close outClose" style="width: fit-content"
+                >&times;</span
+              >
+              <div style="width: 100%">
+                <h5>Current Balance: ${{current_user.balance}}</h5>
+                <form
+                  action="{{ url_for('users.withdraw')}}"
+                  method="POST"
+                  style="width: 100%"
+                >
+                  <label for="Withdraw">Withdraw money: </label>
+                  <input
+                    type="number"
+                    min="0"
+                    max="{{current_user.balance}}"
+                    step="0.01"
+                    id="withdraw"
+                    name="withdraw"
+                  />
+                  <!-- <input type="submit" value="Submit"> -->
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <p>
+            <a href="{{ url_for('users.public_view', id=current_user.id) }}"
+              >Click here</a
+            >
+            to view your public profile!
+          </p>
         </div>
       </div>
     </div>
@@ -375,78 +434,7 @@
       <input type="submit" value="Register Here" />
     </form>
     <br />
-    {% endif %}
-
-    <p>
-      <a href="{{ url_for('users.public_view', id=current_user.id) }}"
-        >Click here</a
-      >
-      to view your public profile!
-    </p>
-
-    <!-- <table class="table table-hover table-bordered container">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="col">Email</th>
-          <th scope="col">First Name</th>
-          <th scope="col">Last Name</th>
-          <th scope="col">Address</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td scope="row">{{current_user.email}}</td>
-          <td scope="row">{{current_user.firstname}}</td>
-          <td scope="row">{{current_user.lastname}}</td>
-          <td scope="row">{{current_user.address}}</td>
-        </tr>
-        <tr>
-          <td scope="row">
-            <form action="{{ url_for('users.update_email')}}" method="POST">
-              <label for="newEmail">New Email: </label>
-              <input type="email" id="newEmail" name="newEmail" /><br /><br />
-              <input type="submit" value="Update Email" /><br />
-              {% for error in get_flashed_messages() %}
-              <span style="color: red">{{ error }}</span>
-              {% endfor %}
-            </form>
-          </td>
-          <td scope="row">
-            <form
-              action="{{ url_for('users.update_first_name')}}"
-              method="POST"
-            >
-              <label for="NewFirst">New First Name: </label>
-              <input type="text" id="newFirst" name="newFirst" /><br /><br />
-              <input type="submit" value="Update First Name" />
-            </form>
-          </td>
-          <td scope="row">
-            <form action="{{ url_for('users.update_last_name')}}" method="POST">
-              <label for="NewLast">New Last Name: </label>
-              <input type="text" id="newLast" name="newLast" /><br /><br />
-              <input type="submit" value="Update Last Name" />
-            </form>
-          </td>
-          <td scope="row">
-            <form action="{{ url_for('users.update_address')}}" method="POST">
-              <label for="NewAddress">New Address: </label>
-              <input
-                type="text"
-                id="newAddress"
-                name="newAddress"
-              /><br /><br />
-              <input type="submit" value="Update Address" />
-            </form>
-          </td>
-        </tr>
-      </tbody>
-    </table> -->
-
-    <!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
-    <!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
-    <!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->
-    {% else %}
+    {% endif %} {% else %}
     <p>
       <a href="{{ url_for('users.login') }}">Log in</a> to see your account
       information!
@@ -491,6 +479,32 @@
       window.onclick = function (event) {
         if (event.target == modal) {
           modal.style.display = "none";
+        }
+      };
+
+      // Get the modal
+      var outModal = document.getElementById("outModal");
+
+      // Get the button that opens the modal
+      var outBtn = document.getElementById("outBtn");
+
+      // Get the <span> element that closes the modal
+      var outSpan = document.getElementsByClassName("outClose")[0];
+
+      // When the user clicks the button, open the modal
+      outBtn.onclick = function () {
+        outModal.style.display = "block";
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      outSpan.onclick = function () {
+        outModal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == outModal) {
+          outModal.style.display = "none";
         }
       };
     </script>
