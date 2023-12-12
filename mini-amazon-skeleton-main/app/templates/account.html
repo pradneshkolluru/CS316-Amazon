@@ -37,7 +37,7 @@
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
-        width: 80%;
+        width: 50%;
       }
 
       /* The Close Button */
@@ -83,17 +83,48 @@
         flex-direction: row;
         justify-content: space-around;
       }
-      .vertical {
-        border-left: 2px solid black;
-        height: 100%;
-        position: absolute;
-      }
       .infoRow {
         display: flex;
         flex-direction: row;
         align-items: center;
         width: 100%;
-        gap: 6px;
+        justify-content: space-between;
+      }
+      .rowContent {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+      }
+      .moneyContainer {
+        border-left: #000 solid;
+        border-width: 2px;
+        /* width: 10vw; */
+        padding-left: 10%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .b1 {
+        border: none;
+        background: none;
+        cursor: pointer;
+        margin: 0;
+        padding: 0;
+      }
+      svg:hover {
+        fill: black;
+      }
+      .addBtn {
+        background-color: #ffb84d;
+        border-radius: 0.25rem;
+        border: none;
+        height: max-content;
+        width: 60%;
+        font-size: x-large;
+        text-align: center;
+      }
+      .addBtn:hover {
+        background-color: #ff9900;
       }
     </style>
   </head>
@@ -106,36 +137,44 @@
     </div>
     <br /><br />
     <div class="contentContainer">
-      <div style="display: flex; flex-direction: column; width: 30vw">
-        <h2>Account Information</h2>
+      <div style="display: flex; flex-direction: column; width: 45vw">
+        <h2><strong>Account Information</strong></h2>
+        <br />
         <h4>Account Number: {{current_user.id}}</h4>
         <hr />
         <div class="infoRow">
-          <h4>
-            First Name:
-            <h4 id="firstValue">{{current_user.firstname}}</h4>
-          </h4>
-          <form
-            action="{{ url_for('users.update_first_name')}}"
-            method="POST"
-            style="width: fit-content; display: none"
-            id="first"
-          >
-            <!-- <label for="NewFirst">New First Name: </label> -->
-            <input
-              type="text"
-              id="newFirst"
-              name="newFirst"
-              value="{{current_user.firstname}}"
-            /><br /><br />
-            <input type="submit" value="Update" />
-          </form>
-          <button onClick="showForm('first', 'firstValue')">
+          <div class="rowContent">
+            <h4 style="margin-bottom: 0px">
+              First Name: &nbsp;
+              <h4 id="firstValue" style="margin-bottom: 0px">
+                {{current_user.firstname}}
+              </h4>
+            </h4>
+            <form
+              action="{{ url_for('users.update_first_name')}}"
+              method="POST"
+              style="width: fit-content; display: none"
+              id="first"
+            >
+              <!-- <label for="NewFirst">New First Name: </label> -->
+              <div style="display: flex; flex-direction: row">
+                <input
+                  type="text"
+                  id="newFirst"
+                  name="newFirst"
+                  value="{{current_user.firstname}}"
+                  style="font-size: larger"
+                /><br /><br />
+                <input type="submit" value="Update" />
+              </div>
+            </form>
+          </div>
+          <button class="b1" onClick="showForm('first', 'firstValue')">
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
+              width="20"
+              height="100%"
+              fill="#888"
               class="bi bi-pencil-square"
               viewBox="0 0 16 16"
             >
@@ -150,33 +189,152 @@
           </button>
         </div>
         <hr />
-        <h4>Last Name: {{current_user.lastname}}</h4>
-        <form action="{{ url_for('users.update_last_name')}}" method="POST">
-          <label for="NewLast">New Last Name: </label>
-          <input type="text" id="newLast" name="newLast" /><br /><br />
-          <input type="submit" value="Update Last Name" />
-        </form>
-        <h4>Email: {{current_user.email}}</h4>
-        <form action="{{ url_for('users.update_email')}}" method="POST">
-          <label for="newEmail">New Email: </label>
-          <input type="email" id="newEmail" name="newEmail" /><br /><br />
-          <input type="submit" value="Update Email" /><br />
-          {% for error in get_flashed_messages() %}
-          <span style="color: red">{{ error }}</span>
-          {% endfor %}
-        </form>
-        <h4>Address: {{current_user.address}}</h4>
-        <form action="{{ url_for('users.update_address')}}" method="POST">
-          <label for="NewAddress">New Address: </label>
-          <input type="text" id="newAddress" name="newAddress" /><br /><br />
-          <input type="submit" value="Update Address" />
-        </form>
+        <div class="infoRow">
+          <div class="rowContent">
+            <h4 style="margin-bottom: 0px">
+              Last Name: &nbsp;
+              <h4 id="lastValue" style="margin-bottom: 0px">
+                {{current_user.lastname}}
+              </h4>
+            </h4>
+            <form
+              action="{{ url_for('users.update_last_name')}}"
+              method="POST"
+              style="width: fit-content; display: none"
+              id="last"
+            >
+              <!-- <label for="NewFirst">New First Name: </label> -->
+              <div style="display: flex; flex-direction: row">
+                <input
+                  type="text"
+                  id="newLast"
+                  name="newLast"
+                  value="{{current_user.lastname}}"
+                  style="font-size: larger"
+                /><br /><br />
+                <input type="submit" value="Update" />
+              </div>
+            </form>
+          </div>
+          <button class="b1" onClick="showForm('last', 'lastValue')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="100%"
+              fill="#888"
+              class="bi bi-pencil-square"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr />
+        <div class="infoRow">
+          <div class="rowContent">
+            <h4 style="margin-bottom: 0px">
+              Email: &nbsp;
+              <h4 id="emailValue" style="margin-bottom: 0px">
+                {{current_user.email}}
+              </h4>
+            </h4>
+            <form
+              action="{{ url_for('users.update_email')}}"
+              method="POST"
+              style="width: fit-content; display: none"
+              id="email"
+            >
+              <!-- <label for="NewFirst">New First Name: </label> -->
+              <div style="display: flex; flex-direction: row">
+                <input
+                  type="text"
+                  id="newEmail"
+                  name="newEmail"
+                  value="{{current_user.email}}"
+                  style="font-size: larger"
+                /><br /><br />
+                <input type="submit" value="Update" />
+              </div>
+            </form>
+          </div>
+          <button class="b1" onClick="showForm('email', 'emailValue')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="100%"
+              fill="#888"
+              class="bi bi-pencil-square"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr />
+        <div class="infoRow">
+          <div class="rowContent">
+            <h4 style="margin-bottom: 0px">
+              Address: &nbsp;
+              <h4 id="addValue" style="margin-bottom: 0px">
+                {{current_user.address}}
+              </h4>
+            </h4>
+            <form
+              action="{{ url_for('users.update_address')}}"
+              method="POST"
+              style="width: fit-content; display: none"
+              id="address"
+            >
+              <!-- <label for="NewFirst">New First Name: </label> -->
+              <div style="display: flex; flex-direction: row">
+                <input
+                  type="text"
+                  id="newAddress"
+                  name="newAddress"
+                  value="{{current_user.address}}"
+                  style="font-size: larger"
+                /><br /><br />
+                <input type="submit" value="Update" />
+              </div>
+            </form>
+          </div>
+          <button class="b1" onClick="showForm('address', 'addValue')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="20"
+              height="100%"
+              fill="#888"
+              class="bi bi-pencil-square"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr />
       </div>
-      <div class="vertical"></div>
-      <div>
-        <h5>Current Balance: ${{current_user.balance}}</h5>
+      <div class="moneyContainer">
+        <h2><strong>Current Balance: ${{current_user.balance}}</strong></h2>
         <!-- Trigger/Open The Modal -->
-        <button id="myBtn">Transfer</button>
+        <button id="myBtn" class="addBtn">Transfer</button>
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -193,7 +351,7 @@
                 id="newBalance"
                 name="newBalance"
               />
-              <!-- <input type="submit" value="Submit"> -->
+              <input type="submit" value="Submit" />
             </form>
             <form action="{{ url_for('users.withdraw')}}" method="POST">
               <label for="Withdraw">Withdraw money: </label>
