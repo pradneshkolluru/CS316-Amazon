@@ -1,88 +1,346 @@
-{% extends "base.html" %}
+{% extends "base.html" %} {% block content %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap demo</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <style>
+      body {
+        font-family: Arial, Helvetica, sans-serif;
+      }
 
-{% block content %}
+      /* The Modal (background) */
+      .modal {
+        display: none; /* Hidden by default */
+        position: fixed; /* Stay in place */
+        z-index: 1; /* Sit on top */
+        padding-top: 100px; /* Location of the box */
+        left: 0;
+        top: 0;
+        width: 100%; /* Full width */
+        height: 100%; /* Full height */
+        overflow: auto; /* Enable scroll if needed */
+        background-color: rgb(0, 0, 0); /* Fallback color */
+        background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+      }
 
-<br><br>
-{% if current_user.is_authenticated %}
-<h4>Your account information:</h4>
-<h5>Account Number: {{current_user.id}}</h5><br>
-<h5>Current Balance: ${{current_user.balance}}</h5>
-<form action="{{ url_for('users.add_balance')}}" method = "POST">
-  <label for="NewBalance">Add money: </label>
-  <input type="number" min="0" step="0.01" id="newBalance" name="newBalance">
-  <!-- <input type="submit" value="Submit"> -->
-</form>
-<form action="{{ url_for('users.withdraw')}}" method = "POST">
-  <label for="Withdraw">Withdraw money: </label>
-  <input type="number" min="0" max="{{current_user.balance}}" step="0.01" id="withdraw" name="withdraw">
-  <!-- <input type="submit" value="Submit"> -->
-</form><br>
-{% if not seller %}
-<h5>Want to start selling?</h5>
-<form action="{{ url_for('users.register_seller')}}" method = "POST">
-  <input type="submit" value="Register Here">
-</form><br>
-{% endif %}
+      /* Modal Content */
+      .modal-content {
+        background-color: #fefefe;
+        margin: auto;
+        padding: 20px;
+        border: 1px solid #888;
+        width: 80%;
+      }
 
-<p><a href="{{ url_for('users.public_view', id=current_user.id) }}">Click here</a> to view your public profile!</p>
+      /* The Close Button */
+      .close {
+        color: #aaaaaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+      }
 
-<table class='table table-hover table-bordered container'>
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Email</th>
-      <th scope="col">First Name</th>
-      <th scope="col">Last Name</th>
-      <th scope="col">Address</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td scope="row">{{current_user.email}}</td>
-      <td scope="row">{{current_user.firstname}}</td>
-      <td scope="row">{{current_user.lastname}}</td>
-      <td scope="row">{{current_user.address}}</td>
-    </tr>
-    <tr>
-      <td scope="row">
-        <form action="{{ url_for('users.update_email')}}" method = "POST">
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .pageContainer {
+        display: flex;
+        flex-direction: column;
+        height: 100vh;
+        overflow-y: scroll;
+        align-items: center;
+      }
+      .wrapper {
+        display: flex;
+        flex-direction: column;
+      }
+      .main {
+        padding: 0px 0px;
+      }
+      .storeFront {
+        min-height: 20vh;
+        background-color: #bdcfd9;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+      .contentContainer {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+      }
+      .vertical {
+        border-left: 2px solid black;
+        height: 100%;
+        position: absolute;
+      }
+      .infoRow {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+        gap: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    {% if current_user.is_authenticated %}
+    <div class="storeFront">
+      <h1 style="font-size: 10vh">
+        {{current_user.firstname}} {{current_user.lastname}}
+      </h1>
+    </div>
+    <br /><br />
+    <div class="contentContainer">
+      <div style="display: flex; flex-direction: column; width: 30vw">
+        <h2>Account Information</h2>
+        <h4>Account Number: {{current_user.id}}</h4>
+        <hr />
+        <div class="infoRow">
+          <h4>
+            First Name:
+            <h4 id="firstValue">{{current_user.firstname}}</h4>
+          </h4>
+          <form
+            action="{{ url_for('users.update_first_name')}}"
+            method="POST"
+            style="width: fit-content; display: none"
+            id="first"
+          >
+            <!-- <label for="NewFirst">New First Name: </label> -->
+            <input
+              type="text"
+              id="newFirst"
+              name="newFirst"
+              value="{{current_user.firstname}}"
+            /><br /><br />
+            <input type="submit" value="Update" />
+          </form>
+          <button onClick="showForm('first', 'firstValue')">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              fill="currentColor"
+              class="bi bi-pencil-square"
+              viewBox="0 0 16 16"
+            >
+              <path
+                d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"
+              />
+              <path
+                fill-rule="evenodd"
+                d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"
+              />
+            </svg>
+          </button>
+        </div>
+        <hr />
+        <h4>Last Name: {{current_user.lastname}}</h4>
+        <form action="{{ url_for('users.update_last_name')}}" method="POST">
+          <label for="NewLast">New Last Name: </label>
+          <input type="text" id="newLast" name="newLast" /><br /><br />
+          <input type="submit" value="Update Last Name" />
+        </form>
+        <h4>Email: {{current_user.email}}</h4>
+        <form action="{{ url_for('users.update_email')}}" method="POST">
           <label for="newEmail">New Email: </label>
-          <input type="email" id="newEmail" name="newEmail"><br><br>
-          <input type="submit" value="Update Email"><br>
+          <input type="email" id="newEmail" name="newEmail" /><br /><br />
+          <input type="submit" value="Update Email" /><br />
           {% for error in get_flashed_messages() %}
-          <span style="color: red;">{{ error }}</span>
+          <span style="color: red">{{ error }}</span>
           {% endfor %}
         </form>
-      </td>
-      <td scope="row">
-        <form action="{{ url_for('users.update_first_name')}}" method = "POST">
-          <label for="NewFirst">New First Name: </label>
-          <input type="text" id="newFirst" name="newFirst"><br><br>
-          <input type="submit" value="Update First Name">
-        </form>
-      </td>
-      <td scope="row">
-        <form action="{{ url_for('users.update_last_name')}}" method = "POST">
-          <label for="NewLast">New Last Name: </label>
-          <input type="text" id="newLast" name="newLast"><br><br>
-          <input type="submit" value="Update Last Name">
-        </form>
-      </td>
-      <td scope="row">
-        <form action="{{ url_for('users.update_address')}}" method = "POST">
+        <h4>Address: {{current_user.address}}</h4>
+        <form action="{{ url_for('users.update_address')}}" method="POST">
           <label for="NewAddress">New Address: </label>
-          <input type="text" id="newAddress" name="newAddress"><br><br>
-          <input type="submit" value="Update Address">
+          <input type="text" id="newAddress" name="newAddress" /><br /><br />
+          <input type="submit" value="Update Address" />
         </form>
-      </td>
-    </tr>
-  </tbody>
-</table>
+      </div>
+      <div class="vertical"></div>
+      <div>
+        <h5>Current Balance: ${{current_user.balance}}</h5>
+        <!-- Trigger/Open The Modal -->
+        <button id="myBtn">Transfer</button>
 
-<!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
-<!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
-<!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->
-{% else %}
-<p><a href="{{ url_for('users.login') }}">Log in</a> to see your account information!</p>
-{% endif %}
+        <!-- The Modal -->
+        <div id="myModal" class="modal">
+          <!-- Modal content -->
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <h5>Current Balance: ${{current_user.balance}}</h5>
+            <form action="{{ url_for('users.add_balance')}}" method="POST">
+              <label for="NewBalance">Add money: </label>
+              <input
+                type="number"
+                min="0"
+                step="0.01"
+                id="newBalance"
+                name="newBalance"
+              />
+              <!-- <input type="submit" value="Submit"> -->
+            </form>
+            <form action="{{ url_for('users.withdraw')}}" method="POST">
+              <label for="Withdraw">Withdraw money: </label>
+              <input
+                type="number"
+                min="0"
+                max="{{current_user.balance}}"
+                step="0.01"
+                id="withdraw"
+                name="withdraw"
+              />
+              <!-- <input type="submit" value="Submit"> -->
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% if not seller %}
+    <h5>Want to start selling?</h5>
+    <form action="{{ url_for('users.register_seller')}}" method="POST">
+      <input type="submit" value="Register Here" />
+    </form>
+    <br />
+    {% endif %}
 
+    <p>
+      <a href="{{ url_for('users.public_view', id=current_user.id) }}"
+        >Click here</a
+      >
+      to view your public profile!
+    </p>
+
+    <!-- <table class="table table-hover table-bordered container">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Email</th>
+          <th scope="col">First Name</th>
+          <th scope="col">Last Name</th>
+          <th scope="col">Address</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td scope="row">{{current_user.email}}</td>
+          <td scope="row">{{current_user.firstname}}</td>
+          <td scope="row">{{current_user.lastname}}</td>
+          <td scope="row">{{current_user.address}}</td>
+        </tr>
+        <tr>
+          <td scope="row">
+            <form action="{{ url_for('users.update_email')}}" method="POST">
+              <label for="newEmail">New Email: </label>
+              <input type="email" id="newEmail" name="newEmail" /><br /><br />
+              <input type="submit" value="Update Email" /><br />
+              {% for error in get_flashed_messages() %}
+              <span style="color: red">{{ error }}</span>
+              {% endfor %}
+            </form>
+          </td>
+          <td scope="row">
+            <form
+              action="{{ url_for('users.update_first_name')}}"
+              method="POST"
+            >
+              <label for="NewFirst">New First Name: </label>
+              <input type="text" id="newFirst" name="newFirst" /><br /><br />
+              <input type="submit" value="Update First Name" />
+            </form>
+          </td>
+          <td scope="row">
+            <form action="{{ url_for('users.update_last_name')}}" method="POST">
+              <label for="NewLast">New Last Name: </label>
+              <input type="text" id="newLast" name="newLast" /><br /><br />
+              <input type="submit" value="Update Last Name" />
+            </form>
+          </td>
+          <td scope="row">
+            <form action="{{ url_for('users.update_address')}}" method="POST">
+              <label for="NewAddress">New Address: </label>
+              <input
+                type="text"
+                id="newAddress"
+                name="newAddress"
+              /><br /><br />
+              <input type="submit" value="Update Address" />
+            </form>
+          </td>
+        </tr>
+      </tbody>
+    </table> -->
+
+    <!-- <h5>View your purchase history <a href="{{ url_for('purchases.purchases') }}">here</a>!</h5> -->
+    <!-- <h5>View your recent reviews <a href="{{ url_for('reviews.reviews') }}">here</a>!</h5> -->
+    <!-- <h5>View your recent seller reviews <a href="{{ url_for('sellerReviews.sellerReviews') }}">here</a>!</h5> -->
+    {% else %}
+    <p>
+      <a href="{{ url_for('users.login') }}">Log in</a> to see your account
+      information!
+    </p>
+    {% endif %}
+    <script>
+      function showForm(id, value) {
+        form = document.getElementById(id);
+        val = document.getElementById(value);
+        if (form.style.display === "none") {
+          // 👇️ this SHOWS the form
+          val.style.display = "none";
+          form.style.display = "block";
+        } else {
+          // 👇️ this HIDES the form
+          form.style.display = "none";
+          val.style.display = "block";
+        }
+      }
+    </script>
+    <script>
+      // Get the modal
+      var modal = document.getElementById("myModal");
+
+      // Get the button that opens the modal
+      var btn = document.getElementById("myBtn");
+
+      // Get the <span> element that closes the modal
+      var span = document.getElementsByClassName("close")[0];
+
+      // When the user clicks the button, open the modal
+      btn.onclick = function () {
+        modal.style.display = "block";
+      };
+
+      // When the user clicks on <span> (x), close the modal
+      span.onclick = function () {
+        modal.style.display = "none";
+      };
+
+      // When the user clicks anywhere outside of the modal, close it
+      window.onclick = function (event) {
+        if (event.target == modal) {
+          modal.style.display = "none";
+        }
+      };
+    </script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+  </body>
+</html>
 {% endblock %}

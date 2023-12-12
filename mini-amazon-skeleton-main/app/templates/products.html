@@ -24,7 +24,7 @@
         position: -webkit-sticky;
         position: sticky;
         top: 5%;
-        padding-left: 10px;
+        padding: 10px;
       }
       .wrapper {
         display: flex;
@@ -37,13 +37,25 @@
         display: flex;
         flex-direction: column;
       }
+      .addBtn {
+        background-color: #ffb84d;
+        border-radius: 0.25rem;
+        border: none;
+      }
+      .addBtn:hover {
+        background-color: #ff9900;
+      }
     </style>
   </head>
   <body>
     <main class="wrapper">
       <div class="sidebar">
         <br />
-        <form method="POST" action="{{ url_for('products.products')}}">
+        <form
+          method="POST"
+          action="{{ url_for('products.products')}}"
+          style="min-width: max-content; padding: 5px"
+        >
           <strong><label>Product Category:</label></strong
           ><br />
           <div class="prodCat">
@@ -81,22 +93,27 @@
           </div>
           <label><strong>Price Sort:</strong></label
           ><br />
+          <div style="display: flex; flex-direction: column">
+            <div>
+              <input type="radio" id="option7" name="priceSort" value="ASC" />
+              <label for="option7">Low &rarr; High</label>
+            </div>
+            <div>
+              <input type="radio" id="option8" name="priceSort" value="DESC" />
+              <label for="option8">High &rarr; Low</label>
+            </div>
+            <br />
 
-          <input type="radio" id="option7" name="priceSort" value="ASC" />
-          <label for="option7">Low &rarr; High</label>
-
-          <input type="radio" id="option8" name="priceSort" value="DESC" />
-          <label for="option8">High &rarr; Low</label><br />
-
-          <input type="submit" value="Filter/ Sort Items" /><br /><br />
-        </form>
-
-        <form
-          style="width: auto"
-          action="{{ url_for('products.products')}}"
-          method="POST"
-        >
-          <input type="submit" value="Reset Filters" />
+            <input type="submit" value="Filter/ Sort Items" />
+          </div>
+          <br /><br />
+          <form
+            style="width: auto"
+            action="{{ url_for('products.products')}}"
+            method="POST"
+          >
+            <input type="submit" value="Reset Filters" />
+          </form>
         </form>
       </div>
       <div class="album py-5 bg-body-tertiary prodGrid">
@@ -178,14 +195,26 @@
                         </svg>
                       </div>
                     </div>
-                    <div style="position: relative; width: max-content">
+                    <div
+                      style="
+                        position: relative;
+                        width: max-content;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 2px;
+                      "
+                    >
                       {% if current_user.is_authenticated %}
                       <form
                         style="width: auto"
                         action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
                         method="POST"
                       >
-                        <input type="submit" value="Add to Wishlist" />
+                        <input
+                          class="addBtn"
+                          type="submit"
+                          value="Add to Wishlist"
+                        />
                       </form>
                       <form
                         action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
@@ -193,6 +222,7 @@
                         style="width: 100%"
                       >
                         <input
+                          class="addBtn"
                           type="submit"
                           value="Add to Cart"
                           style="width: 100%"
