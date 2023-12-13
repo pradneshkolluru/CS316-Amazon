@@ -96,7 +96,7 @@ def gen_products(num_products, seller_pid, available_pids):
             name = fake.sentence(nb_words=4)[:-1]
             category = fake.random_element(elements=('toys', 'electronic', 'clothes', 'tools', 'food', 'beauty'))
             for sid in seller_pid[pid]: # for each seller that sells current pid
-                description = fake.sentence(nb_words=15)[:-1]
+                description = fake.sentence(nb_words=100)[:-1]
                 price = f'{str(fake.random_int(max=500))}.{fake.random_int(max=99):02}'
                 available = 'true'
                 image_path = f'/static/images/{category}/{fake.random_int(min=1, max=3)}.jpeg'

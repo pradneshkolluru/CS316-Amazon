@@ -14,6 +14,14 @@
       crossorigin="anonymous"
     />
     <style>
+      .add {
+        background-color: #ffb84d;
+        border-radius: 0.25rem;
+        border: none;
+      }
+      .add:hover {
+        background-color: #ff9900;
+      }
       .pageContainer {
         display: flex;
         flex-direction: column;
@@ -217,14 +225,25 @@
                         </svg>
                       </div>
                     </div>
-                    <div style="position: relative">
+                    <div
+                      style="
+                        position: relative;
+                        display: flex;
+                        flex-direction: column;
+                        gap: 2px;
+                      "
+                    >
                       {% if current_user.is_authenticated %}
                       <form
                         style="width: auto"
                         action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
                         method="POST"
                       >
-                        <input type="submit" value="Add to Wishlist" />
+                        <input
+                          type="submit"
+                          value="Add to Wishlist"
+                          class="add"
+                        />
                       </form>
                       <form
                         action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
@@ -235,6 +254,7 @@
                           type="submit"
                           value="Add to Cart"
                           style="width: 100%"
+                          class="add"
                         />
                       </form>
                       {% endif %}

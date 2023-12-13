@@ -33,7 +33,7 @@
 
       /* Modal Content */
       .modal-content {
-        background-color: #fefefe;
+        background-color: #fff7e0;
         margin: auto;
         padding: 20px;
         border: 1px solid #888;
@@ -425,21 +425,26 @@
             >
             to view your public profile!
           </p>
+          {% if not seller %}
+          <p>
+            Want to start selling?
+            <a href="{{ url_for('users.register_seller')}}">register here</a>
+          </p>
+
+          <!-- <form action="{{ url_for('users.register_seller')}}" method="POST">
+            <input type="submit" value="Register Here" />
+          </form> -->
+          <br />
+          {% endif %} {% else %}
+          <p>
+            <a href="{{ url_for('users.login') }}">Log in</a> to see your
+            account information!
+          </p>
+          {% endif %}
         </div>
       </div>
     </div>
-    {% if not seller %}
-    <h5>Want to start selling?</h5>
-    <form action="{{ url_for('users.register_seller')}}" method="POST">
-      <input type="submit" value="Register Here" />
-    </form>
-    <br />
-    {% endif %} {% else %}
-    <p>
-      <a href="{{ url_for('users.login') }}">Log in</a> to see your account
-      information!
-    </p>
-    {% endif %}
+
     <script>
       function showForm(id, value) {
         form = document.getElementById(id);

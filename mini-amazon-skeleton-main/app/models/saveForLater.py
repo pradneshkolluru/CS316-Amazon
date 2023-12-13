@@ -7,16 +7,17 @@ from .purchase import Purchase
 from .user import User
 
 class SaveForLater:
-    def __init__(self, uid, pid, product_name, unit_price):
+    def __init__(self, uid, pid, product_name, unit_price, image_path):
         self.uid = uid
         self.pid = pid
         self.product_name = product_name
         self.unit_price = unit_price
+        self.image_path = image_path
 
     @staticmethod
     def get_saved_items(uid):
         rows = app.db.execute('''
-SELECT uid, pid, name, price
+SELECT uid, pid, name, price, image_path
 FROM SaveForLater S, Products P
 WHERE uid = :uid
     AND S.pid = P.id
