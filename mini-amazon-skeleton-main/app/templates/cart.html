@@ -7,94 +7,274 @@
       align-items: center;
       gap: 5px;
     }
+    /* Basic reset and styles */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    .btnForm {
+      width: 100%;
+    }
+
+    .btnForm input {
+      border-radius: 0.25rem;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+    }
+
+    header,
+    footer {
+      background-color: #333;
+      color: white;
+      text-align: center;
+      padding: 15px 0;
+    }
+
+    main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 20px;
+    }
+
+    .cart-items {
+      margin-right: 20px;
+      width: 75vw;
+    }
+
+    .cart-item {
+      display: flex;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #ccc;
+      padding-bottom: 10px;
+      width: 100%;
+      padding-left: 2.5%;
+      padding-right: 5%;
+    }
+
+    .itemImage {
+      width: 150px;
+      height: 100%;
+      object-fit: cover;
+      margin-right: 15px;
+      padding-right: 20px;
+      border-right: #a3a3a3 solid;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-details h3 {
+      margin-bottom: 5px;
+    }
+
+    .remove-btn {
+      background-color: #ff9393;
+      color: black;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      width: 100%;
+    }
+    .remove-btn:hover {
+      background-color: #fb7575;
+    }
+    .later-btn {
+      background-color: #ffe8a8;
+      color: white;
+      border: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      color: black;
+      width: 100%;
+    }
+    .later-btn:hover {
+      background-color: #ffde84;
+    }
+
+    .cart-summary {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      background-color: #f5f5f5;
+      padding: 20px;
+      text-align: center;
+      position: fixed;
+      width: 15vw;
+      top: 200px;
+      right: 5%;
+      height: 100vhpx;
+    }
+
+    .summary-details {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .checkout-btn {
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      margin-top: 10px;
+      border-radius: 0.25rem;
+    }
+    .checkout-btn:hover {
+      background-color: #47a14a;
+    }
+
+    footer {
+      margin-top: 20px;
+      padding: 10px 0;
+    }
+    .addMinus {
+      width: 30px;
+      border: #afafaf;
+      height: 100%;
+      border-radius: 0.25rem 0rem 0rem 0.25rem;
+    }
+    .addMinus:hover {
+      background-color: #dfdfdf;
+    }
   </style>
 </head>
 <br /><br />
 {% if current_user.is_authenticated %}
-<h2>Your Cart:</h2>
-<h4>Your current balance is: ${{current_user.balance}}. Add more
+<h2 style="padding-left: 2.5%"><strong>Cart</strong></h2>
+<h4 style="padding-left: 2.5%">
+  Your current balance is: ${{current_user.balance}}. Transfer in
   <a href="{{ url_for('users.show_info') }}"> here.</a>
 </h4>
 
-
+{% with messages = get_flashed_messages() %} {% if messages %} {% for message in
+messages %}
 <p>
-  {% with messages = get_flashed_messages() %}
-  {% if messages %}
-  <ul>
-    {% for message in messages %}
-    <span style="color: red;">{{ message }}</span>
-    {% endfor %}
-  </ul>
-  {% endif %}
-  {% endwith %}
+  <span style="color: red">{{ message }}</span>
 </p>
-<table class="table table-hover table-bordered container">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
-      <th scope="col">Unit Price</th>
-      <th scope="col">Delete from Cart</th>
-      <th scope="col">Save for Later</th>
-    </tr>
-  </thead>
-  <tbody>
+{% endfor %} {% endif %} {% endwith %}
+<main>
+  <div class="cart-items">
+    <!-- Cart items will be dynamically generated here -->
     {% for item in cart_products%}
-    <tr>
-      <!-- <td>{{ loop.index + pagination.skip }}</td> -->
-      <td><a href="{{ url_for('products.product_info', id=item.pid) }}">{{item.product_name}}</a></td>
-      <!-- product name -->
-      <td class="changeQuantity">
-        <!-- quantity -->
-        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
-          <input name="pid" value="{{item.pid}}" hidden="true" />
-          <input name="qty" value="-1" hidden="true" />
-          <input type="submit" value="-" />
-        </form>
-        {{item.qty}}
-        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
-          <input name="pid" value="{{item.pid}}" hidden="true" />
-          <input name="qty" value="1" hidden="true" />
-          <input type="submit" value="+" />
-        </form>
-      </td>
-      <td>${{item.unit_price}}</td>
-      <!-- unit price -->
-      <td>
-        <!-- delete from cart -->
-        <form
-          action="{{ url_for('cart.delete_from_cart', product_id=item.pid) }}"
-          method="POST"
+    <div class="cart-item">
+      <a href="{{ url_for('products.product_info', id=item.id) }}">
+        <img
+          class="itemImage"
+          src="{{ item.image_path }}"
+          xmlns="http://www.w3.org/2000/svg"
+          role="img"
+          aria-label="product image"
+          preserveAspectRatio="xMidYMid slice"
+          focusable="false"
+      /></a>
+      <div
+        style="
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          width: 100%;
+        "
+      >
+        <div class="item-details">
+          <a href="{{ url_for('products.product_info', id=item.pid) }}"
+            ><h3 style="color: black; text-decoration: none">
+              {{item.product_name}}
+            </h3></a
+          >
+
+          <p>${{item.unit_price}}</p>
+          <div
+            style="
+              display: flex;
+              flex-direction: row;
+              gap: 20px;
+              border: solid 1.5px #afafaf;
+              border-radius: 0.25rem;
+              width: fit-content;
+            "
+          >
+            <form
+              action="{{ url_for('cart.change_item_qty') }}"
+              method="POST"
+              style="width: 100%"
+            >
+              <input name="pid" value="{{item.pid}}" hidden="true" />
+              <input name="qty" value="-1" hidden="true" />
+              <input
+                class="addMinus"
+                type="submit"
+                value="-"
+                style="border-radius: 0.25rem 0rem 0rem 0.25rem"
+              />
+            </form>
+            {{item.qty}}
+            <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
+              <input name="pid" value="{{item.pid}}" hidden="true" />
+              <input name="qty" value="1" hidden="true" />
+              <input
+                class="addMinus"
+                type="submit"
+                value="+"
+                style="border-radius: 0rem 0.25rem 0.25rem 0rem"
+              />
+            </form>
+          </div>
+        </div>
+        <div
+          style="
+            width: max-content;
+            display: flex;
+            flex-direction: column;
+            gap: 6%;
+          "
         >
-          <input type="submit" value="Delete from Cart" />
-        </form>
-      </td>
-      <td>
-        <!-- save for later -->
-        <form
-          action="{{ url_for('saveForLater.save_for_later', product_id=item.pid) }}"
-          method="POST"
-        >
-          <input type="submit" value="Save for Later" />
-        </form>
-      </td>
-    </tr>
+          <form
+            action="{{ url_for('cart.delete_from_cart', product_id=item.pid) }}"
+            method="POST"
+            class="btnForm"
+          >
+            <input type="submit" value="Remove from Cart" class="remove-btn" />
+          </form>
+          <form
+            action="{{ url_for('saveForLater.save_for_later', product_id=item.pid) }}"
+            method="POST"
+            class="btnForm"
+          >
+            <input type="submit" value="Save for Later" class="later-btn" />
+          </form>
+        </div>
+      </div>
+    </div>
     {% endfor %}
-  </tbody>
-</table>
-<p>Total Price: ${{total_cart_price}}</p>
-{% if num_line_items > 0 %}
-<form
-  action="{{ url_for('cart.try_submit_order') }}"
-  method="POST"
->
-  <input type="submit" value="Submit Order" />
-</form>
-{% endif %}
+  </div>
+  <div class="sidebar">
+    <div class="cart-summary">
+      <h2>Cart Summary</h2>
+      <div class="summary-details">
+        <p>Total Price: <span id="total-price"> ${{total_cart_price}}</span></p>
+        <form
+          action="{{ url_for('cart.try_submit_order') }}"
+          method="POST"
+          style="width: 100%"
+        >
+          <input class="checkout-btn" type="submit" value="Checkout" />
+        </form>
+        <!-- <button class="checkout-btn">Checkout</button> -->
+      </div>
+    </div>
+  </div>
+</main>
+{% if num_line_items > 0 %} {% endif %} {{ pagination.links }}
 
-{{ pagination.links }} 
-
-<br><br>
+<br /><br />
 
 <h2>Saved For Later:</h2>
 
@@ -111,7 +291,11 @@
   <tbody>
     {% for item in saved_items %}
     <tr>
-      <td><a href="{{ url_for('products.product_info', id=item.pid) }}">{{item.product_name}}</a></td>
+      <td>
+        <a href="{{ url_for('products.product_info', id=item.pid) }}"
+          >{{item.product_name}}</a
+        >
+      </td>
       <!-- product name -->
       <td>${{item.unit_price}}</td>
       <!-- unit price -->

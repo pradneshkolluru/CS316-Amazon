@@ -1,120 +1,58 @@
-{% extends "base.html" %} {% block content %}
-
-<br /><br />
-{% if current_user.is_authenticated %}
-<h2>Your recent reviews:</h2>
 <table class="table table-hover table-bordered container">
   <thead class="thead-dark">
     <tr>
-      <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product Name</th>
-      <th scope="col">Rating</th>
-      <th scope="col">Review</th>
-      <th scope="col">Post Date</th>
+      <th scope="col">Quantity</th>
+      <th scope="col">Unit Price</th>
+      <th scope="col">Delete from Cart</th>
+      <th scope="col">Save for Later</th>
     </tr>
   </thead>
   <tbody>
-    {% for review in review_history%}
+    {% for item in cart_products%}
     <tr>
-      <!-- <td>{{review.pid}}</td> -->
+      <!-- <td>{{ loop.index + pagination.skip }}</td> -->
       <td>
-        <a
-          style="color: black"
-          href="{{ url_for('products.product_info', id=review.pid) }}"
-          >{{review.name}}</a
+        <a href="{{ url_for('products.product_info', id=item.pid) }}"
+          >{{item.product_name}}</a
         >
       </td>
+      <!-- product name -->
+      <td class="changeQuantity">
+        <!-- quantity -->
+        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
+          <input name="pid" value="{{item.pid}}" hidden="true" />
+          <input name="qty" value="-1" hidden="true" />
+          <input type="submit" value="-" />
+        </form>
+        {{item.qty}}
+        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
+          <input name="pid" value="{{item.pid}}" hidden="true" />
+          <input name="qty" value="1" hidden="true" />
+          <input type="submit" value="+" />
+        </form>
+      </td>
+      <td>${{item.unit_price}}</td>
+      <!-- unit price -->
       <td>
-        <!-- {{review.rating}} -->
+        <!-- delete from cart -->
         <form
-          id="updateRating"
-          action="{{ url_for('reviews.update_rating', id=review.id)}}"
+          action="{{ url_for('cart.delete_from_cart', product_id=item.pid) }}"
           method="POST"
         >
-          <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-          <!-- <textarea
-            id="newRating"
-            name="newRating"
-            style="width: 100%"
-            rows="3"
-          >
-          {{review.rating}}
-          </textarea> -->
-          <select id="newRating" name="newRating">
-            <option>{{review.rating}}</option>
-            <option disabled>─</option>
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-          <input type="submit" value="Submit" />
+          <input type="submit" value="Delete from Cart" />
         </form>
       </td>
       <td>
-        <!-- <div id="currReview">{{review.review_text}}</div> -->
-        <div>
-          <form
-            id="updateReview"
-            action="{{ url_for('reviews.update_review', id=review.id)}}"
-            method="POST"
-          >
-            <!-- <input type="review" id="newReview" name="newReview" value="{{review.review_text}}"><br><br> -->
-            <textarea
-              id="newReview"
-              name="newReview"
-              style="width: 100%"
-              rows="3"
-            >
-{{review.review_text}}</textarea
-            >
-            <button
-              type="submit"
-              formaction="{{ url_for('reviews.update_review', id=review.id)}}"
-            >
-              Update
-            </button>
-            <button
-              type="submit"
-              formaction="{{ url_for('reviews.delete_review', id=review.id) }}"
-            >
-              Delete
-            </button>
-          </form>
-          <!-- <form
-            action="{{ url_for('reviews.delete_review', id=review.id) }}"
-            method="POST"
-          >
-            <input type="submit" value="Delete" />
-          </form> -->
-          <!-- <button id=editBtn onclick="myFunction()">Edit</button> -->
-        </div>
+        <!-- save for later -->
+        <form
+          action="{{ url_for('saveForLater.save_for_later', product_id=item.pid) }}"
+          method="POST"
+        >
+          <input type="submit" value="Save for Later" />
+        </form>
       </td>
-      <td>{{review.time_posted}}</td>
     </tr>
     {% endfor %}
   </tbody>
 </table>
-{% else %}
-<p>
-  <a href="{{ url_for('users.login') }}">Log in</a> to see your review history!
-</p>
-{% endif %}
-<script>
-  function myFunction() {
-    var x = document.getElementById("updateReview");
-    // var curr = document.getElementById("currReview");
-    // var btn = document.getElementById("editBtn");
-    if (x.style.display === "none") {
-      x.style.display = "block";
-      // curr.style.display = "none"
-      // btn.innerHTML = "Cancel"
-    } else {
-      x.style.display = "none";
-      // curr.style.display = "block"
-      // btn.innerHTML = "Edit"
-    }
-  }
-</script>
-{% endblock %}
