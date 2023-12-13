@@ -4,12 +4,22 @@
     border-right: 1px solid #a8a8a8;
     padding-right: 10px;
   }
+  .formBtn {
+    width: 100%;
+    border-radius: 0.25rem;
+  }
+  .update:hover {
+    background-color: #ffe8a8;
+  }
+  .delete:hover {
+    background-color: #ff9393;
+  }
 </style>
 <br /><br />
 {% if current_user.is_authenticated %}
 <h2>Your recent reviews:</h2>
 <table class="table table-hover table-bordered container">
-  <thead class="thead-dark">
+  <thead style="background-color: #bdcfd9">
     <tr>
       <!-- <th scope="col">Product ID</th> -->
       <th scope="col">Product</th>
@@ -93,14 +103,15 @@
         <td>{{review.time_posted}}</td>
         <td style="vertical-align: middle">
           <button
-            style="width: 100%"
+            class="formBtn update"
             type="submit"
             formaction="{{ url_for('reviews.update_review', id=review.id)}}"
+            style="margin-bottom: 20px"
           >
             Update
           </button>
           <button
-            style="width: 100%"
+            class="formBtn delete"
             type="submit"
             formaction="{{ url_for('reviews.delete_review', id=review.id) }}"
           >
