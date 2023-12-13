@@ -36,6 +36,15 @@
         align-items: center;
         justify-content: center;
       }
+
+      .addBtn {
+        background-color: #ffb84d;
+        border-radius: 0.25rem;
+        border: none;
+      }
+      .addBtn:hover {
+        background-color: #ff9900;
+      }
     </style>
   </head>
 
@@ -183,20 +192,31 @@
                               </svg>
                             </div>
                           </div>
-                          <div style="position: relative">
+                          <div style="position: relative; width: max-width">
                             {% if current_user.is_authenticated %}
                             <form
                               style="width: auto"
                               action="{{ url_for('wishlist.wishList_add', product_id=product.id) }}"
                               method="POST"
                             >
-                              <input type="submit" value="Add to Wishlist" />
+                              <input
+                                type="submit"
+                                value="Add to Wishlist"
+                                class="addBtn"
+                                style="margin-bottom: 2px"
+                              />
                             </form>
                             <form
                               action="{{ url_for('cart.add_to_cart', product_id=product.id) }}"
                               method="POST"
+                              style="width: 100%"
                             >
-                              <input type="submit" value="Add to Cart" />
+                              <input
+                                type="submit"
+                                value="Add to Cart"
+                                style="width: 100%"
+                                class="addBtn"
+                              />
                             </form>
                             {% endif %}
                           </div>
