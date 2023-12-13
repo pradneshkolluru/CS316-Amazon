@@ -2,54 +2,38 @@
   <thead class="thead-dark">
     <tr>
       <th scope="col">Product Name</th>
-      <th scope="col">Quantity</th>
       <th scope="col">Unit Price</th>
-      <th scope="col">Delete from Cart</th>
-      <th scope="col">Save for Later</th>
+      <th scope="col">Add to Cart?</th>
+      <th scope="col">Delete</th>
     </tr>
   </thead>
   <tbody>
-    {% for item in cart_products%}
+    {% for item in saved_items %}
     <tr>
-      <!-- <td>{{ loop.index + pagination.skip }}</td> -->
       <td>
         <a href="{{ url_for('products.product_info', id=item.pid) }}"
           >{{item.product_name}}</a
         >
       </td>
       <!-- product name -->
-      <td class="changeQuantity">
-        <!-- quantity -->
-        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
-          <input name="pid" value="{{item.pid}}" hidden="true" />
-          <input name="qty" value="-1" hidden="true" />
-          <input type="submit" value="-" />
-        </form>
-        {{item.qty}}
-        <form action="{{ url_for('cart.change_item_qty') }}" method="POST">
-          <input name="pid" value="{{item.pid}}" hidden="true" />
-          <input name="qty" value="1" hidden="true" />
-          <input type="submit" value="+" />
-        </form>
-      </td>
       <td>${{item.unit_price}}</td>
       <!-- unit price -->
       <td>
-        <!-- delete from cart -->
+        <!-- add back to cart -->
         <form
-          action="{{ url_for('cart.delete_from_cart', product_id=item.pid) }}"
+          action="{{ url_for('saveForLater.add_saved_to_cart', product_id=item.pid) }}"
           method="POST"
         >
-          <input type="submit" value="Delete from Cart" />
+          <input type="submit" value="Add to Cart" />
         </form>
       </td>
       <td>
-        <!-- save for later -->
+        <!-- delete from saved -->
         <form
-          action="{{ url_for('saveForLater.save_for_later', product_id=item.pid) }}"
+          action="{{ url_for('saveForLater.delete_from_saved', product_id=item.pid) }}"
           method="POST"
         >
-          <input type="submit" value="Save for Later" />
+          <input type="submit" value="Delete" />
         </form>
       </td>
     </tr>
